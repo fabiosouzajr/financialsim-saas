@@ -144,6 +144,11 @@ screenshots/
 # =============================================================================
 node_modules/
 *.local
+# Un-ignore frontend source dirs that match Python packaging patterns (e.g. lib/)
+!frontend/
+!frontend/src/
+!frontend/src/lib/
+!frontend/src/lib/**
 
 # =============================================================================
 # uv
