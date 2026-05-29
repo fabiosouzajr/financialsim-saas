@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <title>Proposta {{ proposal.codigo }}</title>
+</head>
+
+<body>
+    <h1>{{ loja.nome }} — Proposta de financiamento</h1>
+    <p>
+        Proposta <strong>{{ proposal.codigo }}</strong> emitida em {{ proposal.gerado_em_br }} —
+        validade {{ proposal.validade_dias }} dias.
+    </p>
+
+    <h2>Cliente</h2>
+    <p>
+        {{ cliente.nome }} —
+        {{ "CPF" if cliente.tipo == "PF" else "CNPJ" }}: {{ cliente.cpf_cnpj_fmt }}
+        {% if cliente.telefone %}— Tel.: {{ cliente.telefone }}{% endif %}
+    </p>
+
+    <h2>Veículo</h2>
+    <p>
+        {{ veiculo.marca }} {{ veiculo.modelo }} ({{ veiculo.ano_modelo }})
+        {% if veiculo.codigo_fipe %} — FIPE {{ veiculo.codigo_fipe }} ref. {{ veiculo.mes_referencia_fipe }}{% endif %}
+        — Valor de venda: {{ sim.valor_veiculo_brl }}
+    </p>
+
+    <h2>Condições do financiamento</h2>
+    <div class="kpi-row">
+        <div class="kpi">
+            <div class="label">Valor financiado</div>
+            <div class="value">{{ sim.valor_financiado_brl }}</div>
+        </div>
+        <div class="kpi">
+            <div class="label">Entrada</div>
+            <div class="value">{{ sim.valor_entrada_brl }} ({{ sim.pct_entrada_pct }})</div>
+        </div>
+        <div class="kpi">
+            <div class="label">Prazo</div>
+            <div class="value">{{ sim.prazo_meses }} meses</div>
+        </div>
+    </div>
+    <div class="kpi-row">
+        <div class="kpi">
+            <div class="label">Taxa a.m.</div>
+            <div class="value">{{ sim.taxa_juros_mes_pct }}</div>
+        </div>
+        <div class="kpi">
+            <div class="label">Taxa a.a.</div>
+            <div class="value">{{ sim.taxa_juros_ano_pct }}</div>
+        </div>
+        <div class="kpi">
+            <div class="label">CET a.m.</div>
+            <div class="value">{{ sim.cet_mes_pct }}</div>
+        </div>
+        <div class="kpi">
+            <div class="label">CET a.a.</div>
+            <div class="value">{{ sim.cet_ano_pct }}</div>
+        </div>
+    </div>
+    <p>
+        IOF: {% if sim.incluir_iof %}{{ sim.iof_total_brl }}{% else %}<em>não incluído</em>{% endif %}
+        — Tarifas: {{ sim.tarifas_total_brl }}
+    </p>
+
+    {% if extras %}
+    <h2>Custos adicionais mensais</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Modalidade</th>
+                <th>Valor total</th>
+                <th>Duração</th>
+                <th>Por parcela</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in extras %}
+            <tr>
+                <td>{{ e.nome }}</td>
+                <td>{{ e.modalidade_label }}</td>
+                <td>{{ e.valor_total_brl }}</td>
+                <td>{{ e.duracao_meses }} parcelas</td>
+                <td>{{ e.valor_por_parcela_brl }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <h2>Resumo financeiro</h2>
+    <div class="kpi-row">
+        <div class="kpi">
+            <div class="label">Parcela financiamento</div>
+            <div class="value">{{ sim.valor_parcela_brl }}</div>
+        </div>
+        <div class="kpi">
+            <div class="label">Parcela total 1º ano</div>
+            <div class="value">{{ sim.parcela_total_1ano_brl }}</div>
+        </div>
+        <div class="kpi">
+            <div class="label">Parcela total após rateio</div>
+            <div class="value">{{ sim.parcela_total_apos_brl }}</div>
+        </div>
+    </div>
+    <div class="kpi-row">
+        <div class="kpi">
+            <div class="label">Total pago financiamento</div>
+            <div class="value">{{ sim.total_pago_brl }}</div>
+        </div>
+        <div class="kpi">
+            <div class="label">Total juros</div>
+            <div class="value">{{ sim.total_juros_brl }} ({{ sim.pct_juros_pct }})</div>
+        </div>
+        <div class="kpi">
+            <div class="label">Total pago pelo cliente</div>
+            <div class="value">{{ sim.total_pago_cliente_brl }}</div>
+        </div>
+    </div>
+
+    <h2>Cronograma de amortização</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Vencimento</th>
+                <th>Juros</th>
+                <th>Amortização</th>
+                <th>Parcela</th>
+                <th>Extras</th>
+                <th>Parcela total</th>
+                <th>Saldo devedor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in cronograma %}
+            <tr {% if r.extras_brl !="R$ 0,00" %}class="extra-row" {% endif %}>
+                <td>{{ r.numero }}</td>
+                <td>{{ r.venc }}</td>
+                <td>{{ r.juros_brl }}</td>
+                <td>{{ r.amortizacao_brl }}</td>
+                <td>{{ r.parcela_brl }}</td>
+                <td>{{ r.extras_brl }}</td>
+                <td><strong>{{ r.parcela_total_brl }}</strong></td>
+                <td>{{ r.saldo_brl }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="note">
+        Custos adicionais (proteção veicular, IPVA, emplacamento) não compõem o CET por
+        serem despesas externas ao crédito.
+    </p>
+
+    <div class="signatures">
+        <div>Cliente</div>
+        <div>Vendedor — {{ vendedor.nome }}</div>
+    </div>
+</body>
+
+</html>

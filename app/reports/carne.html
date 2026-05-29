@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Carnê {{ proposal.codigo }}</title>
+</head>
+<body>
+{% for page_boletos in parcelas | batch(4) %}
+<div class="page{% if not loop.last %} page-break{% endif %}">
+
+  <div class="page-header">
+    <div class="loja-nome">{{ loja.nome or "—" }}</div>
+    <div class="loja-info">
+      {%- if loja.cnpj %}CNPJ: {{ loja.cnpj }}{% endif %}
+      {%- if loja.cnpj and loja.telefone %} · {% endif %}
+      {%- if loja.telefone %}Tel: {{ loja.telefone }}{% endif %}
+    </div>
+    {%- if loja.endereco %}<div class="loja-endereco">{{ loja.endereco }}</div>{% endif %}
+  </div>
+
+  {% for boleto in page_boletos %}
+  <div class="boleto">
+    <div class="boleto-top">
+      <div class="boleto-left">
+        <div class="label">Cliente</div>
+        <div class="cliente-nome">{{ cliente.nome or "—" }}</div>
+        {%- if cliente.cpf_cnpj_fmt %}<div class="cliente-cpf">{{ cliente.cpf_cnpj_fmt }}</div>{% endif %}
+        <div class="veiculo-desc">{{ veiculo.descricao }}{% if veiculo.placa %} · {{ veiculo.placa }}{% endif %}</div>
+      </div>
+      <div class="boleto-right">
+        <div class="label">Parcela</div>
+        <div class="parcela-num">{{ "%02d" | format(boleto.numero) }} / {{ "%02d" | format(boleto.total) }}</div>
+        <div class="proposta-ref">Ref: {{ proposal.codigo }}</div>
+      </div>
+    </div>
+    <div class="boleto-bottom">
+      <div>
+        <div class="label-sm">Vencimento</div>
+        <div class="vencimento-data">{{ boleto.vencimento_br }}</div>
+      </div>
+      <div class="valor-block">
+        <div class="label-sm">Valor a pagar</div>
+        <div class="valor-brl">{{ boleto.valor_total_brl }}</div>
+      </div>
+    </div>
+  </div>
+  {% if not loop.last %}<div class="corte">✂ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ✂</div>{% endif %}
+  {% endfor %}
+
+</div>
+{% endfor %}
+</body>
+</html>
