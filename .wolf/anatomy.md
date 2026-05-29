@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-29T18:18:30.314Z
-> Files: 93 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-29T18:45:30.136Z
+> Files: 94 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -104,6 +104,7 @@
 ## docs/superpowers/plans/
 
 - `2026-05-28-saas-phase-0-foundations.md` — Phase 0 — Foundations Implementation Plan (~13678 tok)
+- `2026-05-29-saas-phase-1-auth-rbac.md` — Phase 1 — Auth + RBAC + Tenant Management Implementation Plan (~23789 tok)
 
 ## docs/superpowers/plans/done/
 
