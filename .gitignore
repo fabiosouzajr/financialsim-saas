@@ -105,6 +105,8 @@ app/data/**/__pycache__/
 !tests/unit/data/
 !tests/unit/data/**
 tests/unit/data/**/__pycache__/
+!backend/finacialsim_saas/data/
+!backend/finacialsim_saas/data/**
 
 # Logs
 logs/
