@@ -55,7 +55,7 @@ async def session(engine: AsyncEngine) -> AsyncSession:
 @pytest.fixture(scope="session")
 def redis_container():
     """Starts a real Redis 7 container for the test session."""
-    with RedisContainer("redis:7-alpine") as r:
+    with RedisContainer("redis:7") as r:
         yield r
 
 
