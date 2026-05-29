@@ -1,4 +1,5 @@
 import asyncio
+import os
 import pytest
 import pytest_asyncio
 from testcontainers.postgres import PostgresContainer
@@ -22,7 +23,9 @@ def postgres_container():
 @pytest.fixture(scope="session")
 def db_url(postgres_container) -> str:
     url = postgres_container.get_connection_url()
-    return url.replace("psycopg2", "asyncpg").replace("postgresql://", "postgresql+asyncpg://")
+    dsn = url.replace("psycopg2", "asyncpg").replace("postgresql://", "postgresql+asyncpg://")
+    os.environ["DATABASE_URL"] = dsn
+    return dsn
 
 
 @pytest.fixture(scope="session")
