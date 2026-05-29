@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-29T16:00:57.047Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-29T18:18:30.314Z
 > Files: 93 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -122,7 +122,7 @@
 ## docs/superpowers/specs/
 
 - `2026-05-28-saas-phase-0-foundations.md` — Phase 0 — Foundations (~1112 tok)
-- `2026-05-28-saas-phase-1-auth-rbac.md` — Phase 1 — Auth + RBAC + Tenant management (~1520 tok)
+- `2026-05-28-saas-phase-1-auth-rbac.md` — Phase 1 — Auth + RBAC + Tenant management (~2091 tok)
 - `2026-05-28-saas-phase-2-simulacao.md` — Phase 2 — Core domain port + Simulação (~1590 tok)
 - `2026-05-28-saas-phase-3-cadastros.md` — Phase 3 — Cadastros (Clientes + Veículos + FIPE) (~1149 tok)
 - `2026-05-28-saas-phase-4-indicadores-rules.md` — Phase 4 — Indicadores + Business Rules UI + Scheduler + Audit log (~1212 tok)

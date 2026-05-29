@@ -8,7 +8,11 @@
       "file": "packages/finacialsim_core/finacialsim_core/integrations/bacen/cached.py",
       "root_cause": "bacen/cached.py has SQLAlchemy-dependent imports — equivalent to fipe/cache.py. Not excluded by original EXCLUDED set.",
       "fix": "Added 'cached.py' to EXCLUDED set in scripts/sync_core.py",
-      "tags": ["sync-script", "forbidden-imports", "vendored-core"],
+      "tags": [
+        "sync-script",
+        "forbidden-imports",
+        "vendored-core"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-29T15:45:43.784Z"
@@ -20,7 +24,13 @@
       "file": "backend/tests/conftest.py",
       "root_cause": "Session-scoped async fixture for engine creates asyncpg connection pool bound to setup event loop. Function-scoped tests use different event loops causing loop mismatch.",
       "fix": "Made `engine` a sync fixture using asyncio.run() + NullPool (no pool caching). Added asyncio_default_test_loop_scope = 'session' to pytest config.",
-      "tags": ["pytest-asyncio", "sqlalchemy", "asyncpg", "event-loop", "testcontainers"],
+      "tags": [
+        "pytest-asyncio",
+        "sqlalchemy",
+        "asyncpg",
+        "event-loop",
+        "testcontainers"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-29T15:48:00.000Z"
@@ -32,8 +42,15 @@
       "file": "backend/tests/conftest.py",
       "root_cause": "async_sessionmaker context manager auto-handles close/rollback on exit. Explicit await s.rollback() inside the async with block caused asyncpg error.",
       "fix": "Removed explicit await s.rollback() from session fixture — rely on async_sessionmaker context manager.",
-      "tags": ["pytest-asyncio", "sqlalchemy", "asyncpg", "session-fixture"],
-      "related_bugs": ["bug-002"],
+      "tags": [
+        "pytest-asyncio",
+        "sqlalchemy",
+        "asyncpg",
+        "session-fixture"
+      ],
+      "related_bugs": [
+        "bug-002"
+      ],
       "occurrences": 1,
       "last_seen": "2026-05-29T15:49:00.000Z"
     },
@@ -44,7 +61,12 @@
       "file": "backend/tests/conftest.py",
       "root_cause": "/version endpoint calls get_settings() which requires DATABASE_URL env var. Not set in test env.",
       "fix": "Set os.environ['DATABASE_URL'] = dsn in db_url fixture (session-scoped) so it's available for all tests.",
-      "tags": ["pydantic-settings", "fastapi", "tests", "env-var"],
+      "tags": [
+        "pydantic-settings",
+        "fastapi",
+        "tests",
+        "env-var"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-29T15:53:00.000Z"
@@ -56,10 +78,31 @@
       "file": "backend/tests/conftest.py",
       "root_cause": "WSL2 environment has intermittent Docker Hub connectivity issues. redis:7-alpine not locally cached.",
       "fix": "Changed testcontainers Redis image to redis:7 (locally available). CI (GitHub Actions) uses redis:7-alpine fine.",
-      "tags": ["docker", "testcontainers", "wsl2", "network"],
+      "tags": [
+        "docker",
+        "testcontainers",
+        "wsl2",
+        "network"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-29T15:55:00.000Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-05-29T18:18:26.862Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/superpowers/specs/2026-05-28-saas-phase-1-auth-rbac.md",
+      "root_cause": "Had `TenantSessionMiddleware`",
+      "fix": "Changed to `get_db_session()`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-29T18:18:30.325Z"
     }
   ]
 }

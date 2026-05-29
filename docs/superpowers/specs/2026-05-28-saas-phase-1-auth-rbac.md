@@ -52,7 +52,7 @@ PATCH  /api/v1/users/{id}                  (admin)             → role/active t
 
 - `JWTMiddleware`: verifies bearer; rejects revoked tokens (compare `iat` against `users.tokens_revoked_at`).
 - `get_current_ctx()`: returns `RequestContext(user, tenant_id, role)`.
-- `TenantSessionMiddleware`: opens SQLAlchemy session, issues `SET LOCAL app.tenant_id = '<uuid>'`.
+- `get_db_session()`: FastAPI `Depends` — opens AsyncSession, reads `tenant_id` from `get_current_ctx()`, issues `SET LOCAL app.tenant_id = '<uuid>'`, yields session. No-ops (plain session, no `SET LOCAL`) on unauthenticated endpoints.
 - `require_role("admin", "manager", "user")`: dependency factory.
 
 ### CLI
@@ -74,9 +74,34 @@ Implemented via Typer; commands call the same services as the API.
 
 - `/login`, `/forgot-password`, `/reset-password/:token` (react-hook-form + zod).
 - `AuthContext`: both access token and refresh token stored in `localStorage`. On page reload, `AuthContext` reads the refresh token from `localStorage` and calls `/auth/refresh` to re-hydrate the access token.
-- axios interceptor: silent refresh on 401 once, then redirect to `/login`.
+- axios interceptor: full queue pattern — `isRefreshing` flag serializes concurrent 401s; one refresh fires, others wait; on refresh failure clears `localStorage` and redirects to `/login`.
 - `<RequireRole roles=["admin"]>` guards.
 - `/admin/users` page (admin only) listing tenant users + create/edit modal.
+
+## Grill-me decision record
+
+| # | Decision | Choice |
+| --- | --- | --- |
+| 1 | Token storage | `localStorage` for both access and refresh tokens |
+| 2 | `SET LOCAL` on unauthenticated endpoints | FastAPI `Depends` no-ops; auth endpoints skip `SET LOCAL` |
+| 3 | Staff email uniqueness | Global `UNIQUE(email)` across entire platform |
+| 4 | Refresh token reuse detection | Revoked token → silent 401; full family revocation |
+| 5 | CITEXT extension | Enabled in Phase 1 migration via `CREATE EXTENSION IF NOT EXISTS citext` |
+| 6 | JWT library | PyJWT |
+| 7 | Password hashing | `bcrypt` direct (not passlib), work factor 12 |
+| 8 | Multiple pending reset tokens | Invalidate previous on new request (one active per user) |
+| 9 | `audit_log` writes in Phase 1 | Write auth events: login, logout, password reset, user create/patch |
+| 10 | `GET /users` role filter | Staff only (`role != 'customer'`) |
+| 11 | `TenantSessionMiddleware` implementation | FastAPI `Depends` (not Starlette middleware); session + `SET LOCAL` in dependency |
+| 12 | CLI entry point | Separate `backend/finacialsim_saas/cli/` module; `[project.scripts]` entry in pyproject.toml |
+| 13 | `notifications_outbox` schema | `id, tenant_id, type, recipient, payload JSONB, created_at, processed_at, failed_at, error, attempts` |
+| 14 | Password reset link base URL | `Settings.FRONTEND_BASE_URL` env var |
+| 15 | `PATCH /users/{id}` patchable fields | `role` and `is_active` only |
+| 16 | Cross-tenant isolation tests | Parametrized fixture matrix (`@pytest.mark.parametrize("role", [...])`) |
+| 17 | Invited user initial login | Admin sets password at creation; invite email goes to maildir (no invite-gate in Phase 1) |
+| 18 | `GET /me` response fields | `id, tenant_id, email, name, role, is_active, last_login_at, created_at` |
+| 19 | Axios interceptor on 401 | Full queue pattern for concurrent 401s; loop guard via `isRefreshing` flag |
+| 20 | Dev maildir path | `./dev-mail/` default; configurable via `Settings.MAILDIR_PATH`; `.gitignore`d |
 
 ## Out of scope
 
