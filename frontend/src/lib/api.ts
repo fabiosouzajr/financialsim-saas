@@ -1,4 +1,5 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
+import type { AxiosRequestConfig } from "axios";
 
 // In dev: Vite proxy forwards /api/* → http://localhost:8000/*
 // In prod: Caddy routes /api/* → api:8000/*

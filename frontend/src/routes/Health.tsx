@@ -4,7 +4,7 @@ import { api } from "@/lib/api";
 export default function Health() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["healthz"],
-    queryFn: () => api.get("/healthz").then((r) => r.data),
+    queryFn: () => api.get<unknown>("/healthz").then((r) => r.data),
   });
 
   if (isLoading) return <p className="p-4 text-gray-500">Checking backend…</p>;
