@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from loguru import logger
 
-from finacialsim_saas.data.database import build_engine
+from finacialsim_saas.data.database import build_engine, build_session_factory
 from finacialsim_saas.errors import AppError
 from finacialsim_saas.middleware.logging import configure_logging
 from finacialsim_saas.settings import get_settings
@@ -21,6 +21,7 @@ async def lifespan(app: FastAPI):
     configure_logging(settings.app_env)
     engine = build_engine(str(settings.database_url))
     app_state["engine"] = engine
+    app.state.session_factory = build_session_factory(engine)
     logger.info("startup", env=settings.app_env, sha=settings.git_sha)
     yield
     await engine.dispose()
@@ -66,6 +67,10 @@ async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
     )
 
 
-from finacialsim_saas.api.health import router as health_router  # noqa: E402
+from finacialsim_saas.api.health import router as health_router   # noqa: E402
+from finacialsim_saas.api.auth import router as auth_router        # noqa: E402
+from finacialsim_saas.api.users import router as users_router      # noqa: E402
 
 app.include_router(health_router)
+app.include_router(auth_router)
+app.include_router(users_router)
