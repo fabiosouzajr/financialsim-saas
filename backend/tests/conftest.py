@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engin
 from sqlalchemy.pool import NullPool
 
 from finacialsim_saas.data.database import Base, build_session_factory
+import finacialsim_saas.data.models  # noqa: F401 — registers all ORM models with Base.metadata
 
 
 # ── Postgres ──────────────────────────────────────────────────────────────────
@@ -30,11 +31,14 @@ def db_url(postgres_container) -> str:
 
 @pytest.fixture(scope="session")
 def engine(db_url: str) -> AsyncEngine:
-    """Sync fixture: creates schema synchronously so no event-loop is captured."""
+    """Sync fixture: enables citext extension, then creates schema."""
+    from sqlalchemy import text as _text
+
     eng = create_async_engine(db_url, poolclass=NullPool)
 
     async def _create_schema() -> None:
         async with eng.begin() as conn:
+            await conn.execute(_text("CREATE EXTENSION IF NOT EXISTS citext"))
             await conn.run_sync(Base.metadata.create_all)
 
     asyncio.run(_create_schema())
@@ -64,3 +68,13 @@ def redis_url(redis_container) -> str:
     host = redis_container.get_container_host_ip()
     port = redis_container.get_exposed_port(6379)
     return f"redis://{host}:{port}"
+
+
+@pytest_asyncio.fixture
+async def client(engine: AsyncEngine):
+    """Shared HTTP test client. Lifespan uses DATABASE_URL set by db_url fixture."""
+    from httpx import ASGITransport, AsyncClient
+    from finacialsim_saas.main import app
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
+        yield c
