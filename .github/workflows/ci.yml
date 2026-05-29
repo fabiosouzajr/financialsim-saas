@@ -1,0 +1,65 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install uv
+      - run: uv sync --extra dev
+      - run: uv run ruff check backend/
+      - run: uv run mypy backend/finacialsim_saas
+      - name: pytest (testcontainers spins up Postgres + Redis internally)
+        working-directory: backend
+        run: uv run pytest tests/ --cov=finacialsim_saas --cov-report=term-missing -v
+        env:
+          DATABASE_URL: postgresql+asyncpg://dummy:dummy@localhost/dummy
+          APP_SECRET_KEY: ci-secret
+
+  vendored-core:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/finacialsim_core
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install uv
+      - run: uv pip install --system -e ".[dev]"
+      - name: Verify no forbidden imports
+        run: |
+          grep -rn "nicegui\|from app\.data\|from app\.ui\|^from sqlalchemy\|^import sqlalchemy" \
+            finacialsim_core/ && echo "FORBIDDEN IMPORTS FOUND" && exit 1 || echo "CLEAN"
+      - run: uv run pytest tests/ -v --tb=short
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm test -- --run
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f ops/Dockerfile.api -t finacialsim-saas-api .
+      - run: docker build -f ops/Dockerfile.worker -t finacialsim-saas-worker .
+      - run: docker build -f ops/Dockerfile.web -t finacialsim-saas-web .
