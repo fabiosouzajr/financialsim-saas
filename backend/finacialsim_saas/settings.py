@@ -1,4 +1,5 @@
 from typing import Literal
+
 from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -21,6 +22,13 @@ class Settings(BaseSettings):
     build_time: str = ""
 
     pdf_output_dir: str = "/tmp/finacialsim-pdfs"
+
+    jwt_secret_key: str = "change-jwt-secret-in-production"
+    access_token_expire_minutes: int = 15
+    refresh_token_expire_days: int = 7
+
+    frontend_base_url: str = "http://localhost:5173"
+    maildir_path: str = "./dev-mail"
 
 
 def get_settings() -> Settings:
