@@ -32,6 +32,8 @@
 - [2026-05-29] Don't add `await s.rollback()` inside `async with factory() as s:` — the context manager handles teardown. See bug-003.
 - [2026-05-29] Don't commit with `git add .` from subdirectory — use `git -C /repo/root add <specific-paths>` to avoid path resolution issues.
 - [2026-05-29] Don't use `!path/to/data/**` gitignore exceptions without also excluding `__pycache__` subdirs — or committed .pyc files slip through.
+- [2026-05-29] Don't rely on lifespan for test client session_factory — `ASGITransport` doesn't trigger FastAPI lifespan. Always manually inject `app.state.session_factory = build_session_factory(engine)` and `app_state["engine"] = engine` in test client fixtures. See bug-009.
+- [2026-05-29] Don't use fixed emails in seed fixtures that commit to a shared DB — subsequent test runs hit unique constraint. Use `f"ep-{uuid4().hex[:8]}@test.com"` pattern and return email from fixture. See bug-010.
 
 ## Decision Log
 
