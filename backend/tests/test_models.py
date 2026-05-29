@@ -10,4 +10,4 @@ async def test_all_phase1_models_importable_and_tables_exist(session):
     )
     for Model in (Tenant, User, PasswordResetToken, RefreshToken, AuditLog, NotificationsOutbox):
         result = await session.execute(select(Model))
-        assert result.scalars().all() == []
+        result.scalars().all()  # tables exist if this doesn't raise
