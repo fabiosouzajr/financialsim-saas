@@ -1,0 +1,85 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: finacialsim
+      POSTGRES_USER: finacialsim
+      POSTGRES_PASSWORD: changeme
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finacialsim"]
+      interval: 5s
+      retries: 12
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 12
+
+  migrate:
+    build:
+      context: ..
+      dockerfile: ops/Dockerfile.api
+    environment:
+      DATABASE_URL: postgresql+asyncpg://finacialsim:changeme@db:5432/finacialsim
+      APP_SECRET_KEY: local-dev
+    command: python -m alembic upgrade head
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    build:
+      context: ..
+      dockerfile: ops/Dockerfile.api
+    environment:
+      DATABASE_URL: postgresql+asyncpg://finacialsim:changeme@db:5432/finacialsim
+      REDIS_URL: redis://redis:6379/0
+      APP_SECRET_KEY: local-dev
+      GIT_SHA: local
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8000/healthz || exit 1"]
+      interval: 10s
+      retries: 6
+
+  worker:
+    build:
+      context: ..
+      dockerfile: ops/Dockerfile.worker
+    environment:
+      DATABASE_URL: postgresql+asyncpg://finacialsim:changeme@db:5432/finacialsim
+      REDIS_URL: redis://redis:6379/0
+      APP_SECRET_KEY: local-dev
+      PDF_OUTPUT_DIR: /var/lib/finacialsim/pdfs
+    volumes:
+      - pdf-store:/var/lib/finacialsim/pdfs
+    depends_on:
+      api:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ..
+      dockerfile: ops/Dockerfile.web
+
+  proxy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - api
+      - web
+
+volumes:
+  pg-data:
+  pdf-store:
