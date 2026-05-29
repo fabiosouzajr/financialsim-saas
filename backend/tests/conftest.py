@@ -72,9 +72,12 @@ def redis_url(redis_container) -> str:
 
 @pytest_asyncio.fixture
 async def client(engine: AsyncEngine):
-    """Shared HTTP test client. Lifespan uses DATABASE_URL set by db_url fixture."""
+    """Shared HTTP test client. Bypasses lifespan — injects session_factory directly."""
     from httpx import ASGITransport, AsyncClient
-    from finacialsim_saas.main import app
+    from finacialsim_saas.main import app, app_state
+    from finacialsim_saas.data.database import build_session_factory
 
+    app_state["engine"] = engine
+    app.state.session_factory = build_session_factory(engine)
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
         yield c
