@@ -1,0 +1,102 @@
+@page {
+    size: A4;
+    margin: 1.5cm;
+}
+
+body {
+    font-family: Inter, "Segoe UI", sans-serif;
+    color: #1A2233;
+    font-size: 11pt;
+}
+
+h1,
+h2,
+h3 {
+    color: #1565C0;
+    margin: 0.6em 0 0.3em;
+}
+
+h1 {
+    font-size: 18pt;
+}
+
+h2 {
+    font-size: 14pt;
+}
+
+.kpi-row {
+    display: flex;
+    gap: 0.8em;
+    margin: 0.8em 0;
+}
+
+.kpi {
+    flex: 1;
+    background: #F5F7FB;
+    padding: 0.6em 0.8em;
+    border-radius: 6px;
+}
+
+.kpi .label {
+    font-size: 9pt;
+    color: #6B7785;
+}
+
+.kpi .value {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #1565C0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.6em 0;
+    font-size: 10pt;
+}
+
+th,
+td {
+    padding: 0.35em 0.5em;
+    border-bottom: 1px solid #DCE2EA;
+    text-align: right;
+}
+
+th:first-child,
+td:first-child {
+    text-align: left;
+}
+
+th {
+    background: #F5F7FB;
+    color: #1A2233;
+    font-weight: 600;
+}
+
+tr.subtotal td {
+    font-weight: 700;
+}
+
+.note {
+    font-size: 9pt;
+    color: #6B7785;
+    margin-top: 0.6em;
+}
+
+.signatures {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2.5em;
+}
+
+.signatures div {
+    width: 45%;
+    border-top: 1px solid #1A2233;
+    padding-top: 0.4em;
+    text-align: center;
+    font-size: 9pt;
+}
+
+.extra-row {
+    background: #FFF7E6;
+}
