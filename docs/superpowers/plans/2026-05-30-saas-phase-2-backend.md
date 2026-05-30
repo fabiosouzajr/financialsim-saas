@@ -13,6 +13,7 @@
 ## File Map
 
 **Create:**
+
 - `backend/alembic/versions/003_simulation_tables.py`
 - `backend/finacialsim_saas/schemas/__init__.py`
 - `backend/finacialsim_saas/schemas/types.py`
@@ -28,6 +29,7 @@
 - `backend/tests/test_simulation_endpoints.py`
 
 **Modify:**
+
 - `backend/finacialsim_saas/data/models.py` — add 7 new ORM models
 - `backend/finacialsim_saas/cli/main.py` — seed `business_rules` on tenant create
 - `backend/finacialsim_saas/main.py` — include new routers
@@ -37,6 +39,7 @@
 ## Task 1: Alembic migration — all Phase 2 tables
 
 **Files:**
+
 - Create: `backend/alembic/versions/003_simulation_tables.py`
 
 - [ ] **Step 1: Write the migration**
@@ -231,6 +234,7 @@ git commit -m "feat(db): add Phase 2 simulation tables migration"
 ## Task 2: ORM models
 
 **Files:**
+
 - Modify: `backend/finacialsim_saas/data/models.py`
 
 - [ ] **Step 1: Write failing import test**
@@ -467,6 +471,7 @@ git commit -m "feat(models): add Phase 2 simulation ORM models"
 ## Task 3: Seed `business_rules` on tenant creation
 
 **Files:**
+
 - Modify: `backend/finacialsim_saas/cli/main.py`
 
 The seed covers all 14 rule keys from the spec. Default values match the desktop's `DEFAULT_RULES` plus IOF defaults from `finacialsim_core`.
@@ -571,6 +576,7 @@ git commit -m "feat(cli): seed business_rules on tenant create"
 ## Task 4: Schemas — `DecimalStr` type and base schemas
 
 **Files:**
+
 - Create: `backend/finacialsim_saas/schemas/__init__.py`
 - Create: `backend/finacialsim_saas/schemas/types.py`
 - Create: `backend/finacialsim_saas/schemas/business_rules.py`
@@ -626,6 +632,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 ```python
 ```
+
 (empty)
 
 - [ ] **Step 3: Create `schemas/types.py`**
@@ -695,6 +702,7 @@ git commit -m "feat(schemas): add DecimalStr type and BusinessRulesOut schema"
 ## Task 5: Simulation schemas
 
 **Files:**
+
 - Create: `backend/finacialsim_saas/schemas/simulations.py`
 
 - [ ] **Step 1: Add schema tests to `test_schemas.py`**
@@ -907,6 +915,7 @@ git commit -m "feat(schemas): add simulation request/response schemas"
 ## Task 6: `rules_service.py`
 
 **Files:**
+
 - Create: `backend/finacialsim_saas/services/__init__.py`
 - Create: `backend/finacialsim_saas/services/rules_service.py`
 
@@ -979,6 +988,7 @@ Expected: FAIL with `ModuleNotFoundError`
 
 ```python
 ```
+
 (empty)
 
 - [ ] **Step 3: Create `services/rules_service.py`**
@@ -1046,6 +1056,7 @@ git commit -m "feat(services): add RulesService with get_rules and snapshot"
 ## Task 7: `simulation_service.py` — computation helpers
 
 **Files:**
+
 - Create: `backend/finacialsim_saas/services/simulation_service.py`
 
 - [ ] **Step 1: Add computation tests to `test_simulation_service.py`**
@@ -1324,6 +1335,7 @@ git commit -m "feat(services): add SimulationService.preview with core computati
 ## Task 8: `simulation_service.py` — create, get, list, update, archive, clone
 
 **Files:**
+
 - Modify: `backend/finacialsim_saas/services/simulation_service.py`
 
 - [ ] **Step 1: Add create/get/CRUD tests to `test_simulation_service.py`**
@@ -1997,6 +2009,7 @@ git commit -m "feat(services): add SimulationService create/get/list/update/arch
 ## Task 9: API routers
 
 **Files:**
+
 - Create: `backend/finacialsim_saas/api/business_rules.py`
 - Create: `backend/finacialsim_saas/api/simulations.py`
 - Modify: `backend/finacialsim_saas/main.py`
