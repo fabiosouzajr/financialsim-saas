@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-30T17:32:57.346Z
-> Files: 161 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-30T17:56:40.717Z
+> Files: 195 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/
 
@@ -224,20 +224,44 @@
 
 ## frontend/src/
 
-- `App.tsx` — queryClient (~438 tok)
+- `App.tsx` — queryClient (~575 tok)
 - `index.css` — Styles: 1 rules (~7 tok)
 
 ## frontend/src/components/
 
 - `RequireRole.tsx` — RequireRole (~178 tok)
 
+## frontend/src/components/ui/
+
+- `badge.tsx` — badgeVariants (~316 tok)
+- `button.tsx` — buttonVariants (~420 tok)
+- `collapsible.tsx` — Collapsible (~91 tok)
+- `dialog.tsx` — Dialog — renders modal (~747 tok)
+- `input.tsx` — Input (~226 tok)
+- `label.tsx` — labelVariants (~200 tok)
+- `select.tsx` — Select (~879 tok)
+- `slider.tsx` — Slider (~298 tok)
+- `switch.tsx` — Switch (~320 tok)
+
 ## frontend/src/context/
 
 - `AuthContext.tsx` — AuthContext (~574 tok)
 
+## frontend/src/hooks/
+
+- `useBusinessRules.ts` — Exports useBusinessRules, suggestRate (~222 tok)
+- `useSimulationPreview.ts` — Exports useSimulationPreview (~438 tok)
+
 ## frontend/src/lib/
 
 - `api.ts` — In dev: Vite proxy forwards /api/* → http://localhost:8000/* (~697 tok)
+- `cep.ts` — Exports CepResult, lookupCep (~113 tok)
+- `clients.ts` — Exports ClientOut, ClientListPage, ClientIn, listClients + 4 more (~503 tok)
+- `csv.ts` — Exports buildCsv, downloadCsv (~212 tok)
+- `decimal.ts` — Exports fmtBRL, fmtPct, fmtRate, parseBRL (~225 tok)
+- `fipe.ts` — Exports FipeBrand, FipeModel, FipeYear, FipePrice + 4 more (~385 tok)
+- `utils.ts` — Exports cn (~49 tok)
+- `vehicles.ts` — Exports VehicleOut, VehicleListPage, VehicleIn, listVehicles + 4 more (~583 tok)
 
 ## frontend/src/routes/
 
@@ -246,15 +270,38 @@
 - `Index.tsx` — Index (~87 tok)
 - `Login.tsx` — schema — renders form (~844 tok)
 - `ResetPassword.tsx` — schema — renders form (~827 tok)
+- `Simulacao.tsx` — Simulacao (~700 tok)
+- `SimulacaoEdit.tsx` — isoToDateStr (~1261 tok)
 
 ## frontend/src/routes/admin/
 
 - `Users.tsx` — AdminUsers — renders table (~568 tok)
 
+## frontend/src/routes/clientes/
+
+- `ClientesPage.tsx` — isValidCpf — renders form, table, modal (~4077 tok)
+
+## frontend/src/routes/simulacao/
+
+- `ResultCards.tsx` — Card (~516 tok)
+- `ScheduleTable.tsx` — CSV_HEADERS — renders table (~742 tok)
+- `SimulacaoCharts.tsx` — SimulacaoCharts (~970 tok)
+- `SimulacaoForm.tsx` — schema — renders form (~5284 tok)
+- `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~862 tok)
+
+## frontend/src/routes/veiculos/
+
+- `FipeCascadePicker.tsx` — FipeCascadePicker (~1154 tok)
+- `VeiculosPage.tsx` — TIPOS — renders form, table, modal (~3684 tok)
+
 ## frontend/src/tests/
 
 - `App.test.tsx` — Wrapper (~202 tok)
-- `setup.ts` (~11 tok)
+- `setup.ts` — jsdom doesn't implement ResizeObserver (used by Recharts/Radix) (~71 tok)
+- `simulacao-preview.test.ts` — Declares payload (~354 tok)
+- `simulacao.test.tsx` — Wrapper (~794 tok)
+- `utils.test.ts` — Declares csv (~412 tok)
+- `veiculos.test.tsx` — makeWrapper (~420 tok)
 
 ## graphify-out/
 

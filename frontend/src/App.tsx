@@ -8,6 +8,10 @@ import ForgotPassword from "./routes/ForgotPassword";
 import ResetPassword from "./routes/ResetPassword";
 import AdminUsers from "./routes/admin/Users";
 import RequireRole from "./components/RequireRole";
+import Simulacao from "./routes/Simulacao";
+import SimulacaoEdit from "./routes/SimulacaoEdit";
+import ClientesPage from "./routes/clientes/ClientesPage";
+import VeiculosPage from "./routes/veiculos/VeiculosPage";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +40,10 @@ export default function App() {
                 </RequireRole>
               }
             />
+            <Route path="/simulacao" element={<Simulacao />} />
+            <Route path="/simulacao/:id" element={<SimulacaoEdit />} />
+            <Route path="/clientes" element={<ClientesPage />} />
+            <Route path="/veiculos" element={<VeiculosPage />} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>

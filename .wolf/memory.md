@@ -401,3 +401,55 @@
 | 14:32 | Edited backend/tests/test_vehicle_endpoints.py | modified test_invalid_status_transition_returns_422() | ~51 |
 | 17:45 | Implemented Phase 3 backend (Tasks 1-11): cadastros (clients/vehicles/fipe_cache) + services + API endpoints | 20+ files | 98 tests pass |
 | 14:35 | Session end: 20 writes across 5 files (test_simulation_endpoints.py, test_fipe_chain.py, test_cep_service.py, test_client_endpoints.py, test_vehicle_endpoints.py) | 4 reads | ~7443 tok |
+
+## Session: 2026-05-30 14:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:40 | Created frontend/src/lib/utils.ts | — | ~49 |
+| 14:40 | Created frontend/src/components/ui/slider.tsx | — | ~298 |
+| 14:40 | Created frontend/src/components/ui/switch.tsx | — | ~320 |
+| 14:40 | Created frontend/src/components/ui/collapsible.tsx | — | ~91 |
+| 14:41 | Created frontend/src/lib/decimal.ts | — | ~214 |
+| 14:41 | Created frontend/src/lib/csv.ts | — | ~212 |
+| 14:41 | Created frontend/src/tests/utils.test.ts | — | ~412 |
+| 14:42 | Created frontend/src/routes/simulacao/types.ts | — | ~862 |
+| 14:42 | Created frontend/src/hooks/useBusinessRules.ts | — | ~222 |
+| 14:42 | Created frontend/src/hooks/useSimulationPreview.ts | — | ~438 |
+| 14:42 | Created frontend/src/tests/simulacao.test.tsx | — | ~1084 |
+| 14:44 | Created frontend/src/routes/simulacao/SimulacaoForm.tsx | — | ~5262 |
+| 14:44 | Created frontend/src/routes/simulacao/ResultCards.tsx | — | ~516 |
+| 14:45 | Created frontend/src/routes/simulacao/ScheduleTable.tsx | — | ~728 |
+| 14:45 | Created frontend/src/routes/simulacao/SimulacaoCharts.tsx | — | ~970 |
+| 14:45 | Created frontend/src/lib/clients.ts | — | ~503 |
+| 14:46 | Created frontend/src/lib/vehicles.ts | — | ~583 |
+| 14:46 | Created frontend/src/lib/fipe.ts | — | ~385 |
+| 14:46 | Created frontend/src/lib/cep.ts | — | ~113 |
+| 14:46 | Created frontend/src/routes/Simulacao.tsx | — | ~700 |
+| 14:46 | Created frontend/src/routes/SimulacaoEdit.tsx | — | ~1261 |
+| 14:47 | Edited frontend/src/App.tsx | added 4 import(s) | ~212 |
+| 14:47 | Edited frontend/src/App.tsx | 9→13 lines | ~145 |
+| 14:47 | Created frontend/src/components/ui/button.tsx | — | ~420 |
+| 14:47 | Created frontend/src/components/ui/input.tsx | — | ~226 |
+| 14:47 | Created frontend/src/components/ui/label.tsx | — | ~200 |
+| 14:47 | Created frontend/src/components/ui/badge.tsx | — | ~316 |
+| 14:47 | Created frontend/src/components/ui/dialog.tsx | — | ~747 |
+| 14:48 | Created frontend/src/components/ui/select.tsx | — | ~879 |
+| 14:49 | Created frontend/src/routes/clientes/ClientesPage.tsx | — | ~4077 |
+| 14:49 | Created frontend/src/routes/veiculos/FipeCascadePicker.tsx | — | ~1154 |
+| 14:50 | Created frontend/src/routes/veiculos/VeiculosPage.tsx | — | ~3698 |
+| 14:50 | Created frontend/src/tests/veiculos.test.tsx | — | ~380 |
+| 14:51 | Edited frontend/src/lib/decimal.ts | modified fmtBRL() | ~84 |
+| 14:52 | Created frontend/src/lib/decimal.ts | — | ~225 |
+| 14:52 | Created frontend/src/tests/setup.ts | — | ~59 |
+| 14:53 | Created frontend/src/tests/simulacao-preview.test.ts | — | ~354 |
+| 14:53 | Created frontend/src/tests/simulacao.test.tsx | — | ~794 |
+| 14:54 | Created frontend/src/tests/setup.ts | — | ~71 |
+| 14:55 | Created frontend/src/tests/veiculos.test.tsx | — | ~420 |
+| 14:55 | Edited frontend/src/routes/veiculos/VeiculosPage.tsx | 4→4 lines | ~40 |
+| 14:55 | Edited frontend/src/routes/veiculos/VeiculosPage.tsx | 4→4 lines | ~35 |
+| 14:55 | Edited frontend/src/routes/veiculos/VeiculosPage.tsx | 4→5 lines | ~76 |
+| 14:55 | Edited frontend/src/routes/veiculos/VeiculosPage.tsx | 8→3 lines | ~29 |
+| 14:56 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 3→4 lines | ~64 |
+| 14:56 | Edited frontend/src/routes/simulacao/ScheduleTable.tsx | 2→2 lines | ~36 |
+| 14:57 | Phase 3 frontend complete — 13 tests pass, build clean | all Phase 3 files | success | ~0 |

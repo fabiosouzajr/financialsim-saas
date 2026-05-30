@@ -15,9 +15,11 @@
 ## File Map
 
 **Phase 2 prerequisite:**
+
 - See `docs/superpowers/plans/2026-05-30-saas-phase-2-frontend.md` (Task 13 executes it)
 
 **Create (Phase 3):**
+
 - `frontend/src/lib/utils.ts` — shadcn `cn()` helper
 - `frontend/src/lib/fipe.ts` — FIPE API calls
 - `frontend/src/lib/cep.ts` — CEP API call
@@ -36,6 +38,7 @@
 - `frontend/src/tests/veiculos.test.tsx`
 
 **Modify (Phase 3):**
+
 - `frontend/package.json` — add shadcn peer deps
 - `frontend/src/App.tsx` — add `/clientes`, `/veiculos`, `/simulacao`, `/simulacao/:id` routes
 - `frontend/src/routes/simulacao/SimulacaoForm.tsx` — replace text inputs with client/vehicle pickers (after Phase 2 is built)
@@ -51,6 +54,7 @@
 Read and execute every task in `docs/superpowers/plans/2026-05-30-saas-phase-2-frontend.md` from start to finish.
 
 The plan covers:
+
 1. Install recharts + radix-ui peer deps
 2. shadcn/ui init (cn helper, slider, switch, tabs components)
 3. Form primitives (Input, Label, Button, Select)
@@ -85,6 +89,7 @@ Expected: PASS
 ## Task 14: Install Phase 3 frontend dependencies
 
 **Files:**
+
 - Modify: `frontend/package.json`
 - Create: `frontend/src/lib/utils.ts`
 - Create: `frontend/src/components/ui/dialog.tsx`
@@ -457,6 +462,7 @@ git commit -m "feat(ui): add shadcn/ui primitives (Button, Input, Label, Badge, 
 ## Task 15: API lib files (clients, vehicles, FIPE, CEP)
 
 **Files:**
+
 - Create: `frontend/src/lib/clients.ts`
 - Create: `frontend/src/lib/vehicles.ts`
 - Create: `frontend/src/lib/fipe.ts`
@@ -698,6 +704,7 @@ git commit -m "feat(lib): add client, vehicle, FIPE, CEP API lib functions"
 ## Task 16: Clientes page
 
 **Files:**
+
 - Create: `frontend/src/routes/clientes/ClientesPage.tsx`
 - Modify: `frontend/src/App.tsx`
 
@@ -1107,6 +1114,7 @@ npm run dev
 ```
 
 Navigate to `http://localhost:5173/clientes`. Verify:
+
 - Table renders (empty state shows "Nenhum cliente encontrado")
 - "+ Novo Cliente" opens modal
 - PF/PJ toggle switches fields
@@ -1126,6 +1134,7 @@ git commit -m "feat(ui): add /clientes page with PF/PJ modal, mod-11 validation,
 ## Task 17: FIPE cascade picker + Veículos page
 
 **Files:**
+
 - Create: `frontend/src/routes/veiculos/FipeCascadePicker.tsx`
 - Create: `frontend/src/routes/veiculos/VeiculosPage.tsx`
 - Modify: `frontend/src/App.tsx`
@@ -1673,6 +1682,7 @@ import VeiculosPage from "./routes/veiculos/VeiculosPage";
 - [ ] **Step 7: Verify in browser**
 
 Navigate to `http://localhost:5173/veiculos`:
+
 - Table renders with empty state
 - "+ Novo Veículo" opens modal with FIPE/manual toggle
 - Selecting carro → marca → modelo → ano → "Consultar FIPE" populates fields (requires backend + internet)
@@ -1702,6 +1712,7 @@ git commit -m "feat(ui): add /veiculos page with FIPE cascade picker and status 
 **Context:** This task modifies the Simulação form built in Task 13. Find `frontend/src/routes/simulacao/SimulacaoForm.tsx` (built by Phase 2 plan). The form currently has free-text `cliente_nome` and `veiculo_descricao` inputs. Replace them with combobox pickers that search existing clients and vehicles.
 
 **Files:**
+
 - Modify: `frontend/src/routes/simulacao/SimulacaoForm.tsx`
 - Modify: `frontend/src/routes/simulacao/types.ts` (add client_id, vehicle_id)
 
@@ -1840,6 +1851,7 @@ Replace the `veiculo_descricao` input with:
 - [ ] **Step 3: Verify in browser**
 
 Navigate to `http://localhost:5173/simulacao`:
+
 - Client picker shows search input; typing a name shows matching clients
 - Selecting a client highlights it and shows the UUID below
 - Same for vehicle picker (filtered to `status=ativo`)
@@ -1868,7 +1880,7 @@ git commit -m "feat(simulacao): replace free-text inputs with client/vehicle pic
 **Spec coverage check:**
 
 | Requirement | Task |
-|---|---|
+| --- | --- |
 | `/clientes` list + create/edit modal | Task 16 |
 | PF/PJ toggle swaps fields | Task 16 |
 | mod-11 inline validation (CPF + CNPJ) | Task 16 |
