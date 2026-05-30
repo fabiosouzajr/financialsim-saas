@@ -9,6 +9,7 @@ from loguru import logger
 from finacialsim_saas.data.database import build_engine, build_session_factory
 from finacialsim_saas.errors import AppError
 from finacialsim_saas.middleware.logging import configure_logging
+from finacialsim_saas.services.fipe_service import build_fipe_chain
 from finacialsim_saas.settings import get_settings
 
 # Shared state accessed by route handlers — populated during lifespan startup
@@ -22,6 +23,7 @@ async def lifespan(app: FastAPI):
     engine = build_engine(str(settings.database_url))
     app_state["engine"] = engine
     app.state.session_factory = build_session_factory(engine)
+    app.state.fipe_chain = build_fipe_chain(app.state.session_factory)
     logger.info("startup", env=settings.app_env, sha=settings.git_sha)
     yield
     await engine.dispose()
