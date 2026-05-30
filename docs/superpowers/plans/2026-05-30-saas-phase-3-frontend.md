@@ -1,6 +1,6 @@
 # Phase 3 — Cadastros Frontend Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 >
 > **Part 1 (Backend):** `docs/superpowers/plans/2026-05-30-saas-phase-3-backend.md` — must be complete before this part.
 
@@ -49,7 +49,7 @@
 
 **Context:** The simulação form does not exist yet. It must be built before Phase 3 can add client/vehicle pickers to it. The full plan is at `docs/superpowers/plans/2026-05-30-saas-phase-2-frontend.md`.
 
-- [ ] **Step 1: Execute the Phase 2 frontend plan**
+- [x] **Step 1: Execute the Phase 2 frontend plan**
 
 Read and execute every task in `docs/superpowers/plans/2026-05-30-saas-phase-2-frontend.md` from start to finish.
 
@@ -66,7 +66,7 @@ The plan covers:
 9. Register `/simulacao` and `/simulacao/:id` routes in `App.tsx`
 10. Vitest tests
 
-- [ ] **Step 2: Verify Phase 2 frontend works**
+- [x] **Step 2: Verify Phase 2 frontend works**
 
 ```bash
 cd /home/fj/git/financialsim-saas/frontend
@@ -75,7 +75,7 @@ npm run dev
 
 Open `http://localhost:5173/simulacao`. Confirm: form renders, live preview updates on input change, save creates simulation.
 
-- [ ] **Step 3: Run frontend tests**
+- [x] **Step 3: Run frontend tests**
 
 ```bash
 cd /home/fj/git/financialsim-saas/frontend
@@ -101,7 +101,7 @@ Expected: PASS
 
 **Note:** If Phase 2 already installed these deps and created these files, skip the install step and verify.
 
-- [ ] **Step 1: Install shadcn peer deps**
+- [x] **Step 1: Install shadcn peer deps**
 
 ```bash
 cd /home/fj/git/financialsim-saas/frontend
@@ -116,7 +116,7 @@ npm install \
   lucide-react
 ```
 
-- [ ] **Step 2: Create `frontend/src/lib/utils.ts`** (skip if already exists)
+- [x] **Step 2: Create `frontend/src/lib/utils.ts`** (skip if already exists)
 
 ```typescript
 import { clsx, type ClassValue } from "clsx";
@@ -127,7 +127,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 ```
 
-- [ ] **Step 3: Create `frontend/src/components/ui/button.tsx`** (skip if already exists)
+- [x] **Step 3: Create `frontend/src/components/ui/button.tsx`** (skip if already exists)
 
 ```typescript
 import * as React from "react";
@@ -170,7 +170,7 @@ Button.displayName = "Button";
 export { Button, buttonVariants };
 ```
 
-- [ ] **Step 4: Create `frontend/src/components/ui/input.tsx`** (skip if already exists)
+- [x] **Step 4: Create `frontend/src/components/ui/input.tsx`** (skip if already exists)
 
 ```typescript
 import * as React from "react";
@@ -196,7 +196,7 @@ Input.displayName = "Input";
 export { Input };
 ```
 
-- [ ] **Step 5: Create `frontend/src/components/ui/label.tsx`** (skip if already exists)
+- [x] **Step 5: Create `frontend/src/components/ui/label.tsx`** (skip if already exists)
 
 ```typescript
 import * as React from "react";
@@ -219,7 +219,7 @@ Label.displayName = LabelPrimitive.Root.displayName;
 export { Label };
 ```
 
-- [ ] **Step 6: Create `frontend/src/components/ui/badge.tsx`**
+- [x] **Step 6: Create `frontend/src/components/ui/badge.tsx`**
 
 ```typescript
 import * as React from "react";
@@ -254,7 +254,7 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 export { Badge, badgeVariants };
 ```
 
-- [ ] **Step 7: Create `frontend/src/components/ui/dialog.tsx`**
+- [x] **Step 7: Create `frontend/src/components/ui/dialog.tsx`**
 
 ```typescript
 import * as React from "react";
@@ -324,7 +324,7 @@ DialogTitle.displayName = DialogPrimitive.Title.displayName;
 export { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogClose };
 ```
 
-- [ ] **Step 8: Create `frontend/src/components/ui/select.tsx`**
+- [x] **Step 8: Create `frontend/src/components/ui/select.tsx`**
 
 ```typescript
 import * as React from "react";
@@ -402,7 +402,7 @@ SelectItem.displayName = SelectPrimitive.Item.displayName;
 export { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectItem };
 ```
 
-- [ ] **Step 9: Add Vite path alias for `@/` (if not already set)**
+- [x] **Step 9: Add Vite path alias for `@/` (if not already set)**
 
 In `frontend/vite.config.ts`, ensure the resolve alias is present:
 
@@ -440,7 +440,7 @@ In `frontend/tsconfig.app.json`, ensure:
 }
 ```
 
-- [ ] **Step 10: Verify build**
+- [x] **Step 10: Verify build**
 
 ```bash
 cd /home/fj/git/financialsim-saas/frontend
@@ -449,7 +449,7 @@ npm run build
 
 Expected: build succeeds with no errors.
 
-- [ ] **Step 11: Commit**
+- [x] **Step 11: Commit**
 
 ```bash
 git add frontend/package.json frontend/src/lib/utils.ts frontend/vite.config.ts \
@@ -468,7 +468,7 @@ git commit -m "feat(ui): add shadcn/ui primitives (Button, Input, Label, Badge, 
 - Create: `frontend/src/lib/fipe.ts`
 - Create: `frontend/src/lib/cep.ts`
 
-- [ ] **Step 1: Create `frontend/src/lib/clients.ts`**
+- [x] **Step 1: Create `frontend/src/lib/clients.ts`**
 
 ```typescript
 import api from "./api";
@@ -538,7 +538,7 @@ export async function deactivateClient(id: string): Promise<ClientOut> {
 }
 ```
 
-- [ ] **Step 2: Create `frontend/src/lib/vehicles.ts`**
+- [x] **Step 2: Create `frontend/src/lib/vehicles.ts`**
 
 ```typescript
 import api from "./api";
@@ -614,7 +614,7 @@ export async function refreshVehicleFipe(id: string): Promise<VehicleOut> {
 }
 ```
 
-- [ ] **Step 3: Create `frontend/src/lib/fipe.ts`**
+- [x] **Step 3: Create `frontend/src/lib/fipe.ts`**
 
 ```typescript
 import api from "./api";
@@ -658,7 +658,7 @@ export async function getFipePrice(tipo: string, brand_id: string, model_id: str
 }
 ```
 
-- [ ] **Step 4: Create `frontend/src/lib/cep.ts`**
+- [x] **Step 4: Create `frontend/src/lib/cep.ts`**
 
 ```typescript
 import api from "./api";
@@ -682,7 +682,7 @@ export async function lookupCep(cep: string): Promise<CepResult> {
 }
 ```
 
-- [ ] **Step 5: Verify TypeScript**
+- [x] **Step 5: Verify TypeScript**
 
 ```bash
 cd /home/fj/git/financialsim-saas/frontend
@@ -691,7 +691,7 @@ npx tsc --noEmit
 
 Expected: no errors
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add frontend/src/lib/clients.ts frontend/src/lib/vehicles.ts \
@@ -708,7 +708,7 @@ git commit -m "feat(lib): add client, vehicle, FIPE, CEP API lib functions"
 - Create: `frontend/src/routes/clientes/ClientesPage.tsx`
 - Modify: `frontend/src/App.tsx`
 
-- [ ] **Step 1: Create `frontend/src/routes/clientes/ClientesPage.tsx`**
+- [x] **Step 1: Create `frontend/src/routes/clientes/ClientesPage.tsx`**
 
 ```typescript
 import { useState } from "react";
@@ -1096,7 +1096,7 @@ export default function ClientesPage() {
 }
 ```
 
-- [ ] **Step 2: Add `/clientes` route to `frontend/src/App.tsx`**
+- [x] **Step 2: Add `/clientes` route to `frontend/src/App.tsx`**
 
 Import and add:
 
@@ -1106,7 +1106,7 @@ import ClientesPage from "./routes/clientes/ClientesPage";
 <Route path="/clientes" element={<ClientesPage />} />
 ```
 
-- [ ] **Step 3: Verify in browser**
+- [x] **Step 3: Verify in browser**
 
 ```bash
 cd /home/fj/git/financialsim-saas/frontend
@@ -1122,7 +1122,7 @@ Navigate to `http://localhost:5173/clientes`. Verify:
 - Invalid CPF shows inline error on submit
 - Valid CPF creates client, table refreshes
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add frontend/src/routes/clientes/ frontend/src/App.tsx
@@ -1139,7 +1139,7 @@ git commit -m "feat(ui): add /clientes page with PF/PJ modal, mod-11 validation,
 - Create: `frontend/src/routes/veiculos/VeiculosPage.tsx`
 - Modify: `frontend/src/App.tsx`
 
-- [ ] **Step 1: Write failing test for FipeCascadePicker**
+- [x] **Step 1: Write failing test for FipeCascadePicker**
 
 Create `frontend/src/tests/veiculos.test.tsx`:
 
@@ -1179,7 +1179,7 @@ test("clears model/year selects when brand changes", async () => {
 });
 ```
 
-- [ ] **Step 2: Run test — expect FAIL**
+- [x] **Step 2: Run test — expect FAIL**
 
 ```bash
 cd /home/fj/git/financialsim-saas/frontend
@@ -1188,7 +1188,7 @@ npm run test -- --reporter=verbose veiculos
 
 Expected: FAIL (FipeCascadePicker not found)
 
-- [ ] **Step 3: Create `frontend/src/routes/veiculos/FipeCascadePicker.tsx`**
+- [x] **Step 3: Create `frontend/src/routes/veiculos/FipeCascadePicker.tsx`**
 
 ```typescript
 import { useState } from "react";
@@ -1320,7 +1320,7 @@ export default function FipeCascadePicker({ tipo, onPriceSelected }: Props) {
 }
 ```
 
-- [ ] **Step 4: Run test — expect PASS**
+- [x] **Step 4: Run test — expect PASS**
 
 ```bash
 cd /home/fj/git/financialsim-saas/frontend
@@ -1329,7 +1329,7 @@ npm run test -- --reporter=verbose veiculos
 
 Expected: PASS
 
-- [ ] **Step 5: Create `frontend/src/routes/veiculos/VeiculosPage.tsx`**
+- [x] **Step 5: Create `frontend/src/routes/veiculos/VeiculosPage.tsx`**
 
 ```typescript
 import { useState } from "react";
@@ -1671,7 +1671,7 @@ export default function VeiculosPage() {
 }
 ```
 
-- [ ] **Step 6: Add `/veiculos` route to `frontend/src/App.tsx`**
+- [x] **Step 6: Add `/veiculos` route to `frontend/src/App.tsx`**
 
 ```typescript
 import VeiculosPage from "./routes/veiculos/VeiculosPage";
@@ -1679,7 +1679,7 @@ import VeiculosPage from "./routes/veiculos/VeiculosPage";
 <Route path="/veiculos" element={<VeiculosPage />} />
 ```
 
-- [ ] **Step 7: Verify in browser**
+- [x] **Step 7: Verify in browser**
 
 Navigate to `http://localhost:5173/veiculos`:
 
@@ -1689,7 +1689,7 @@ Navigate to `http://localhost:5173/veiculos`:
 - Manual toggle shows free-text inputs
 - FIPE error state shows yellow badge + retry button
 
-- [ ] **Step 8: Run tests**
+- [x] **Step 8: Run tests**
 
 ```bash
 cd /home/fj/git/financialsim-saas/frontend
@@ -1698,7 +1698,7 @@ npm run test -- --reporter=verbose
 
 Expected: PASS
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add frontend/src/routes/veiculos/ frontend/src/tests/veiculos.test.tsx frontend/src/App.tsx
@@ -1716,7 +1716,7 @@ git commit -m "feat(ui): add /veiculos page with FIPE cascade picker and status 
 - Modify: `frontend/src/routes/simulacao/SimulacaoForm.tsx`
 - Modify: `frontend/src/routes/simulacao/types.ts` (add client_id, vehicle_id)
 
-- [ ] **Step 1: Add client_id/vehicle_id to the simulação form zod schema**
+- [x] **Step 1: Add client_id/vehicle_id to the simulação form zod schema**
 
 In `frontend/src/routes/simulacao/types.ts`, update the schema to include:
 
@@ -1729,7 +1729,7 @@ export const simulacaoSchema = z.object({
 });
 ```
 
-- [ ] **Step 2: Add client/vehicle pickers to SimulacaoForm.tsx**
+- [x] **Step 2: Add client/vehicle pickers to SimulacaoForm.tsx**
 
 Replace the `cliente_nome` and `veiculo_descricao` text inputs with these combobox pickers. Add near the top of the form:
 
@@ -1848,7 +1848,7 @@ Replace the `veiculo_descricao` input with:
 />
 ```
 
-- [ ] **Step 3: Verify in browser**
+- [x] **Step 3: Verify in browser**
 
 Navigate to `http://localhost:5173/simulacao`:
 
@@ -1857,7 +1857,7 @@ Navigate to `http://localhost:5173/simulacao`:
 - Same for vehicle picker (filtered to `status=ativo`)
 - Submitting form creates a simulation with `client_id` and `vehicle_id`
 
-- [ ] **Step 4: Run all frontend tests**
+- [x] **Step 4: Run all frontend tests**
 
 ```bash
 cd /home/fj/git/financialsim-saas/frontend
@@ -1866,7 +1866,7 @@ npm run test
 
 Expected: all PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add frontend/src/routes/simulacao/
