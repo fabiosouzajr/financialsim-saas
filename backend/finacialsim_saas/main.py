@@ -67,10 +67,14 @@ async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
     )
 
 
-from finacialsim_saas.api.health import router as health_router   # noqa: E402
-from finacialsim_saas.api.auth import router as auth_router        # noqa: E402
-from finacialsim_saas.api.users import router as users_router      # noqa: E402
+from finacialsim_saas.api.health import router as health_router                        # noqa: E402
+from finacialsim_saas.api.auth import router as auth_router                            # noqa: E402
+from finacialsim_saas.api.users import router as users_router                          # noqa: E402
+from finacialsim_saas.api.business_rules import router as business_rules_router        # noqa: E402
+from finacialsim_saas.api.simulations import router as simulations_router              # noqa: E402
 
 app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(users_router)
+app.include_router(business_rules_router)
+app.include_router(simulations_router)
