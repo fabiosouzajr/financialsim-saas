@@ -8,7 +8,7 @@ from decimal import Decimal
 
 from dateutil.relativedelta import relativedelta
 
-from app.core.money import quantize_brl
+from finacialsim_core.money import quantize_brl
 
 
 def _daily_rate(taxa_mensal: Decimal) -> Decimal:

@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
 
-from app.core.money import quantize_brl
-from app.core.price_table import Schedule, build_schedule
+from finacialsim_core.money import quantize_brl
+from finacialsim_core.price_table import Schedule, build_schedule
 
 
 @dataclass(frozen=True)

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-29T19:21:31.391Z
-> Files: 120 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-30T15:51:27.306Z
+> Files: 135 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -35,18 +35,21 @@
 
 - `001_create_tenants.py` — create tenants table (~240 tok)
 - `002_auth_tables.py` — auth tables — users, password_reset_tokens, refresh_tokens, audit_log, notifications_outbox (~1533 tok)
+- `003_simulation_tables.py` — simulation tables — business_rules, simulation_counters, simulations, fees, extras, rows, extraordin (~2285 tok)
 
 ## backend/finacialsim_saas/
 
 - `__init__.py` — FinacialSim SaaS backend. (~10 tok)
 - `errors.py` — Declares AppError (~368 tok)
-- `main.py` — Shared state accessed by route handlers — populated during lifespan startup (~731 tok)
+- `main.py` — Shared state accessed by route handlers — populated during lifespan startup (~828 tok)
 - `settings.py` — Settings: jwt_secret_key, access_token_expire_minutes, refresh_token_expire_days, frontend_base_url, maildir_path (~310 tok)
 
 ## backend/finacialsim_saas/api/
 
 - `auth.py` — API: 5 endpoints (~820 tok)
+- `business_rules.py` — API: 1 endpoints (~509 tok)
 - `health.py` — API: 2 endpoints (~289 tok)
+- `simulations.py` — API: 7 endpoints (~1042 tok)
 - `users.py` — API: 4 endpoints (~1258 tok)
 
 ## backend/finacialsim_saas/auth/
@@ -59,16 +62,29 @@
 ## backend/finacialsim_saas/cli/
 
 - `__init__.py` (~0 tok)
-- `main.py` — tenant_create, user_create, user_reset_password (~1113 tok)
+- `main.py` — tenant_create, user_create, user_reset_password (~1589 tok)
 
 ## backend/finacialsim_saas/data/
 
 - `database.py` — Base: build_engine, build_session_factory, check_db (~252 tok)
-- `models.py` — ORM models: Tenant, User, PasswordResetToken, RefreshToken, AuditLog, NotificationsOutbox; Role enum (~320 tok)
+- `models.py` — Declares as (~4153 tok)
 
 ## backend/finacialsim_saas/middleware/
 
 - `logging.py` — configure_logging (~153 tok)
+
+## backend/finacialsim_saas/schemas/
+
+- `__init__.py` (~0 tok)
+- `business_rules.py` — Declares RateCurvePointOut (~204 tok)
+- `simulations.py` — Declares FeeIn (~1022 tok)
+- `types.py` (~84 tok)
+
+## backend/finacialsim_saas/services/
+
+- `__init__.py` (~0 tok)
+- `rules_service.py` — RulesService: get_rules, snapshot (~375 tok)
+- `simulation_service.py` — from: preview, create, get (~7767 tok)
 
 ## backend/finacialsim_saas/workers/
 
@@ -87,8 +103,11 @@
 - `test_errors.py` — test_not_found_code_and_status, test_external_provider_degraded_flag, test_all_six_errors_are_app_er (~255 tok)
 - `test_health.py` — client, test_healthz_returns_ok, test_version_has_expected_keys, test_app_error_handler_returns_stru (~429 tok)
 - `test_maildir.py` — test_deliver_writes_eml_file (~122 tok)
-- `test_models.py` — test_all_phase1_models_importable_and_tables_exist (~145 tok)
+- `test_models.py` — test_all_phase1_models_importable_and_tables_exist, test_all_phase2_models_importable_and_tables_exi (~371 tok)
+- `test_schemas.py` — M: test_decimal_str_serializes_as_string, test_decimal_str_parses_from_string, test_simulation_creat (~552 tok)
 - `test_settings.py` — test_settings_loads_with_valid_env, test_settings_missing_database_url_raises, test_settings_has_jwt (~329 tok)
+- `test_simulation_endpoints.py` — test_get_business_rules, test_preview_returns_schedule, test_create_simulation_returns_201, test_lis (~1889 tok)
+- `test_simulation_service.py` — tenant, user, rules_seeded, test_get_rules_returns_all_14_keys (~2952 tok)
 - `test_tenant_isolation.py` — two_tenants, test_get_users_returns_only_own_tenant, test_get_me_returns_own_tenant, test_patch_user (~1047 tok)
 - `test_users_endpoints.py` — setup, test_get_me, test_get_users_as_admin_returns_staff_only, test_get_users_as_user_role_returns_ (~963 tok)
 - `test_worker_integration.py` — test_ping_job_enqueue_and_process (~260 tok)
@@ -130,6 +149,8 @@
 
 - `2026-05-28-saas-phase-0-foundations.md` — Phase 0 — Foundations Implementation Plan (~13678 tok)
 - `2026-05-29-saas-phase-1-auth-rbac.md` — Phase 1 — Auth + RBAC + Tenant Management Implementation Plan (~23789 tok)
+- `2026-05-30-saas-phase-2-backend.md` — Phase 2 — Simulação Backend Implementation Plan (~22074 tok)
+- `2026-05-30-saas-phase-2-frontend.md` — Phase 2 — Simulação Frontend Implementation Plan (~13709 tok)
 
 ## docs/superpowers/plans/done/
 
@@ -149,7 +170,7 @@
 
 - `2026-05-28-saas-phase-0-foundations.md` — Phase 0 — Foundations (~1112 tok)
 - `2026-05-28-saas-phase-1-auth-rbac.md` — Phase 1 — Auth + RBAC + Tenant management (~2091 tok)
-- `2026-05-28-saas-phase-2-simulacao.md` — Phase 2 — Core domain port + Simulação (~1590 tok)
+- `2026-05-28-saas-phase-2-simulacao.md` — Phase 2 — Core domain port + Simulação (~1888 tok)
 - `2026-05-28-saas-phase-3-cadastros.md` — Phase 3 — Cadastros (Clientes + Veículos + FIPE) (~1149 tok)
 - `2026-05-28-saas-phase-4-indicadores-rules.md` — Phase 4 — Indicadores + Business Rules UI + Scheduler + Audit log (~1212 tok)
 - `2026-05-28-saas-phase-5-propostas-pdf.md` — Phase 5 — Propostas + PDF/Carnê (worker-rendered) (~2010 tok)
@@ -235,4 +256,4 @@
 
 ## scripts/
 
-- `sync_core.py` — Sync finacialsim_core from the desktop repo. (~687 tok)
+- `sync_core.py` — Sync finacialsim_core from the desktop repo. (~824 tok)

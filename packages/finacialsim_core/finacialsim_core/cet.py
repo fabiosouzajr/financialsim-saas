@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from decimal import Decimal
 
-from app.core.price_table import Schedule
+from finacialsim_core.price_table import Schedule
 
 
 @dataclass(frozen=True)

@@ -18,16 +18,17 @@ Alembic migration adds:
 
 - `business_rules` — id UUID PK, tenant_id, chave TEXT, valor_json JSONB, descricao, atualizado_em, atualizado_por. Unique `(tenant_id, chave)`.
   - Seeded per-tenant on creation (CLI extended): `entrada_minima_pct`, `prazo_minimo_meses`, `prazo_maximo_meses`, `taxa_minima_mes`, `taxa_maxima_mes`, `dias_max_carencia`, `valor_minimo_financiado`, `iof_fixo_pct`, `iof_diario_pct`, `iof_diario_max_dias`, `incluir_iof_default`, `rateio_ipva_meses_default`, `rateio_emplacamento_meses_default`, `taxa_por_prazo_curva`.
-- `simulations` — same column shape as desktop's `simulations` (`codigo`, `cliente_id`, `veiculo_id`, all Decimal fields, `incluir_iof`, `rules_snapshot_json`, `status`, `criado_por`) plus `tenant_id`. Unique `(tenant_id, codigo)`.
+- `simulations` — (`codigo`, `cliente_nome TEXT`, `veiculo_descricao TEXT`, all Decimal fields, `incluir_iof`, `rules_snapshot_json`, `status`, `criado_por`, `idempotency_key TEXT UNIQUE nullable`) plus `tenant_id`. Phase 3 adds `cliente_id UUID FK` and `veiculo_id UUID FK` via migration. Unique `(tenant_id, codigo)`. Status enum: `rascunho | confirmado | arquivado`. `POST /simulations` creates as `confirmado`. `PATCH` only on `rascunho`. Archive works on any status. `POST /clone` always produces `rascunho`.
 - `simulation_fees` — `(id, simulation_id, tenant_id, nome, valor, incluir_no_principal)`.
 - `simulation_extras` — `(id, simulation_id, tenant_id, tipo, nome, valor_total, modalidade, duracao_meses, valor_por_parcela, ordem)`.
 - `amortization_rows` — `(id, simulation_id, tenant_id, numero_parcela, data_vencimento, dias_periodo, saldo_anterior, juros, amortizacao, parcela, saldo_devedor, extras_total, parcela_total, ajuste_arredondamento)`. Index `(simulation_id, numero_parcela)`.
+- `simulation_counters` — `(tenant_id UUID PK, year SMALLINT PK, next_val INTEGER NOT NULL DEFAULT 1)`. Row-locked with `SELECT ... FOR UPDATE` to generate `SIM-YYYY-NNNNN` per tenant.
 - `extraordinary_amortizations` — table created now (no UI yet); endpoints in v2.
 - No Postgres RLS policies in v1 — tenant isolation via app-level `tenant_id` filtering (consistent with Phase 1 decision). Composite FKs `(tenant_id, id)` where dependent.
 
 ### Services
 
-- `simulation_service.preview(payload, ctx)` — pure computation, no persistence.
+- `simulation_service.preview(payload, ctx)` — pure computation, no persistence, no business rule validation. Runs math on whatever the caller provides. Computation order: (1) `base_pv = valor_veiculo - entrada_valor + sum(fees where incluir_no_principal)`; (2) if `incluir_iof`: `compute_financed_amount_with_iof(base_pv, ...)` → `final_pv`; (3) `build_schedule(final_pv, ...)`; (4) `compute_extras_per_parcela(extras, prazo)`; (5) zip rows; (6) `compute_cet(...)`.
 - `simulation_service.create(payload, ctx)` — validates against `business_rules`, computes, persists `simulations` + child rows in one transaction, snapshots active rules, generates `codigo` (`SIM-YYYY-NNNNN` per tenant).
 - `simulation_service.get(id, ctx)`, `list(filters, ctx)`, `update(id, payload, ctx)` (rascunho only), `archive(id, ctx)`.
 - `rules_service.snapshot(ctx)` returns the rules dict used by `create`.
@@ -35,19 +36,20 @@ Alembic migration adds:
 Computation reuses `finacialsim_core`:
 
 - `core.price_table.build_schedule`
-- `core.iof.compute_iof_iterated`
-- `core.extras.apply_extras_to_schedule`
+- `core.iof.compute_iof` / `compute_financed_amount_with_iof`
+- `core.extras.compute_extras_per_parcela`
 - `core.cet.compute_cet`
-- `core.validators.validate(payload, rules)`
+- `core.validators.validate_simulation`
 
 ### API endpoints
 
 ```text
+GET    /api/v1/business-rules        → full rules dict for tenant (used for form defaults + rate suggestion)
 POST   /api/v1/simulations/preview   payload → { schedule, summary }
 POST   /api/v1/simulations           payload → 201 + simulation
-GET    /api/v1/simulations           ?status,?cliente_id,?date_range,?cursor → page
+GET    /api/v1/simulations           ?status,?cliente_nome,?date_from,?date_to,?cursor → page (criado_em desc); user sees all tenant sims, writes own only
 GET    /api/v1/simulations/{id}      → full simulation incl. rows + extras
-PATCH  /api/v1/simulations/{id}      payload (rascunho only)
+PATCH  /api/v1/simulations/{id}      full payload replace (rascunho only); recomputes all child rows
 POST   /api/v1/simulations/{id}/archive
 POST   /api/v1/simulations/{id}/clone       → 201 + new simulation in rascunho (all fields copied)
 ```
@@ -89,7 +91,7 @@ Routes `/simulacao` and `/simulacao/:id`:
 
 | Risk | Mitigation |
 | --- | --- |
-| Decimal precision drift on the wire | Serialize as string; parse back as `Decimal` server-side; React formats for display only |
+| Decimal precision drift on the wire | `DecimalStr = Annotated[Decimal, PlainSerializer(str), BeforeValidator(Decimal)]` in `schemas/types.py`; React treats all money fields as strings, formats for display only |
 | Live preview slams the API | Debounced; pure-compute endpoint, no DB write |
 | Rules snapshot bloat | Snapshot only the rules referenced by validation + computation |
 | `codigo` collision on concurrent creates | `tenant_id`-scoped Postgres sequence or row-locked counter |

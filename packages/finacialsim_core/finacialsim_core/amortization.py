@@ -7,7 +7,7 @@ from datetime import date
 from decimal import Decimal
 from enum import StrEnum
 
-from app.core.price_table import Schedule, ScheduleRow, build_schedule, compute_pmt
+from finacialsim_core.price_table import Schedule, ScheduleRow, build_schedule, compute_pmt
 
 
 class AmortizationMode(StrEnum):

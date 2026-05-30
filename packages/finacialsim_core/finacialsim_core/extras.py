@@ -7,7 +7,7 @@ from decimal import Decimal
 from enum import StrEnum
 from typing import assert_never
 
-from app.core.money import quantize_brl
+from finacialsim_core.money import quantize_brl
 
 
 class ExtraModalidade(StrEnum):

@@ -29,6 +29,16 @@ def sync_flat(src_dir: Path, dst_dir: Path) -> None:
             print(f"  {f.name}")
 
 
+def rewrite_imports(directory: Path) -> None:
+    """Rewrite `from app.core.X` → `from finacialsim_core.X` in all .py files under directory."""
+    for f in directory.rglob("*.py"):
+        text = f.read_text()
+        new_text = text.replace("from app.core.", "from finacialsim_core.")
+        if new_text != text:
+            f.write_text(new_text)
+            print(f"  rewrote imports: {f.relative_to(directory.parent)}")
+
+
 def sync_tree(src_dir: Path, dst_dir: Path) -> None:
     """Recursively copy a directory, skipping EXCLUDED files."""
     dst_dir.mkdir(parents=True, exist_ok=True)
@@ -70,6 +80,9 @@ if tests_src.exists():
     _ensure_init(tests_dst.parent)
 else:
     print("  (skipped — tests/unit/core not found in source)")
+
+print("\n[rewrite imports]:")
+rewrite_imports(dest)
 
 print("\n=== Done ===")
 print(f"Destination: {dest}")
