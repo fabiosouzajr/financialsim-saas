@@ -1,3 +1,4 @@
+import asyncio
 import pytest
 from sqlalchemy import select
 
@@ -11,3 +12,25 @@ async def test_all_phase1_models_importable_and_tables_exist(session):
     for Model in (Tenant, User, PasswordResetToken, RefreshToken, AuditLog, NotificationsOutbox):
         result = await session.execute(select(Model))
         result.scalars().all()  # tables exist if this doesn't raise
+
+
+def test_all_phase2_models_importable_and_tables_exist(engine):
+    from finacialsim_saas.data.models import (
+        BusinessRule, SimulationCounter, Simulation,
+        SimulationFee, SimulationExtra, AmortizationRow,
+        ExtraordinaryAmortization, SimulationStatus,
+    )
+    from sqlalchemy import inspect
+
+    async def _check():
+        async with engine.connect() as conn:
+            tables = await conn.run_sync(
+                lambda c: inspect(c).get_table_names()
+            )
+        return tables
+
+    tables = asyncio.run(_check())
+    for t in ("business_rules", "simulation_counters", "simulations",
+              "simulation_fees", "simulation_extras", "amortization_rows",
+              "extraordinary_amortizations"):
+        assert t in tables
