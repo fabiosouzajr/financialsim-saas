@@ -426,6 +426,70 @@
       "related_bugs": [],
       "occurrences": 3,
       "last_seen": "2026-05-30T17:32:57.361Z"
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-05-30T17:55:28.241Z",
+      "error_message": "Type error",
+      "file": "frontend/src/routes/veiculos/VeiculosPage.tsx",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-30T17:55:28.241Z"
+    },
+    {
+      "id": "bug-028",
+      "timestamp": "2026-05-30T17:55:35.158Z",
+      "error_message": "CSS fix: year_id",
+      "file": "frontend/src/routes/veiculos/VeiculosPage.tsx",
+      "root_cause": "year_id: fipeData.yearId, → fipeData.yearId, ...fipeData.price",
+      "fix": "Changed year_id: fipeData.yearId, → fipeData.yearId, ...fipeData.price",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-30T17:55:35.158Z"
+    },
+    {
+      "id": "bug-029",
+      "timestamp": "2026-05-30T17:56:13.290Z",
+      "error_message": "Type error",
+      "file": "frontend/src/routes/simulacao/SimulacaoForm.tsx",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-30T17:56:13.290Z"
+    },
+    {
+      "id": "bug-030",
+      "timestamp": "2026-05-30T17:56:40.728Z",
+      "error_message": "Type error",
+      "file": "frontend/src/routes/simulacao/ScheduleTable.tsx",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-30T17:56:40.728Z"
     }
   ]
 }
