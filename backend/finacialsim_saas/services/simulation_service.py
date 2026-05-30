@@ -257,12 +257,24 @@ class SimulationService:
             rules=rules,
         )
 
+        from finacialsim_saas.data.models import Client, Vehicle
+        client_row = await self._s.get(Client, payload.client_id)
+        if client_row is None or client_row.tenant_id != ctx.tenant_id:
+            raise NotFoundError(f"Cliente {payload.client_id} não encontrado")
+        vehicle_row = await self._s.get(Vehicle, payload.vehicle_id)
+        if vehicle_row is None or vehicle_row.tenant_id != ctx.tenant_id:
+            raise NotFoundError(f"Veículo {payload.vehicle_id} não encontrado")
+        cliente_nome = client_row.nome
+        veiculo_descricao = f"{vehicle_row.marca} {vehicle_row.modelo} {vehicle_row.ano_modelo}"
+
         codigo = await self._generate_codigo(ctx.tenant_id)
         sim = Simulation(
             tenant_id=ctx.tenant_id,
             codigo=codigo,
-            cliente_nome=payload.cliente_nome,
-            veiculo_descricao=payload.veiculo_descricao,
+            client_id=payload.client_id,
+            vehicle_id=payload.vehicle_id,
+            cliente_nome=cliente_nome,
+            veiculo_descricao=veiculo_descricao,
             valor_veiculo=payload.valor_veiculo,
             valor_entrada=payload.valor_entrada,
             valor_financiado=result.valor_financiado,
@@ -388,6 +400,8 @@ class SimulationService:
             id=sim.id,
             tenant_id=sim.tenant_id,
             codigo=sim.codigo,
+            client_id=sim.client_id,
+            vehicle_id=sim.vehicle_id,
             cliente_nome=sim.cliente_nome,
             veiculo_descricao=sim.veiculo_descricao,
             valor_veiculo=sim.valor_veiculo,
@@ -466,7 +480,9 @@ class SimulationService:
         return SimulationListPage(
             items=[
                 SimulationListItem(
-                    id=s.id, codigo=s.codigo, cliente_nome=s.cliente_nome,
+                    id=s.id, codigo=s.codigo,
+                    client_id=s.client_id, vehicle_id=s.vehicle_id,
+                    cliente_nome=s.cliente_nome,
                     veiculo_descricao=s.veiculo_descricao, valor_veiculo=s.valor_veiculo,
                     valor_financiado=s.valor_financiado, prazo_meses=s.prazo_meses,
                     taxa_mensal=s.taxa_mensal, status=s.status.value, criado_em=s.criado_em,

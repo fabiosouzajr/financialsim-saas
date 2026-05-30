@@ -74,9 +74,17 @@ from finacialsim_saas.api.auth import router as auth_router                     
 from finacialsim_saas.api.users import router as users_router                          # noqa: E402
 from finacialsim_saas.api.business_rules import router as business_rules_router        # noqa: E402
 from finacialsim_saas.api.simulations import router as simulations_router              # noqa: E402
+from finacialsim_saas.api.clients import router as clients_router                      # noqa: E402
+from finacialsim_saas.api.vehicles import router as vehicles_router                    # noqa: E402
+from finacialsim_saas.api.fipe import router as fipe_router                            # noqa: E402
+from finacialsim_saas.api.cep import router as cep_router                              # noqa: E402
 
 app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(business_rules_router)
 app.include_router(simulations_router)
+app.include_router(clients_router)
+app.include_router(vehicles_router)
+app.include_router(fipe_router)
+app.include_router(cep_router)
