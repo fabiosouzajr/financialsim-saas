@@ -6,7 +6,7 @@ from typing import Any
 
 import httpx
 
-from app.integrations.base import Err
+from finacialsim_core.integrations.base import Err
 
 
 async def get_json(url: str, client: httpx.AsyncClient | None = None) -> Any:

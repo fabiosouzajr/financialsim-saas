@@ -7,9 +7,9 @@ from typing import Any
 import httpx
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
-from app.integrations.base import Err, Ok
-from app.integrations.fipe.schema import VehicleQuote, parse_brl_price
-from app.integrations.http import get_json, http_err_callback
+from finacialsim_core.integrations.base import Err, Ok
+from finacialsim_core.integrations.fipe.schema import VehicleQuote, parse_brl_price
+from finacialsim_core.integrations.http import get_json, http_err_callback
 
 
 BASE_URL = "https://brasilapi.com.br/api/fipe"

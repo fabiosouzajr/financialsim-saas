@@ -5,8 +5,8 @@ from __future__ import annotations
 from decimal import Decimal, InvalidOperation
 from typing import Any
 
-from app.integrations.base import Err, Ok
-from app.integrations.fipe.schema import VehicleQuote
+from finacialsim_core.integrations.base import Err, Ok
+from finacialsim_core.integrations.fipe.schema import VehicleQuote
 
 _VALID_TIPOS = {"carro", "moto", "caminhao"}
 

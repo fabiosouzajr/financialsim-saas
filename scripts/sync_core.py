@@ -11,7 +11,7 @@ from pathlib import Path
 desktop = Path(os.environ["FINACIALSIM_DESKTOP_PATH"]).resolve()
 dest = Path(__file__).parent.parent / "packages" / "finacialsim_core" / "finacialsim_core"
 
-EXCLUDED = {"cache.py", "cached.py", "__pycache__"}
+EXCLUDED = {"cache.py", "cached.py", "factory.py", "__pycache__"}
 
 
 def _ensure_init(directory: Path) -> None:
@@ -30,10 +30,12 @@ def sync_flat(src_dir: Path, dst_dir: Path) -> None:
 
 
 def rewrite_imports(directory: Path) -> None:
-    """Rewrite `from app.core.X` → `from finacialsim_core.X` in all .py files under directory."""
+    """Rewrite app.* imports to finacialsim_core.* in all .py files under directory."""
     for f in directory.rglob("*.py"):
         text = f.read_text()
-        new_text = text.replace("from app.core.", "from finacialsim_core.")
+        new_text = text
+        new_text = new_text.replace("from app.core.", "from finacialsim_core.")
+        new_text = new_text.replace("from app.integrations.", "from finacialsim_core.integrations.")
         if new_text != text:
             f.write_text(new_text)
             print(f"  rewrote imports: {f.relative_to(directory.parent)}")
