@@ -5,7 +5,7 @@ from decimal import Decimal
 from uuid import uuid4
 from datetime import date
 
-from finacialsim_saas.data.models import BusinessRule, Tenant, User, Role
+from finacialsim_saas.data.models import BusinessRule, Tenant, User, Role, Client, ClientType, Vehicle, VehicleStatus
 
 
 @pytest_asyncio.fixture
@@ -34,6 +34,23 @@ async def rules_seeded(session, tenant):
     from finacialsim_saas.cli.main import _seed_business_rules
     await _seed_business_rules(session, tenant.id)
     await session.flush()
+
+
+@pytest_asyncio.fixture
+async def client_and_vehicle(session, tenant, user, rules_seeded):
+    cl = Client(
+        tenant_id=tenant.id, nome="Test Client", cpf_cnpj="52998224725",
+        tipo=ClientType.pf, criado_por=user.id,
+    )
+    session.add(cl)
+    v = Vehicle(
+        tenant_id=tenant.id, fonte="fipe_parallelum", tipo="carro",
+        marca="Toyota", modelo="Corolla", ano_modelo=2023,
+        status=VehicleStatus.ativo, criado_por=user.id,
+    )
+    session.add(v)
+    await session.flush()
+    return cl, v
 
 
 @pytest.mark.asyncio
@@ -104,14 +121,17 @@ async def test_preview_total_pago_pelo_cliente_includes_entrada(session, tenant,
 
 
 @pytest.mark.asyncio
-async def test_create_persists_simulation_and_rows(session, tenant, user, rules_seeded):
+async def test_create_persists_simulation_and_rows(session, tenant, user, rules_seeded, client_and_vehicle):
     from finacialsim_saas.services.simulation_service import SimulationService
     from finacialsim_saas.auth.deps import RequestContext
     from finacialsim_saas.data.models import Role, SimulationStatus
     from finacialsim_saas.schemas.simulations import SimulationCreate
+    cl, v = client_and_vehicle
     ctx = RequestContext(user_id=user.id, tenant_id=tenant.id, role=Role.user, iat=0.0)
     svc = SimulationService(session)
     payload = SimulationCreate(
+        client_id=cl.id,
+        vehicle_id=v.id,
         valor_veiculo="50000.00",
         valor_entrada="10000.00",
         taxa_mensal="0.0199",
@@ -131,11 +151,12 @@ async def test_create_persists_simulation_and_rows(session, tenant, user, rules_
 
 
 @pytest.mark.asyncio
-async def test_preview_and_create_agree_on_valor_financiado(session, tenant, user, rules_seeded):
+async def test_preview_and_create_agree_on_valor_financiado(session, tenant, user, rules_seeded, client_and_vehicle):
     from finacialsim_saas.services.simulation_service import SimulationService
     from finacialsim_saas.auth.deps import RequestContext
     from finacialsim_saas.data.models import Role
     from finacialsim_saas.schemas.simulations import SimulationCreate
+    cl, v = client_and_vehicle
     ctx = RequestContext(user_id=user.id, tenant_id=tenant.id, role=Role.user, iat=0.0)
     svc = SimulationService(session)
 
@@ -143,6 +164,8 @@ async def test_preview_and_create_agree_on_valor_financiado(session, tenant, use
     preview = await svc.preview(preview_req, ctx)
 
     create_req = SimulationCreate(
+        client_id=cl.id,
+        vehicle_id=v.id,
         valor_veiculo=preview_req.valor_veiculo,
         valor_entrada=preview_req.valor_entrada,
         taxa_mensal=preview_req.taxa_mensal,
@@ -163,15 +186,18 @@ async def test_preview_and_create_agree_on_valor_financiado(session, tenant, use
 
 
 @pytest.mark.asyncio
-async def test_create_idempotency_key_returns_same_id(session, tenant, user, rules_seeded):
+async def test_create_idempotency_key_returns_same_id(session, tenant, user, rules_seeded, client_and_vehicle):
     from finacialsim_saas.services.simulation_service import SimulationService
     from finacialsim_saas.auth.deps import RequestContext
     from finacialsim_saas.data.models import Role
     from finacialsim_saas.schemas.simulations import SimulationCreate
+    cl, v = client_and_vehicle
     ctx = RequestContext(user_id=user.id, tenant_id=tenant.id, role=Role.user, iat=0.0)
     svc = SimulationService(session)
     key = f"idem-{uuid4().hex}"
     payload = SimulationCreate(
+        client_id=cl.id,
+        vehicle_id=v.id,
         valor_veiculo="50000.00", valor_entrada="10000.00",
         taxa_mensal="0.0199", prazo_meses=24,
         data_liberacao=date(2026, 6, 1), primeiro_vencimento=date(2026, 7, 1),
@@ -184,15 +210,18 @@ async def test_create_idempotency_key_returns_same_id(session, tenant, user, rul
 
 
 @pytest.mark.asyncio
-async def test_create_validates_against_rules(session, tenant, user, rules_seeded):
+async def test_create_validates_against_rules(session, tenant, user, rules_seeded, client_and_vehicle):
     from finacialsim_saas.services.simulation_service import SimulationService
     from finacialsim_saas.auth.deps import RequestContext
     from finacialsim_saas.data.models import Role
     from finacialsim_saas.errors import ValidationError
     from finacialsim_saas.schemas.simulations import SimulationCreate
+    cl, v = client_and_vehicle
     ctx = RequestContext(user_id=user.id, tenant_id=tenant.id, role=Role.user, iat=0.0)
     svc = SimulationService(session)
     payload = SimulationCreate(
+        client_id=cl.id,
+        vehicle_id=v.id,
         valor_veiculo="50000.00",
         valor_entrada="1000.00",  # 2% — below 10% minimum
         taxa_mensal="0.0199",
@@ -206,15 +235,18 @@ async def test_create_validates_against_rules(session, tenant, user, rules_seede
 
 
 @pytest.mark.asyncio
-async def test_cross_tenant_get_raises_404(session, tenant, user, rules_seeded):
+async def test_cross_tenant_get_raises_404(session, tenant, user, rules_seeded, client_and_vehicle):
     from finacialsim_saas.services.simulation_service import SimulationService
     from finacialsim_saas.auth.deps import RequestContext
     from finacialsim_saas.data.models import Role
     from finacialsim_saas.errors import NotFoundError
     from finacialsim_saas.schemas.simulations import SimulationCreate
+    cl, v = client_and_vehicle
     ctx = RequestContext(user_id=user.id, tenant_id=tenant.id, role=Role.user, iat=0.0)
     svc = SimulationService(session)
     payload = SimulationCreate(
+        client_id=cl.id,
+        vehicle_id=v.id,
         valor_veiculo="50000.00", valor_entrada="10000.00",
         taxa_mensal="0.0199", prazo_meses=24,
         data_liberacao=date(2026, 6, 1), primeiro_vencimento=date(2026, 7, 1),
@@ -234,14 +266,17 @@ async def test_cross_tenant_get_raises_404(session, tenant, user, rules_seeded):
 
 
 @pytest.mark.asyncio
-async def test_clone_creates_rascunho(session, tenant, user, rules_seeded):
+async def test_clone_creates_rascunho(session, tenant, user, rules_seeded, client_and_vehicle):
     from finacialsim_saas.services.simulation_service import SimulationService
     from finacialsim_saas.auth.deps import RequestContext
     from finacialsim_saas.data.models import Role
     from finacialsim_saas.schemas.simulations import SimulationCreate
+    cl, v = client_and_vehicle
     ctx = RequestContext(user_id=user.id, tenant_id=tenant.id, role=Role.user, iat=0.0)
     svc = SimulationService(session)
     payload = SimulationCreate(
+        client_id=cl.id,
+        vehicle_id=v.id,
         valor_veiculo="50000.00", valor_entrada="10000.00",
         taxa_mensal="0.0199", prazo_meses=24,
         data_liberacao=date(2026, 6, 1), primeiro_vencimento=date(2026, 7, 1),

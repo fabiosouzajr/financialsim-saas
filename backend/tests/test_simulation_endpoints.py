@@ -3,7 +3,7 @@ import pytest_asyncio
 from uuid import uuid4
 from datetime import date
 
-from finacialsim_saas.data.models import Role, Tenant, User
+from finacialsim_saas.data.models import Role, Tenant, User, Client, ClientType, Vehicle, VehicleStatus
 
 
 async def _make_token(client, session, role=Role.user):
@@ -25,14 +25,28 @@ async def _make_token(client, session, role=Role.user):
         name="Test", role=role,
     )
     await session.flush()
+
+    cl = Client(
+        tenant_id=t.id, nome="Test Client", cpf_cnpj="52998224725",
+        tipo=ClientType.pf, criado_por=u.id,
+    )
+    session.add(cl)
+    v = Vehicle(
+        tenant_id=t.id, fonte="fipe_parallelum", tipo="carro",
+        marca="Toyota", modelo="Corolla", ano_modelo=2023,
+        status=VehicleStatus.ativo, criado_por=u.id,
+    )
+    session.add(v)
+    await session.flush()
+
     access_token, _ = await svc.issue_tokens(u)
     await session.commit()
-    return access_token, t, u
+    return access_token, t, u, cl, v
 
 
 @pytest.mark.asyncio
 async def test_get_business_rules(client, session):
-    token, _, _ = await _make_token(client, session)
+    token, _, _, _, _ = await _make_token(client, session)
     resp = await client.get(
         "/api/v1/business-rules",
         headers={"Authorization": f"Bearer {token}"},
@@ -45,7 +59,7 @@ async def test_get_business_rules(client, session):
 
 @pytest.mark.asyncio
 async def test_preview_returns_schedule(client, session):
-    token, _, _ = await _make_token(client, session)
+    token, _, _, _, _ = await _make_token(client, session)
     resp = await client.post(
         "/api/v1/simulations/preview",
         headers={"Authorization": f"Bearer {token}"},
@@ -67,11 +81,13 @@ async def test_preview_returns_schedule(client, session):
 
 @pytest.mark.asyncio
 async def test_create_simulation_returns_201(client, session):
-    token, _, _ = await _make_token(client, session)
+    token, _, _, cl, v = await _make_token(client, session)
     resp = await client.post(
         "/api/v1/simulations",
         headers={"Authorization": f"Bearer {token}"},
         json={
+            "client_id": str(cl.id),
+            "vehicle_id": str(v.id),
             "valor_veiculo": "50000.00",
             "valor_entrada": "10000.00",
             "taxa_mensal": "0.0199",
@@ -89,12 +105,14 @@ async def test_create_simulation_returns_201(client, session):
 
 @pytest.mark.asyncio
 async def test_list_simulations_pagination(client, session):
-    token, _, _ = await _make_token(client, session)
+    token, _, _, cl, v = await _make_token(client, session)
     for _ in range(3):
         await client.post(
             "/api/v1/simulations",
             headers={"Authorization": f"Bearer {token}"},
             json={
+                "client_id": str(cl.id),
+                "vehicle_id": str(v.id),
                 "valor_veiculo": "50000.00", "valor_entrada": "10000.00",
                 "taxa_mensal": "0.0199", "prazo_meses": 24,
                 "data_liberacao": "2026-06-01", "primeiro_vencimento": "2026-07-01",
@@ -111,11 +129,13 @@ async def test_list_simulations_pagination(client, session):
 
 @pytest.mark.asyncio
 async def test_get_simulation_by_id(client, session):
-    token, _, _ = await _make_token(client, session)
+    token, _, _, cl, v = await _make_token(client, session)
     created = (await client.post(
         "/api/v1/simulations",
         headers={"Authorization": f"Bearer {token}"},
         json={
+            "client_id": str(cl.id),
+            "vehicle_id": str(v.id),
             "valor_veiculo": "50000.00", "valor_entrada": "10000.00",
             "taxa_mensal": "0.0199", "prazo_meses": 24,
             "data_liberacao": "2026-06-01", "primeiro_vencimento": "2026-07-01",
@@ -133,12 +153,14 @@ async def test_get_simulation_by_id(client, session):
 
 @pytest.mark.asyncio
 async def test_cross_tenant_isolation(client, session):
-    token_a, tenant_a, _ = await _make_token(client, session)
-    token_b, _, _ = await _make_token(client, session)
+    token_a, tenant_a, _, cl_a, v_a = await _make_token(client, session)
+    token_b, _, _, _, _ = await _make_token(client, session)
     sim = (await client.post(
         "/api/v1/simulations",
         headers={"Authorization": f"Bearer {token_a}"},
         json={
+            "client_id": str(cl_a.id),
+            "vehicle_id": str(v_a.id),
             "valor_veiculo": "50000.00", "valor_entrada": "10000.00",
             "taxa_mensal": "0.0199", "prazo_meses": 24,
             "data_liberacao": "2026-06-01", "primeiro_vencimento": "2026-07-01",
@@ -154,11 +176,13 @@ async def test_cross_tenant_isolation(client, session):
 
 @pytest.mark.asyncio
 async def test_clone_creates_rascunho(client, session):
-    token, _, _ = await _make_token(client, session)
+    token, _, _, cl, v = await _make_token(client, session)
     sim = (await client.post(
         "/api/v1/simulations",
         headers={"Authorization": f"Bearer {token}"},
         json={
+            "client_id": str(cl.id),
+            "vehicle_id": str(v.id),
             "valor_veiculo": "50000.00", "valor_entrada": "10000.00",
             "taxa_mensal": "0.0199", "prazo_meses": 24,
             "data_liberacao": "2026-06-01", "primeiro_vencimento": "2026-07-01",
@@ -176,11 +200,13 @@ async def test_clone_creates_rascunho(client, session):
 
 @pytest.mark.asyncio
 async def test_archive_simulation(client, session):
-    token, _, _ = await _make_token(client, session)
+    token, _, _, cl, v = await _make_token(client, session)
     sim = (await client.post(
         "/api/v1/simulations",
         headers={"Authorization": f"Bearer {token}"},
         json={
+            "client_id": str(cl.id),
+            "vehicle_id": str(v.id),
             "valor_veiculo": "50000.00", "valor_entrada": "10000.00",
             "taxa_mensal": "0.0199", "prazo_meses": 24,
             "data_liberacao": "2026-06-01", "primeiro_vencimento": "2026-07-01",
