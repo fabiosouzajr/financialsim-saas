@@ -24,8 +24,8 @@ class ExtraIn(BaseModel):
 
 
 class SimulationCreate(BaseModel):
-    cliente_nome: str | None = None
-    veiculo_descricao: str | None = None
+    client_id: uuid.UUID
+    vehicle_id: uuid.UUID
     valor_veiculo: DecimalStr
     valor_entrada: DecimalStr
     taxa_mensal: DecimalStr
@@ -105,6 +105,8 @@ class SimulationOut(BaseModel):
     id: uuid.UUID
     tenant_id: uuid.UUID
     codigo: str
+    client_id: uuid.UUID | None
+    vehicle_id: uuid.UUID | None
     cliente_nome: str | None
     veiculo_descricao: str | None
     valor_veiculo: DecimalStr
@@ -134,6 +136,8 @@ class SimulationOut(BaseModel):
 class SimulationListItem(BaseModel):
     id: uuid.UUID
     codigo: str
+    client_id: uuid.UUID | None
+    vehicle_id: uuid.UUID | None
     cliente_nome: str | None
     veiculo_descricao: str | None
     valor_veiculo: DecimalStr
