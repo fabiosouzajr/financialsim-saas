@@ -23,6 +23,28 @@ def test_decimal_str_parses_from_string():
     assert isinstance(m.v, Decimal)
 
 
+def test_simulation_create_validates_required_fields():
+    from finacialsim_saas.schemas.simulations import SimulationCreate
+    import pytest
+    with pytest.raises(Exception):
+        SimulationCreate()  # missing required fields
+
+
+def test_fee_in_schema():
+    from finacialsim_saas.schemas.simulations import FeeIn
+    fee = FeeIn(nome="Tarifa cadastro", valor="150.00", incluir_no_principal=True)
+    assert fee.valor == __import__("decimal").Decimal("150.00")
+
+
+def test_extra_in_schema():
+    from finacialsim_saas.schemas.simulations import ExtraIn
+    extra = ExtraIn(
+        tipo="protecao", nome="Proteção Veicular", valor_total="100.00",
+        modalidade="mensal_continuo", duracao_meses=24, ordem=1,
+    )
+    assert extra.modalidade == "mensal_continuo"
+
+
 def test_business_rules_out_has_all_14_keys():
     from finacialsim_saas.schemas.business_rules import BusinessRulesOut
     fields = set(BusinessRulesOut.model_fields.keys())
