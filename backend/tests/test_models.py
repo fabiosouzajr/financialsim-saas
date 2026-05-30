@@ -34,3 +34,21 @@ def test_all_phase2_models_importable_and_tables_exist(engine):
               "simulation_fees", "simulation_extras", "amortization_rows",
               "extraordinary_amortizations"):
         assert t in tables
+
+
+def test_all_phase3_models_importable_and_tables_exist(engine):
+    from finacialsim_saas.data.models import Client, Vehicle, FipeCache
+    from sqlalchemy import inspect
+    import asyncio
+
+    async def _check():
+        async with engine.connect() as conn:
+            tables = await conn.run_sync(
+                lambda sync_conn: inspect(sync_conn).get_table_names()
+            )
+        return tables
+
+    tables = asyncio.run(_check())
+    assert "clients" in tables
+    assert "vehicles" in tables
+    assert "fipe_cache" in tables

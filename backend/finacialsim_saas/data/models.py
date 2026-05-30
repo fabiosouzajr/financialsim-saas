@@ -228,6 +228,12 @@ class Simulation(Base):
     )
     rules_snapshot_json: Mapped[dict] = mapped_column(sa.JSON, nullable=False)
     idempotency_key: Mapped[str | None] = mapped_column(sa.Text, nullable=True, unique=True)
+    client_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), sa.ForeignKey("clients.id"), nullable=True
+    )
+    vehicle_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), sa.ForeignKey("vehicles.id"), nullable=True
+    )
     criado_por: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
     )
@@ -327,4 +333,123 @@ class ExtraordinaryAmortization(Base):
     valor: Mapped[Decimal] = mapped_column(sa.Numeric(18, 2), nullable=False)
     criado_em: Mapped[datetime] = mapped_column(
         sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+
+
+class ClientType(enum.Enum):
+    pf = "pf"
+    pj = "pj"
+
+
+class Client(Base):
+    __tablename__ = "clients"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")
+    )
+    tenant_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), sa.ForeignKey("tenants.id"), nullable=False, index=True
+    )
+    nome: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    cpf_cnpj: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    tipo: Mapped[ClientType] = mapped_column(
+        sa.Enum(ClientType, name="client_type", native_enum=True), nullable=False
+    )
+    rg: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    data_nasc: Mapped[datetime | None] = mapped_column(sa.Date, nullable=True)
+    profissao: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    renda: Mapped[Decimal | None] = mapped_column(sa.Numeric(18, 2), nullable=True)
+    telefone: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    email: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    endereco_json: Mapped[dict | None] = mapped_column(sa.JSON, nullable=True)
+    observacoes: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    is_active: Mapped[bool] = mapped_column(
+        sa.Boolean, nullable=False, server_default=sa.true()
+    )
+    criado_por: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+    )
+    criado_em: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+    atualizado_em: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+
+    __table_args__ = (
+        sa.UniqueConstraint("tenant_id", "cpf_cnpj", name="uq_clients_tenant_cpf_cnpj"),
+    )
+
+
+class VehicleStatus(enum.Enum):
+    ativo = "ativo"
+    reservado = "reservado"
+    vendido = "vendido"
+    inativo = "inativo"
+
+
+class Vehicle(Base):
+    __tablename__ = "vehicles"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")
+    )
+    tenant_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), sa.ForeignKey("tenants.id"), nullable=False, index=True
+    )
+    fonte: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    tipo: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    marca: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    modelo: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    ano_modelo: Mapped[int] = mapped_column(sa.Integer, nullable=False)
+    combustivel: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    codigo_fipe: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    valor_fipe: Mapped[Decimal | None] = mapped_column(sa.Numeric(18, 2), nullable=True)
+    valor_referencia: Mapped[Decimal | None] = mapped_column(sa.Numeric(18, 2), nullable=True)
+    mes_referencia_fipe: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    cor: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    placa: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    odometro_km: Mapped[int | None] = mapped_column(sa.Integer, nullable=True)
+    status: Mapped[VehicleStatus] = mapped_column(
+        sa.Enum(VehicleStatus, name="vehicle_status", native_enum=True),
+        nullable=False, server_default=sa.text("'ativo'"),
+    )
+    snapshot_json: Mapped[dict | None] = mapped_column(sa.JSON, nullable=True)
+    criado_por: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+    )
+    criado_em: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+    atualizado_em: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+
+    __table_args__ = (
+        sa.Index("ix_vehicles_tenant_status", "tenant_id", "status"),
+    )
+
+
+class FipeCache(Base):
+    __tablename__ = "fipe_cache"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")
+    )
+    tipo: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    acao: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    marca_id: Mapped[str] = mapped_column(sa.Text, nullable=False, server_default=sa.text("''"))
+    modelo_id: Mapped[str] = mapped_column(sa.Text, nullable=False, server_default=sa.text("''"))
+    ano_id: Mapped[str] = mapped_column(sa.Text, nullable=False, server_default=sa.text("''"))
+    payload_json: Mapped[dict] = mapped_column(sa.JSON, nullable=False)
+    coletado_em: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+    ttl_horas: Mapped[int] = mapped_column(sa.Integer, nullable=False)
+
+    __table_args__ = (
+        sa.UniqueConstraint(
+            "tipo", "acao", "marca_id", "modelo_id", "ano_id",
+            name="uq_fipe_cache_key",
+        ),
     )
