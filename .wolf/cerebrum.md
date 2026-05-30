@@ -22,6 +22,12 @@
 - **git data/ ignore:** Root `.gitignore` has `data/` rule. Any new `data/` source dir (like `backend/finacialsim_saas/data/`) needs explicit exception: `!backend/.../data/` + `!backend/.../data/**`.
 - **Docker builds local:** Docker Hub unreachable in WSL2. `python:3.12-slim`, `node:20-alpine`, `nginx:alpine` not available locally. Docker build tasks must be verified in CI, not locally.
 - **CI install:** Use `uv sync --extra dev` from repo root (not `uv pip install` from backend/) to resolve workspace deps like `finacialsim-core`.
+- **Phase 3 architecture:** `clients`, `vehicles`, `fipe_cache` tables added. `Simulation` gains nullable FK `client_id`/`vehicle_id` in DB but required in the API (SimulationCreate). SimulationService.create denormalizes client name and vehicle description at save time.
+- **RequestContext requires iat:** `RequestContext(tenant_id=..., user_id=..., role=..., iat=0.0)` — the `iat` field is required.
+- **Test token issuance pattern:** In integration tests, issue JWT directly via `AuthService.issue_tokens(user)` rather than calling the login endpoint. The login endpoint returns KeyError on `access_token` in tests due to session isolation issues.
+- **FipeCache mock objects:** Don't use `ModelClass.__new__(ModelClass)` for mock objects — SQLAlchemy descriptors break. Use `types.SimpleNamespace` instead.
+- **VehicleService.refresh_fipe order:** Check `fonte == "manual"` BEFORE checking `self._fipe is None`, so manual vehicle raises ValidationError even without fipe_chain injected.
+- **PostgresFipeCache session_factory usage:** Uses `async with self._sf() as s:` — the `async_sessionmaker` is callable and returns a session context manager.
 
 ## Do-Not-Repeat
 
