@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api/v1", tags=["indicators"])
 
 @router.get("/indicators", response_model=list[IndicatorOut])
 async def list_indicators(
-    ctx: Annotated[RequestContext, Depends(get_current_ctx)],
+    ctx: Annotated[RequestContext, Depends(require_role("admin", "manager", "user"))],
     session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> list[IndicatorOut]:
     return await IndicatorsService(session).latest_all()
@@ -21,7 +21,7 @@ async def list_indicators(
 @router.get("/indicators/{codigo}/series", response_model=SeriesOut)
 async def get_indicator_series(
     codigo: str,
-    ctx: Annotated[RequestContext, Depends(get_current_ctx)],
+    ctx: Annotated[RequestContext, Depends(require_role("admin", "manager", "user"))],
     session: Annotated[AsyncSession, Depends(get_db_session)],
     range: str = Query(default="12m"),
 ) -> SeriesOut:
@@ -35,6 +35,6 @@ async def refresh_indicators(
     ctx: Annotated[RequestContext, Depends(require_role("admin"))],
     request: Request,
 ) -> dict[str, bool]:
-    redis = request.app.state.redis
-    await redis.enqueue_job("update_bacen_indicators")
+    arq = request.app.state.arq
+    await arq.enqueue_job("update_bacen_indicators")
     return {"enqueued": True}

@@ -82,5 +82,6 @@ async def client(engine: AsyncEngine):
     app_state["engine"] = engine
     app.state.session_factory = build_session_factory(engine)
     app.state.redis = AsyncMock()
+    app.state.arq = AsyncMock()
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
         yield c

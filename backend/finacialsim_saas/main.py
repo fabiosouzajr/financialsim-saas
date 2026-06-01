@@ -3,6 +3,8 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 import redis.asyncio as aioredis
+from arq import create_pool
+from arq.connections import RedisSettings as ArqRedisSettings
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from loguru import logger
@@ -26,8 +28,10 @@ async def lifespan(app: FastAPI):
     app.state.session_factory = build_session_factory(engine)
     app.state.fipe_chain = build_fipe_chain(app.state.session_factory)
     app.state.redis = aioredis.from_url(str(settings.redis_url), decode_responses=True)
+    app.state.arq = await create_pool(ArqRedisSettings.from_dsn(str(settings.redis_url)))
     logger.info("startup", env=settings.app_env, sha=settings.git_sha)
     yield
+    await app.state.arq.aclose()
     await app.state.redis.aclose()
     await engine.dispose()
     logger.info("shutdown")
