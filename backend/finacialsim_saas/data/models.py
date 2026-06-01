@@ -524,7 +524,7 @@ class Proposal(Base):
         UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")
     )
     tenant_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), sa.ForeignKey("tenants.id"), nullable=False, index=True
+        UUID(as_uuid=True), sa.ForeignKey("tenants.id"), nullable=False
     )
     simulation_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), sa.ForeignKey("simulations.id"), nullable=False
