@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T17:47:11.105Z
-> Files: 223 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T22:20:28.647Z
+> Files: 227 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/
 
@@ -212,6 +212,10 @@
 - `2026-05-30-saas-phase-3-frontend.md` — Phase 3 — Cadastros Frontend Implementation Plan (~16195 tok)
 - `2026-06-01-saas-phase-4-backend.md` — Phase 4 Backend — Indicadores + Business Rules + Scheduler + Audit Log (~22683 tok)
 - `2026-06-01-saas-phase-4-frontend.md` — Phase 4 Frontend — Indicadores + Business Rules Editor + Audit Log (~8767 tok)
+- `2026-06-01-saas-phase-5a-foundations.md` — Phase 5A — Foundations Implementation Plan (~7934 tok)
+- `2026-06-01-saas-phase-5b-services.md` — Phase 5B — Services + Worker + API Implementation Plan (~11760 tok)
+- `2026-06-01-saas-phase-5c-tests.md` — Phase 5C — Integration Tests Implementation Plan (~6063 tok)
+- `2026-06-01-saas-phase-5d-frontend.md` — Phase 5D — Frontend Implementation Plan (~5184 tok)
 
 ## docs/superpowers/plans/done/
 

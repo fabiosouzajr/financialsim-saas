@@ -55,7 +55,7 @@ Renders read from `snapshot_json` only — never re-queries — so a proposta fr
 
 ### API endpoints
 
-```
+```text
 POST   /api/v1/proposals                                { simulation_id } → 202 + { id, status }
 GET    /api/v1/proposals/{id}                           → row incl. render_status + status
 POST   /api/v1/proposals/{id}/approve                   (own or manager/admin) → 200
@@ -96,7 +96,7 @@ GET    /api/v1/proposals                                ?simulation_id,?cliente_
 ## Risks & mitigations
 
 | Risk | Mitigation |
-|---|---|
+| --- | --- |
 | WeasyPrint native deps drift | Pin version; document system packages in Dockerfile.worker |
 | Reproducibility broken by PDF metadata | Normalize `/CreationDate` and `/ID` post-render |
 | Snapshot bloat | Include only rendered fields; reject extras at snapshot-builder boundary |

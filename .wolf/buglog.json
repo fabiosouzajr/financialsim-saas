@@ -554,6 +554,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-01T17:43:03.111Z"
+    },
+    {
+      "id": "bug-035",
+      "timestamp": "2026-06-01T22:20:20.758Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/superpowers/plans/2026-06-01-saas-phase-5b-services.md",
+      "root_cause": "12 lines replaced/restructured",
+      "fix": "Rewrote 14→4 lines (12 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T22:20:20.758Z"
     }
   ]
 }
