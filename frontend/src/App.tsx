@@ -12,6 +12,7 @@ import Simulacao from "./routes/Simulacao";
 import SimulacaoEdit from "./routes/SimulacaoEdit";
 import ClientesPage from "./routes/clientes/ClientesPage";
 import VeiculosPage from "./routes/veiculos/VeiculosPage";
+import PropostasPage from "./routes/propostas/PropostasPage";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,14 @@ export default function App() {
             <Route path="/simulacao/:id" element={<SimulacaoEdit />} />
             <Route path="/clientes" element={<ClientesPage />} />
             <Route path="/veiculos" element={<VeiculosPage />} />
+            <Route
+              path="/propostas"
+              element={
+                <RequireRole roles={["admin", "operator"]}>
+                  <PropostasPage />
+                </RequireRole>
+              }
+            />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
