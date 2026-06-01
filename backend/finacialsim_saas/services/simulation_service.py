@@ -336,6 +336,12 @@ class SimulationService:
             ))
 
         await self._s.flush()
+        from finacialsim_saas.services.audit_service import AuditService
+        await AuditService(self._s).log(
+            "create", "simulation", sim.id,
+            {"before": None, "after": {"id": str(sim.id), "codigo": sim.codigo, "status": sim.status.value}},
+            ctx,
+        )
         return await self.get(sim.id, ctx)
 
     async def get(self, sim_id: uuid.UUID, ctx: RequestContext) -> SimulationOut:
@@ -625,9 +631,16 @@ class SimulationService:
             raise NotFoundError(f"Simulation {sim_id} not found")
         if str(sim.criado_por) != str(ctx.user_id) and ctx.role.value not in ("manager", "admin"):
             raise TenantAccessError("Cannot archive another user's simulation")
+        before_status = sim.status.value
         sim.status = SimulationStatus.arquivado
         sim.atualizado_em = datetime.now(timezone.utc)
         await self._s.flush()
+        from finacialsim_saas.services.audit_service import AuditService
+        await AuditService(self._s).log(
+            "archive", "simulation", sim.id,
+            {"before": {"status": before_status}, "after": {"status": sim.status.value}},
+            ctx,
+        )
         return await self.get(sim.id, ctx)
 
     async def clone(self, sim_id: uuid.UUID, ctx: RequestContext) -> SimulationOut:

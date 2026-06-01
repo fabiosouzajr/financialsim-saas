@@ -64,9 +64,8 @@ async def create_user(
     svc = _svc(session)
     user = await svc.register_user(
         tenant_id=ctx.tenant_id, email=body.email, password=body.password,
-        name=body.name, role=Role(body.role),
+        name=body.name, role=Role(body.role), ctx=ctx,
     )
-    await session.flush()
     session.add(
         NotificationsOutbox(
             tenant_id=ctx.tenant_id,
@@ -74,10 +73,6 @@ async def create_user(
             recipient=user.email,
             payload={"user_name": user.name},
         )
-    )
-    await svc.write_audit(
-        tenant_id=ctx.tenant_id, usuario_id=ctx.user_id,
-        acao="user_create", entidade="user", entidade_id=user.id,
     )
     await session.commit()
     await session.refresh(user)

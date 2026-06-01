@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import hashlib
 import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
+from typing import TYPE_CHECKING
 
 import bcrypt
 import jwt
@@ -14,6 +17,9 @@ from finacialsim_saas.data.models import (
 )
 from finacialsim_saas.errors import AuthError, ConflictError
 from finacialsim_saas.settings import Settings
+
+if TYPE_CHECKING:
+    from finacialsim_saas.auth.deps import RequestContext
 
 
 class AuthService:
@@ -48,7 +54,14 @@ class AuthService:
     # ── public API ────────────────────────────────────────────────────────────
 
     async def register_user(
-        self, *, tenant_id: uuid.UUID, email: str, password: str, name: str, role: Role
+        self,
+        *,
+        tenant_id: uuid.UUID,
+        email: str,
+        password: str,
+        name: str,
+        role: Role,
+        ctx: "RequestContext | None" = None,
     ) -> User:
         existing = await self._s.execute(
             select(User).where(User.email == email, User.role != Role.customer)
@@ -60,6 +73,15 @@ class AuthService:
             password_hash=self._hash_pw(password), role=role,
         )
         self._s.add(user)
+        await self._s.flush()
+        if ctx is not None:
+            from finacialsim_saas.services.audit_service import AuditService
+            audit = AuditService(self._s)
+            await audit.log(
+                "create", "user", user.id,
+                {"before": None, "after": {"email": user.email, "name": user.name, "role": user.role.value}},
+                ctx,
+            )
         return user
 
     async def authenticate(self, email: str, password: str) -> User:
