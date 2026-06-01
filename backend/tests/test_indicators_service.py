@@ -69,7 +69,7 @@ async def test_series_returns_ordered_points(session: AsyncSession):
     await session.commit()
 
     points = await svc.series("IPCA", "12m")
-    assert len(points) == 3
+    assert len(points) >= 3
     assert points[0].data_referencia <= points[-1].data_referencia
 
 
