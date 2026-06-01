@@ -1,4 +1,5 @@
 import httpx
+from arq import func
 from arq.connections import RedisSettings
 from arq.cron import cron
 
@@ -9,6 +10,8 @@ from finacialsim_saas.settings import get_settings
 from finacialsim_saas.workers.tasks import (
     ping,
     prune_fipe_cache,
+    render_carne_pdf,
+    render_proposta_pdf,
     update_bacen_indicators,
     verify_provider_health,
 )
@@ -30,6 +33,8 @@ async def startup(ctx: dict) -> None:
         BcbSgsProvider(ctx["http_client"]),
         BrasilApiBacenProvider(ctx["http_client"]),
     ])
+    from finacialsim_saas.storage.deps import get_storage_backend as _get_storage
+    ctx["storage_backend"] = _get_storage(settings)
 
 
 async def shutdown(ctx: dict) -> None:
@@ -38,7 +43,11 @@ async def shutdown(ctx: dict) -> None:
 
 
 class WorkerSettings:
-    functions = [ping]
+    functions = [
+        ping,
+        func(render_proposta_pdf, timeout=120),
+        func(render_carne_pdf, timeout=120),
+    ]
     cron_jobs = [
         cron(update_bacen_indicators, hour=12, minute=0),   # 09:00 BRT = 12:00 UTC
         cron(prune_fipe_cache, hour=6, minute=0),            # 03:00 BRT = 06:00 UTC
