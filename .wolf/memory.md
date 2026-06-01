@@ -3,6 +3,12 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 14:35 | Task 8: added PUT /business-rules/{chave} endpoint (admin-only) + 3 tests | backend/finacialsim_saas/api/business_rules.py, backend/tests/test_business_rules_update.py | 126 tests pass | ~2k |
+
+| 06-01 | fix: changed `if motivo:` to `if motivo is not None:` in RulesService.update | backend/finacialsim_saas/services/rules_service.py | 4/4 tests pass, committed 344319d | ~200 |
+
+| 17:05 | Implemented Task 3 IndicatorsService (upsert, latest, series, stale detection) | backend/finacialsim_saas/services/indicators_service.py, backend/finacialsim_saas/schemas/indicators.py, backend/tests/test_indicators_service.py | 5/5 tests pass | ~3500 |
+
 | 12:52 | Phase 2 backend implemented: migration 003, 7 ORM models, business_rules seed, DecimalStr schema, simulation schemas, RulesService, SimulationService (preview+CRUD), 2 API routers, 71 tests pass | backend/finacialsim_saas/ backend/tests/ | success | ~4500 |
 
 | 2026-05-29 | Task 6: created auth/deps.py (RequestContext, _parse_bearer, get_db_session, get_current_ctx, require_role) + tests/test_deps.py | backend/finacialsim_saas/auth/deps.py, backend/tests/test_deps.py | 4/4 tests pass, committed e79757a | ~800 tok |
@@ -447,6 +453,8 @@
 | 14:54 | Created frontend/src/tests/setup.ts | — | ~71 |
 | 14:55 | Created frontend/src/tests/veiculos.test.tsx | — | ~420 |
 | 14:55 | Edited frontend/src/routes/veiculos/VeiculosPage.tsx | 4→4 lines | ~40 |
+| 10:00 | Fixed leap-day crash: timedelta(366) instead of date(year-1, month, day) | backend/finacialsim_saas/workers/tasks.py | fixed | ~50 |
+| 10:00 | Removed spurious await from engine.dispose() (sync in SQLAlchemy 2.x) | backend/finacialsim_saas/workers/worker.py | fixed | ~50 |
 | 14:55 | Edited frontend/src/routes/veiculos/VeiculosPage.tsx | 4→4 lines | ~35 |
 | 14:55 | Edited frontend/src/routes/veiculos/VeiculosPage.tsx | 4→5 lines | ~76 |
 | 14:55 | Edited frontend/src/routes/veiculos/VeiculosPage.tsx | 8→3 lines | ~29 |
@@ -455,3 +463,107 @@
 | 14:57 | Phase 3 frontend complete — 13 tests pass, build clean | all Phase 3 files | success | ~0 |
 | 14:58 | Session end: 46 writes across 34 files (utils.ts, slider.tsx, switch.tsx, collapsible.tsx, decimal.ts) | 8 reads | ~45717 tok |
 | 14:59 | Session end: 46 writes across 34 files (utils.ts, slider.tsx, switch.tsx, collapsible.tsx, decimal.ts) | 8 reads | ~45717 tok |
+
+## Session: 2026-05-30 15:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-30 15:02
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-05-31 18:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:40 | Created docs/superpowers/plans/2026-06-01-saas-phase-4-backend.md | — | ~24196 |
+| 13:42 | Created docs/superpowers/plans/2026-06-01-saas-phase-4-frontend.md | — | ~9351 |
+| 13:44 | Edited docs/superpowers/plans/2026-06-01-saas-phase-4-backend.md | 3→1 lines | ~19 |
+| 13:44 | Edited docs/superpowers/plans/2026-06-01-saas-phase-4-backend.md | 7→7 lines | ~71 |
+| 13:44 | Edited docs/superpowers/plans/2026-06-01-saas-phase-4-backend.md | 14→14 lines | ~126 |
+| 13:44 | Edited docs/superpowers/plans/2026-06-01-saas-phase-4-backend.md | 6→6 lines | ~56 |
+| 13:45 | Edited docs/superpowers/plans/2026-06-01-saas-phase-4-backend.md | 16→18 lines | ~190 |
+| 14:30 | Phase 4 grilling complete (22 questions resolved). Wrote backend plan (14 tasks) + frontend plan (6 tasks) | docs/superpowers/plans/2026-06-01-saas-phase-4-backend.md, docs/superpowers/plans/2026-06-01-saas-phase-4-frontend.md | success | ~8000 tok |
+| 13:45 | Session end: 7 writes across 2 files (2026-06-01-saas-phase-4-backend.md, 2026-06-01-saas-phase-4-frontend.md) | 22 reads | ~74959 tok |
+| 13:50 | Edited backend/finacialsim_saas/data/models.py | modified IndicatorHistory() | ~531 |
+| 13:50 | Edited backend/tests/test_models.py | modified test_all_phase3_models_importable_and_tables_exist() | ~303 |
+| 13:50 | Created backend/alembic/versions/005_indicators_provider_health.py | — | ~606 |
+| 13:55 | Phase 4 Task 1: added IndicatorHistory + ProviderHealth ORM models, migration 005, test_all_phase4_models_importable_and_tables_exist | backend/finacialsim_saas/data/models.py, backend/alembic/versions/005_indicators_provider_health.py, backend/tests/test_models.py | 4/4 tests pass, committed 615a644 | ~800 tok |
+| 13:54 | Created backend/finacialsim_saas/integrations/__init__.py | — | ~0 |
+| 13:54 | Created backend/finacialsim_saas/integrations/bacen/__init__.py | — | ~0 |
+| 13:54 | Created backend/finacialsim_saas/integrations/bacen/schema.py | — | ~111 |
+| 13:54 | Created backend/finacialsim_saas/integrations/bacen/sgs.py | — | ~748 |
+| 13:54 | Created backend/finacialsim_saas/integrations/bacen/brasilapi.py | — | ~555 |
+| 13:55 | Created backend/tests/test_bacen_providers.py | — | ~903 |
+| 13:56 | Task 2 complete — BACEN SGS + BrasilAPI providers + tests (5/5 pass) | backend/finacialsim_saas/integrations/bacen/, backend/tests/test_bacen_providers.py | committed 9a7c276 | ~2500 |
+| 14:00 | Created backend/finacialsim_saas/schemas/indicators.py | — | ~133 |
+| 14:00 | Created backend/finacialsim_saas/services/indicators_service.py | — | ~1008 |
+| 14:00 | Created backend/tests/test_indicators_service.py | — | ~698 |
+| 14:00 | Edited backend/finacialsim_saas/schemas/indicators.py | modified IndicatorOut() | ~168 |
+| 14:01 | Edited backend/finacialsim_saas/schemas/indicators.py | 3→2 lines | ~19 |
+| 14:01 | Edited backend/finacialsim_saas/schemas/indicators.py | modified _to_decimal_str() | ~164 |
+| 14:01 | Edited backend/finacialsim_saas/schemas/indicators.py | modified _to_decimal_str() | ~184 |
+| 14:05 | Created backend/tests/test_audit_service.py | — | ~1019 |
+| 14:06 | Created backend/finacialsim_saas/schemas/audit_log.py | — | ~127 |
+| 14:06 | Created backend/finacialsim_saas/services/audit_service.py | — | ~854 |
+| 17:10 | Task 4: created AuditService, AuditLogItem/AuditLogPage schemas, 4 tests | backend/finacialsim_saas/services/audit_service.py, backend/finacialsim_saas/schemas/audit_log.py, backend/tests/test_audit_service.py | 4/4 tests pass, committed e40e2dd | ~2000 |
+| 14:09 | Created backend/tests/test_rules_update.py | — | ~949 |
+| 14:09 | Edited backend/finacialsim_saas/schemas/business_rules.py | added 1 import(s) | ~42 |
+| 14:09 | Edited backend/finacialsim_saas/schemas/business_rules.py | modified BusinessRuleUpdateIn() | ~39 |
+| 14:09 | Edited backend/finacialsim_saas/services/rules_service.py | added 4 import(s) | ~117 |
+| 14:09 | Edited backend/finacialsim_saas/services/rules_service.py | modified snapshot() | ~324 |
+| 14:10 | Task 5: RulesService.update() + BusinessRuleUpdateIn + 4 tests | rules_service.py, business_rules.py, test_rules_update.py | 4/4 tests pass, committed f7f9ea6 | ~3000 |
+| 14:12 | Edited backend/finacialsim_saas/services/rules_service.py | 2→2 lines | ~19 |
+| 14:14 | Edited backend/finacialsim_saas/main.py | added 1 import(s) | ~151 |
+| 14:14 | Edited backend/finacialsim_saas/main.py | 4→6 lines | ~86 |
+| 14:14 | Created backend/finacialsim_saas/workers/tasks.py | — | ~1216 |
+| 14:15 | Created backend/finacialsim_saas/workers/worker.py | — | ~470 |
+| 14:15 | Created backend/tests/test_arq_jobs.py | — | ~989 |
+| 14:16 | Task 6: ARQ lifespan Redis + worker cron jobs + test_arq_jobs.py | main.py, workers/tasks.py, workers/worker.py, tests/test_arq_jobs.py | 4 tests pass, committed 3337007 | ~3500 |
+| 14:21 | Edited backend/finacialsim_saas/workers/tasks.py | added 1 import(s) | ~24 |
+| 14:21 | Edited backend/finacialsim_saas/workers/worker.py | modified shutdown() | ~30 |
+| 14:23 | Created backend/finacialsim_saas/api/indicators.py | — | ~430 |
+| 14:23 | Edited backend/finacialsim_saas/main.py | added 1 import(s) | ~158 |
+| 14:23 | Edited backend/tests/conftest.py | modified client() | ~172 |
+| 14:23 | Created backend/tests/test_indicators_endpoints.py | — | ~977 |
+| 14:24 | Edited backend/tests/test_indicators_endpoints.py | 10→11 lines | ~109 |
+| 14:25 | Edited backend/tests/test_indicators_endpoints.py | modified test_indicator_series() | ~139 |
+| 14:27 | Edited backend/tests/test_indicators_service.py | 3→3 lines | ~40 |
+| 14:28 | Task 7: indicators API (list, series, refresh) | backend/finacialsim_saas/api/indicators.py, main.py, tests/test_indicators_endpoints.py, tests/conftest.py | 4/4 tests pass, 123/123 full suite | ~2000 |
+| 14:30 | Edited backend/finacialsim_saas/main.py | added 2 import(s) | ~66 |
+| 14:30 | Edited backend/finacialsim_saas/main.py | 4→6 lines | ~94 |
+| 14:30 | Edited backend/finacialsim_saas/api/indicators.py | modified list_indicators() | ~76 |
+| 14:30 | Edited backend/finacialsim_saas/api/indicators.py | modified get_indicator_series() | ~92 |
+| 14:30 | Edited backend/finacialsim_saas/api/indicators.py | 2→2 lines | ~24 |
+| 14:30 | Edited backend/tests/conftest.py | 2→3 lines | ~45 |
+| 14:35 | fix(phase4): arq pool for enqueue_job + restrict indicators to staff roles | main.py, indicators.py, conftest.py | 123 passed, committed a679b90 | ~800 |
+| 14:33 | Created backend/tests/test_business_rules_update.py | — | ~832 |
+| 14:34 | Edited backend/finacialsim_saas/api/business_rules.py | 8→8 lines | ~118 |
+| 14:34 | Edited backend/finacialsim_saas/api/business_rules.py | modified update_business_rule() | ~187 |
+| 14:34 | Edited backend/finacialsim_saas/api/business_rules.py | 3→4 lines | ~55 |
+| 14:38 | Created backend/finacialsim_saas/api/audit_log.py | — | ~651 |
+| 14:38 | Edited backend/finacialsim_saas/main.py | added 1 import(s) | ~169 |
+| 14:39 | Created backend/tests/test_audit_log_endpoints.py | — | ~1183 |
+| 14:39 | Edited backend/finacialsim_saas/api/audit_log.py | modified list_audit_log() | ~134 |
+| 14:39 | Edited backend/tests/test_audit_log_endpoints.py | 7→8 lines | ~86 |
+| 14:40 | Edited backend/tests/test_audit_log_endpoints.py | 9→11 lines | ~130 |
+| 14:41 | Task 9 complete: GET /audit-log endpoint + CSV export + 5 tests all passing (131 total) | audit_log.py, main.py, test_audit_log_endpoints.py | committed 616dc3e | ~2800 |
+| 14:43 | Edited backend/finacialsim_saas/api/audit_log.py | inline fix | ~16 |
+| 14:44 | Edited backend/finacialsim_saas/auth/service.py | modified register_user() | ~307 |
+| 14:44 | Edited backend/finacialsim_saas/auth/service.py | expanded (+6 lines) | ~169 |
+| 14:45 | Edited backend/finacialsim_saas/api/users.py | 19→14 lines | ~124 |
+| 14:45 | Edited backend/finacialsim_saas/services/client_service.py | modified create() | ~386 |
+| 14:45 | Edited backend/finacialsim_saas/services/client_service.py | modified update() | ~432 |
+| 14:45 | Edited backend/finacialsim_saas/services/client_service.py | modified deactivate() | ~163 |
+| 14:45 | Edited backend/finacialsim_saas/services/client_service.py | modified _serialize_client() | ~77 |
+| 14:45 | Edited backend/finacialsim_saas/services/vehicle_service.py | modified create() | ~351 |
+| 14:46 | Edited backend/finacialsim_saas/services/vehicle_service.py | modified update() | ~342 |
+| 14:46 | Edited backend/finacialsim_saas/services/vehicle_service.py | modified set_status() | ~258 |
+| 14:46 | Edited backend/finacialsim_saas/services/vehicle_service.py | modified _serialize_vehicle() | ~81 |
+| 14:46 | Edited backend/finacialsim_saas/services/simulation_service.py | modified get() | ~129 |
+| 14:46 | Edited backend/finacialsim_saas/services/simulation_service.py | modified archive() | ~311 |
+| 14:47 | Created backend/tests/test_audit_backfill.py | — | ~1904 |
+| 17:55 | Tasks 10-13: audit backfill — added AuditService.log() to register_user (optional ctx), ClientService.create/update/deactivate, VehicleService.create/update/set_status, SimulationService.create/archive | auth/service.py, api/users.py, services/client_service.py, services/vehicle_service.py, services/simulation_service.py, tests/test_audit_backfill.py | 135 tests pass, 0 failures | ~4k |
+| 14:55 | Session end: 77 writes across 33 files (2026-06-01-saas-phase-4-backend.md, 2026-06-01-saas-phase-4-frontend.md, models.py, test_models.py, 005_indicators_provider_health.py) | 67 reads | ~142881 tok |
