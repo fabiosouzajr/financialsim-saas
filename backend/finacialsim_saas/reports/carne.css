@@ -1,0 +1,136 @@
+@page {
+  size: A4;
+  margin: 15mm;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+.page-break {
+  break-after: page;
+}
+
+.page-header {
+  text-align: center;
+  border-bottom: 2px solid #222;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.loja-nome {
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.loja-info {
+  font-size: 9px;
+  color: #555;
+  margin-top: 2px;
+}
+
+.loja-endereco {
+  font-size: 9px;
+  color: #666;
+  margin-top: 1px;
+}
+
+.boleto {
+  border: 1px solid #333;
+  border-radius: 3px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+}
+
+.boleto-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.boleto-left {
+  flex: 1;
+}
+
+.boleto-right {
+  text-align: right;
+}
+
+.label {
+  font-size: 8px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.label-sm {
+  font-size: 8px;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.cliente-nome {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cliente-cpf {
+  font-size: 9px;
+  color: #555;
+  margin-top: 1px;
+}
+
+.veiculo-desc {
+  font-size: 9px;
+  color: #666;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.parcela-num {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.proposta-ref {
+  font-size: 9px;
+  color: #666;
+  margin-top: 1px;
+}
+
+.boleto-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vencimento-data {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.valor-block {
+  text-align: right;
+}
+
+.valor-brl {
+  font-size: 16px;
+  font-weight: bold;
+  color: #1a5c2e;
+}
+
+.corte {
+  text-align: center;
+  font-size: 9px;
+  color: #aaa;
+  letter-spacing: 3px;
+  margin: 2px 0;
+}
