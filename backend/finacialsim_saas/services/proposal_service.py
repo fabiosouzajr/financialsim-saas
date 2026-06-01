@@ -6,7 +6,7 @@ from datetime import date, datetime, timezone
 from decimal import Decimal
 from typing import Any
 
-from sqlalchemy import func, select, update
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from finacialsim_saas.auth.deps import RequestContext
@@ -83,13 +83,7 @@ class ProposalService:
         snapshot = build_snapshot(sim, fees, extras, rows, client, vehicle, tenant, user)
 
         year = date.today().year
-        count = await self._s.scalar(
-            select(func.count(Proposal.id)).where(
-                Proposal.tenant_id == ctx.tenant_id,
-                Proposal.codigo.like(f"PROP-{year}-%"),
-            )
-        ) or 0
-        codigo = f"PROP-{year}-{count + 1:05d}"
+        codigo = f"PROP-{year}-{uuid.uuid4().hex[:6].upper()}"
 
         proposal = Proposal(
             tenant_id=ctx.tenant_id,
@@ -103,9 +97,9 @@ class ProposalService:
         )
         self._s.add(proposal)
         await self._s.flush()
-        await self._arq.enqueue_job("render_proposta_pdf", str(proposal.id))
         await self._s.commit()
         await self._audit.log("proposta_criada", "proposals", proposal.id, None, ctx)
+        await self._arq.enqueue_job("render_proposta_pdf", str(proposal.id))
         return proposal
 
     async def get(self, proposal_id: uuid.UUID, ctx: RequestContext) -> Proposal:
@@ -158,6 +152,8 @@ class ProposalService:
         proposal = await self._get_proposal_owned(proposal_id, ctx)
         if proposal.status != ProposalStatus.ready:
             raise ValidationError("proposal must be ready to approve")
+        if proposal.render_status != ProposalRenderStatus.ready:
+            raise ValidationError("proposal PDF must be rendered before approval")
         if not self._can_act_on(proposal, ctx):
             raise TenantAccessError("insufficient permissions to approve this proposal")
 
