@@ -1,7 +1,5 @@
 import uuid
-from datetime import date
 
-import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from finacialsim_saas.auth.deps import RequestContext

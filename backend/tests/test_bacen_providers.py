@@ -2,7 +2,6 @@ from datetime import date
 from decimal import Decimal
 
 import httpx
-import pytest
 import respx
 
 from finacialsim_core.integrations.base import ProviderChain

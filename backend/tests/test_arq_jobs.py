@@ -1,5 +1,4 @@
 import httpx
-import pytest
 import respx
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncEngine

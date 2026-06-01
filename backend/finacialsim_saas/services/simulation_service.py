@@ -13,7 +13,6 @@ from finacialsim_core.cet import compute_cet
 from finacialsim_core.extras import Extra, ExtraModalidade, compute_extras_per_parcela
 from finacialsim_core.iof import IofConfig, compute_financed_amount_with_iof
 from finacialsim_core.money import quantize_brl
-from finacialsim_core.price_table import build_schedule
 from finacialsim_core.validators import SimulationInput, ValidationRules, validate_simulation
 
 from finacialsim_saas.auth.deps import RequestContext
@@ -25,8 +24,7 @@ from finacialsim_saas.errors import AppError, NotFoundError, TenantAccessError, 
 from finacialsim_saas.schemas.simulations import (
     AmortizationRowOut, ExtraIn, FeeIn, SimulationCreate, SimulationListItem,
     SimulationListPage, SimulationOut, SimulationPreviewRequest,
-    SimulationPreviewResponse, SimulationSummary, ValidationIssueOut,
-    FeeOut, ExtraOut,
+    SimulationPreviewResponse, SimulationSummary, FeeOut, ExtraOut,
 )
 from finacialsim_saas.services.rules_service import RulesService
 

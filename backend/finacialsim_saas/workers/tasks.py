@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import time
 from datetime import date, datetime, timezone
-from typing import Any
 
 import httpx
 from loguru import logger
 from sqlalchemy import delete, select
 
-from finacialsim_saas.data.models import FipeCache, IndicatorHistory, ProviderHealth
+from finacialsim_saas.data.models import ProviderHealth
 from finacialsim_saas.services.indicators_service import IndicatorsService
 
 UTC = timezone.utc

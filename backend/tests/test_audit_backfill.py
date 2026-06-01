@@ -2,12 +2,11 @@
 import uuid
 from datetime import date
 
-import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from finacialsim_saas.auth.deps import RequestContext
-from finacialsim_saas.data.models import AuditLog, Role, Tenant, User
+from finacialsim_saas.data.models import AuditLog, Role, Tenant
 from finacialsim_saas.settings import get_settings
 
 

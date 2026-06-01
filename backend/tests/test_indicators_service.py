@@ -1,4 +1,4 @@
-from datetime import date, datetime, timezone
+from datetime import date, timezone
 from decimal import Decimal
 
 import pytest

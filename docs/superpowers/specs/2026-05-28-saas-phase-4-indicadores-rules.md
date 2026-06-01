@@ -37,7 +37,7 @@ Failures: counter increment, yellow badge on indicators page; never block reques
 
 ### API endpoints
 
-```
+```text
 GET    /api/v1/indicators                        (any staff) → latest of all codigos
 GET    /api/v1/indicators/{codigo}/series        ?range=12m
 

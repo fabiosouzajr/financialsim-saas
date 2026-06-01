@@ -17,7 +17,6 @@ def test_settings_missing_database_url_raises(monkeypatch):
 
 
 def test_settings_has_jwt_and_phase1_fields(monkeypatch):
-    import os
     monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://u:p@localhost/db")
     monkeypatch.setenv("JWT_SECRET_KEY", "test-jwt-secret")
     # Force reload to pick up new env

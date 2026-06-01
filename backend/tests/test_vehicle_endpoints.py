@@ -1,6 +1,6 @@
 import pytest
 import uuid
-from finacialsim_saas.data.models import Tenant, User, Role
+from finacialsim_saas.data.models import Tenant, Role
 from finacialsim_saas.auth.service import AuthService
 from finacialsim_saas.settings import get_settings
 

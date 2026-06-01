@@ -4,7 +4,6 @@ Tests app-level tenant_id filtering (no RLS in Phase 1).
 """
 import uuid
 import pytest
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from finacialsim_saas.data.models import Role, Tenant
 from finacialsim_saas.auth.service import AuthService

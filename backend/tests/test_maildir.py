@@ -1,5 +1,3 @@
-import pytest
-from pathlib import Path
 
 
 def test_deliver_writes_eml_file(tmp_path):

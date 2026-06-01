@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from finacialsim_saas.auth.deps import RequestContext, get_current_ctx, get_db_session, require_role
+from finacialsim_saas.auth.deps import RequestContext, get_db_session, require_role
 from finacialsim_saas.schemas.indicators import IndicatorOut, SeriesOut
 from finacialsim_saas.services.indicators_service import IndicatorsService
 
