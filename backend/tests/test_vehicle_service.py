@@ -1,11 +1,10 @@
 import pytest
 import pytest_asyncio
 import uuid
-from decimal import Decimal
 
 from finacialsim_saas.services.vehicle_service import VehicleService
 from finacialsim_saas.schemas.vehicles import VehicleIn
-from finacialsim_saas.errors import ValidationError, NotFoundError, TenantAccessError
+from finacialsim_saas.errors import ValidationError, TenantAccessError
 from finacialsim_saas.data.models import Role, User, Tenant
 from finacialsim_saas.auth.deps import RequestContext
 

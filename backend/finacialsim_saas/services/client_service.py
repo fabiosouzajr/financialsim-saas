@@ -48,6 +48,12 @@ class ClientService:
         )
         self._s.add(client)
         await self._s.flush()
+        from finacialsim_saas.services.audit_service import AuditService
+        await AuditService(self._s).log(
+            "create", "client", client.id,
+            {"before": None, "after": _serialize_client(client)},
+            ctx,
+        )
         return _to_out(client)
 
     async def get(self, client_id: uuid.UUID, ctx: RequestContext) -> ClientOut:
@@ -97,6 +103,7 @@ class ClientService:
             ).scalar_one_or_none()
             if dupe is not None:
                 raise ConflictError(f"CPF/CNPJ {body.cpf_cnpj} já em uso")
+        before = _serialize_client(client)
         client.nome = body.nome
         client.cpf_cnpj = body.cpf_cnpj
         client.tipo = ClientType(body.tipo)
@@ -110,6 +117,12 @@ class ClientService:
         client.observacoes = body.observacoes
         client.atualizado_em = datetime.now(timezone.utc)
         await self._s.flush()
+        from finacialsim_saas.services.audit_service import AuditService
+        await AuditService(self._s).log(
+            "update", "client", client.id,
+            {"before": before, "after": _serialize_client(client)},
+            ctx,
+        )
         return _to_out(client)
 
     async def deactivate(self, client_id: uuid.UUID, ctx: RequestContext) -> ClientOut:
@@ -117,6 +130,12 @@ class ClientService:
         client.is_active = False
         client.atualizado_em = datetime.now(timezone.utc)
         await self._s.flush()
+        from finacialsim_saas.services.audit_service import AuditService
+        await AuditService(self._s).log(
+            "deactivate", "client", client.id,
+            {"before": {"is_active": True}, "after": {"is_active": False}},
+            ctx,
+        )
         return _to_out(client)
 
     async def _get_or_404(self, client_id: uuid.UUID, tenant_id: uuid.UUID) -> Client:
@@ -126,6 +145,16 @@ class ClientService:
         if row.tenant_id != tenant_id:
             raise TenantAccessError("Acesso negado")
         return row
+
+
+def _serialize_client(c: "Client") -> dict:
+    return {
+        "id": str(c.id),
+        "nome": c.nome,
+        "cpf_cnpj": c.cpf_cnpj,
+        "tipo": c.tipo.value,
+        "is_active": c.is_active,
+    }
 
 
 def _validate_document(cpf_cnpj: str, tipo: str) -> None:

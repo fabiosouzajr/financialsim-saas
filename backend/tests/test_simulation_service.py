@@ -1,11 +1,10 @@
-import asyncio
 import pytest
 import pytest_asyncio
 from decimal import Decimal
 from uuid import uuid4
 from datetime import date
 
-from finacialsim_saas.data.models import BusinessRule, Tenant, User, Role, Client, ClientType, Vehicle, VehicleStatus
+from finacialsim_saas.data.models import Tenant, Role, Client, ClientType, Vehicle, VehicleStatus
 
 
 @pytest_asyncio.fixture
@@ -124,7 +123,7 @@ async def test_preview_total_pago_pelo_cliente_includes_entrada(session, tenant,
 async def test_create_persists_simulation_and_rows(session, tenant, user, rules_seeded, client_and_vehicle):
     from finacialsim_saas.services.simulation_service import SimulationService
     from finacialsim_saas.auth.deps import RequestContext
-    from finacialsim_saas.data.models import Role, SimulationStatus
+    from finacialsim_saas.data.models import Role
     from finacialsim_saas.schemas.simulations import SimulationCreate
     cl, v = client_and_vehicle
     ctx = RequestContext(user_id=user.id, tenant_id=tenant.id, role=Role.user, iat=0.0)

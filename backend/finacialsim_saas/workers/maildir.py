@@ -19,7 +19,7 @@ class MaildirChannel:
 async def drain_outbox(ctx) -> None:  # noqa: ANN001 — ARQ context
     """ARQ task: reads pending notifications_outbox rows, writes to MaildirChannel."""
     from datetime import timezone
-    from sqlalchemy import select, update
+    from sqlalchemy import select
 
     from finacialsim_saas.data.database import build_session_factory
     from finacialsim_saas.data.models import NotificationsOutbox

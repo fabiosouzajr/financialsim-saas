@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from pydantic import BaseModel
 
 from finacialsim_saas.schemas.types import DecimalStr
@@ -25,3 +27,8 @@ class BusinessRulesOut(BaseModel):
     rateio_ipva_meses_default: int
     rateio_emplacamento_meses_default: int
     taxa_por_prazo_curva: list[RateCurvePointOut]
+
+
+class BusinessRuleUpdateIn(BaseModel):
+    valor: Any
+    motivo: str | None = None

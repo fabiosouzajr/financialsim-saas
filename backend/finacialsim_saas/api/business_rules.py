@@ -1,10 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from finacialsim_saas.auth.deps import RequestContext, get_current_ctx, get_db_session
-from finacialsim_saas.schemas.business_rules import BusinessRulesOut, RateCurvePointOut
+from finacialsim_saas.auth.deps import RequestContext, get_current_ctx, get_db_session, require_role
+from finacialsim_saas.schemas.business_rules import BusinessRulesOut, BusinessRuleUpdateIn, RateCurvePointOut
 from finacialsim_saas.services.rules_service import RulesService
 
 router = APIRouter(prefix="/api/v1", tags=["business-rules"])
@@ -37,3 +37,17 @@ async def get_business_rules(
             for p in curva_raw
         ],
     )
+
+
+@router.put("/business-rules/{chave}", status_code=status.HTTP_204_NO_CONTENT)
+async def update_business_rule(
+    chave: str,
+    body: BusinessRuleUpdateIn,
+    ctx: Annotated[RequestContext, Depends(require_role("admin"))],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
+    request: Request,
+) -> None:
+    redis = getattr(request.app.state, "redis", None)
+    svc = RulesService(session)
+    await svc.update(chave, body.valor, ctx, motivo=body.motivo, redis=redis)
+    await session.commit()

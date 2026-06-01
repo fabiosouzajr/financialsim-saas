@@ -3,7 +3,7 @@ import pytest_asyncio
 import uuid
 from finacialsim_saas.services.client_service import ClientService
 from finacialsim_saas.schemas.clients import ClientIn
-from finacialsim_saas.errors import ValidationError, ConflictError, NotFoundError, TenantAccessError
+from finacialsim_saas.errors import ValidationError, ConflictError, TenantAccessError
 from finacialsim_saas.data.models import Role, User, Tenant
 from finacialsim_saas.auth.deps import RequestContext
 

@@ -2,6 +2,9 @@ import uuid
 from contextlib import asynccontextmanager
 from typing import Any
 
+import redis.asyncio as aioredis
+from arq import create_pool
+from arq.connections import RedisSettings as ArqRedisSettings
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from loguru import logger
@@ -24,8 +27,12 @@ async def lifespan(app: FastAPI):
     app_state["engine"] = engine
     app.state.session_factory = build_session_factory(engine)
     app.state.fipe_chain = build_fipe_chain(app.state.session_factory)
+    app.state.redis = aioredis.from_url(str(settings.redis_url), decode_responses=True)
+    app.state.arq = await create_pool(ArqRedisSettings.from_dsn(str(settings.redis_url)))
     logger.info("startup", env=settings.app_env, sha=settings.git_sha)
     yield
+    await app.state.arq.aclose()
+    await app.state.redis.aclose()
     await engine.dispose()
     logger.info("shutdown")
 
@@ -78,6 +85,8 @@ from finacialsim_saas.api.clients import router as clients_router               
 from finacialsim_saas.api.vehicles import router as vehicles_router                    # noqa: E402
 from finacialsim_saas.api.fipe import router as fipe_router                            # noqa: E402
 from finacialsim_saas.api.cep import router as cep_router                              # noqa: E402
+from finacialsim_saas.api.indicators import router as indicators_router                # noqa: E402
+from finacialsim_saas.api.audit_log import router as audit_log_router                  # noqa: E402
 
 app.include_router(health_router)
 app.include_router(auth_router)
@@ -88,3 +97,5 @@ app.include_router(clients_router)
 app.include_router(vehicles_router)
 app.include_router(fipe_router)
 app.include_router(cep_router)
+app.include_router(indicators_router)
+app.include_router(audit_log_router)

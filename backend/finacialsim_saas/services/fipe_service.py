@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
 
 from finacialsim_core.integrations.base import ProviderChain
 from finacialsim_core.integrations.fipe.brasilapi import BrasilApiFipeProvider

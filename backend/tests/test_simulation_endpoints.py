@@ -1,15 +1,12 @@
 import pytest
-import pytest_asyncio
 from uuid import uuid4
-from datetime import date
 
-from finacialsim_saas.data.models import Role, Tenant, User, Client, ClientType, Vehicle, VehicleStatus
+from finacialsim_saas.data.models import Role, Tenant, Client, ClientType, Vehicle, VehicleStatus
 
 
 async def _make_token(client, session, role=Role.user):
     from finacialsim_saas.auth.service import AuthService
     from finacialsim_saas.settings import get_settings
-    from finacialsim_saas.data.models import Tenant
 
     t = Tenant(name=f"T-{uuid4().hex[:4]}", slug=f"t-{uuid4().hex[:6]}")
     session.add(t)

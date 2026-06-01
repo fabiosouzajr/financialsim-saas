@@ -49,6 +49,12 @@ class VehicleService:
         )
         self._s.add(vehicle)
         await self._s.flush()
+        from finacialsim_saas.services.audit_service import AuditService
+        await AuditService(self._s).log(
+            "create", "vehicle", vehicle.id,
+            {"before": None, "after": _serialize_vehicle(vehicle)},
+            ctx,
+        )
         return _to_out(vehicle)
 
     async def get(self, vehicle_id: uuid.UUID, ctx: RequestContext) -> VehicleOut:
@@ -84,6 +90,7 @@ class VehicleService:
 
     async def update(self, vehicle_id: uuid.UUID, body: VehicleIn, ctx: RequestContext) -> VehicleOut:
         v = await self._get_or_404(vehicle_id, ctx.tenant_id)
+        before = _serialize_vehicle(v)
         v.fonte = body.fonte
         v.tipo = body.tipo
         v.marca = body.marca
@@ -100,6 +107,12 @@ class VehicleService:
         v.snapshot_json = body.snapshot_json
         v.atualizado_em = datetime.now(timezone.utc)
         await self._s.flush()
+        from finacialsim_saas.services.audit_service import AuditService
+        await AuditService(self._s).log(
+            "update", "vehicle", v.id,
+            {"before": before, "after": _serialize_vehicle(v)},
+            ctx,
+        )
         return _to_out(v)
 
     async def set_status(self, vehicle_id: uuid.UUID, new_status: str, ctx: RequestContext) -> VehicleOut:
@@ -114,6 +127,12 @@ class VehicleService:
         v.status = VehicleStatus(new_status)
         v.atualizado_em = datetime.now(timezone.utc)
         await self._s.flush()
+        from finacialsim_saas.services.audit_service import AuditService
+        await AuditService(self._s).log(
+            "set_status", "vehicle", v.id,
+            {"before": {"status": current}, "after": {"status": v.status.value}},
+            ctx,
+        )
         return _to_out(v)
 
     async def refresh_fipe(self, vehicle_id: uuid.UUID, ctx: RequestContext) -> VehicleOut:
@@ -152,6 +171,17 @@ class VehicleService:
         if row.tenant_id != tenant_id:
             raise TenantAccessError("Acesso negado")
         return row
+
+
+def _serialize_vehicle(v: "Vehicle") -> dict:
+    return {
+        "id": str(v.id),
+        "marca": v.marca,
+        "modelo": v.modelo,
+        "ano_modelo": v.ano_modelo,
+        "status": v.status.value,
+        "fonte": v.fonte,
+    }
 
 
 def _encode_cursor(dt: datetime) -> str:
