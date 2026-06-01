@@ -129,7 +129,7 @@ import uuid as _uuid  # noqa: E402
 from pathlib import Path as _Path  # noqa: E402
 
 from jinja2 import Environment as _Env, FileSystemLoader as _FSL  # noqa: E402
-from weasyprint import CSS, HTML  # noqa: E402
+from weasyprint import CSS, HTML  # type: ignore[import-untyped]  # noqa: E402
 
 from finacialsim_saas.data.models import (  # noqa: E402
     Proposal as _Proposal,

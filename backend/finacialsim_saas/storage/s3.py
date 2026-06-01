@@ -3,8 +3,8 @@ from __future__ import annotations
 
 import asyncio
 
-import boto3
-from botocore.config import Config
+import boto3  # type: ignore[import-untyped]
+from botocore.config import Config  # type: ignore[import-untyped]
 
 
 class S3Backend:

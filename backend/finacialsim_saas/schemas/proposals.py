@@ -7,7 +7,7 @@ from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict
 
-from finacialsim_core.money import quantize_brl
+from finacialsim_core.money import quantize_brl  # type: ignore[import-untyped]
 from finacialsim_saas.data.models import (
     AmortizationRow, Client, ClientType, Simulation,
     SimulationExtra, SimulationFee, Tenant, User, Vehicle,

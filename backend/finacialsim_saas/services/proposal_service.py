@@ -4,6 +4,7 @@ from __future__ import annotations
 import uuid
 from datetime import date, datetime, timezone
 from decimal import Decimal
+from typing import Any
 
 from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,7 +27,7 @@ UTC = timezone.utc
 
 
 class ProposalService:
-    def __init__(self, session: AsyncSession, arq: object, storage: StorageBackend) -> None:
+    def __init__(self, session: AsyncSession, arq: Any, storage: StorageBackend) -> None:
         self._s = session
         self._arq = arq
         self._storage = storage
@@ -76,6 +77,8 @@ class ProposalService:
         vehicle = await self._s.get(Vehicle, sim.vehicle_id) if sim.vehicle_id else None
         tenant = await self._s.get(Tenant, ctx.tenant_id)
         user = await self._s.get(User, ctx.user_id)
+        if tenant is None or user is None:
+            raise NotFoundError("tenant or user context not found")
 
         snapshot = build_snapshot(sim, fees, extras, rows, client, vehicle, tenant, user)
 

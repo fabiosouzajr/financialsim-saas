@@ -15,7 +15,7 @@ from finacialsim_saas.workers.tasks import (
     update_bacen_indicators,
     verify_provider_health,
 )
-from finacialsim_core.integrations.base import ProviderChain
+from finacialsim_core.integrations.base import ProviderChain  # type: ignore[import-untyped]
 
 
 def get_redis_settings() -> RedisSettings:
