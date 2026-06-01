@@ -11,6 +11,7 @@ from finacialsim_core.money import quantize_brl
 from finacialsim_saas.data.models import (
     AmortizationRow, Client, ClientType, Simulation,
     SimulationExtra, SimulationFee, Tenant, User, Vehicle,
+    ProposalRenderStatus, ProposalStatus,
 )
 
 
@@ -190,6 +191,7 @@ class ProposalCreate(BaseModel):
 
 
 class ProposalOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID
     tenant_id: uuid.UUID
     simulation_id: uuid.UUID
@@ -197,9 +199,9 @@ class ProposalOut(BaseModel):
     gerado_por: uuid.UUID
     gerado_em: datetime
     validade_dias: int
-    render_status: str
+    render_status: ProposalRenderStatus
     render_error: str | None
-    status: str
+    status: ProposalStatus
     pdf_key: str | None
     carne_key: str | None
     aprovado_por: uuid.UUID | None
@@ -209,11 +211,12 @@ class ProposalOut(BaseModel):
 
 
 class ProposalListItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID
     codigo: str
     simulation_id: uuid.UUID
-    render_status: str
-    status: str
+    render_status: ProposalRenderStatus
+    status: ProposalStatus
     gerado_em: datetime
 
 
