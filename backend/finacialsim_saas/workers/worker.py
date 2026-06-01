@@ -34,7 +34,7 @@ async def startup(ctx: dict) -> None:
 
 async def shutdown(ctx: dict) -> None:
     await ctx["http_client"].aclose()
-    await ctx["engine"].dispose()
+    ctx["engine"].dispose()
 
 
 class WorkerSettings:

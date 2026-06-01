@@ -41,7 +41,8 @@ async def update_bacen_indicators(ctx: dict) -> None:
 
     chain = ctx["bacen_chain"]
     session_factory = ctx["session_factory"]
-    one_year_ago = date(today.year - 1, today.month, today.day)
+    from datetime import timedelta
+    one_year_ago = today - timedelta(days=366)
 
     async with session_factory() as session:
         svc = IndicatorsService(session)
