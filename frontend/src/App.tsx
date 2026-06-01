@@ -48,7 +48,7 @@ export default function App() {
             <Route
               path="/propostas"
               element={
-                <RequireRole roles={["admin", "operator"]}>
+                <RequireRole roles={["admin", "manager", "user"]}>
                   <PropostasPage />
                 </RequireRole>
               }
