@@ -28,6 +28,9 @@
 - **FipeCache mock objects:** Don't use `ModelClass.__new__(ModelClass)` for mock objects — SQLAlchemy descriptors break. Use `types.SimpleNamespace` instead.
 - **VehicleService.refresh_fipe order:** Check `fonte == "manual"` BEFORE checking `self._fipe is None`, so manual vehicle raises ValidationError even without fipe_chain injected.
 - **PostgresFipeCache session_factory usage:** Uses `async with self._sf() as s:` — the `async_sessionmaker` is callable and returns a session context manager.
+- **AuthService takes 2 args:** `AuthService(session, get_settings())` — always pass settings as second arg.
+- **TokenResponse key is `access`, not `access_token`:** The login endpoint returns `{"access": ..., "refresh": ...}`. Use `r.json()["access"]`. Or better: use `AuthService.issue_tokens(user)` directly in tests (per existing learning).
+- **conftest has no `session_factory` fixture:** Tests that need a factory call `build_session_factory(engine)` themselves with the `engine` fixture.
 
 ## Do-Not-Repeat
 

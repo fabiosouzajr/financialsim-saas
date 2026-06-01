@@ -11,7 +11,7 @@ from finacialsim_saas.data.models import (
 from finacialsim_saas.schemas.proposals import (
     PropostaSnapshot, LojaSnap, VendedorSnap, SimSnap,
 )
-from finacialsim_saas.workers.tasks import render_proposta_pdf, render_carne_pdf
+from finacialsim_saas.workers.tasks import render_proposta_pdf, render_carne_pdf  # noqa: F401
 
 
 def _make_snap() -> dict:

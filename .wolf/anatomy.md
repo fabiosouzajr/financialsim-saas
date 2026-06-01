@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T22:20:28.647Z
-> Files: 227 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T23:09:33.213Z
+> Files: 253 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/
 
@@ -9,7 +9,7 @@
 
 ## ./
 
-- `.gitignore` — Git ignore rules (~1044 tok)
+- `.gitignore` — Git ignore rules (~1050 tok)
 - `CLAUDE.md` — CLAUDE.md (~1980 tok)
 - `pyproject.toml` (~34 tok)
 - `README.md` — Project documentation (~461 tok)
@@ -25,11 +25,12 @@
 
 ## .github/workflows/
 
-- `ci.yml` — CI: CI (~573 tok)
+- `ci.yml` — CI: CI (~630 tok)
 
 ## backend/
 
-- `pyproject.toml` (~290 tok)
+- `pyproject.toml` (~308 tok)
+- `smoke_weasyprint.py` — Run once locally to verify WeasyPrint renders on Linux. Delete after passing. (~924 tok)
 
 ## backend/alembic/
 
@@ -43,13 +44,14 @@
 - `004_cadastros.py` — cadastros — clients, vehicles, fipe_cache + FK columns on simulations (~1440 tok)
 - `004_cadastros.py` — cadastros — clients, vehicles, fipe_cache + FK columns on simulations (~1693 tok)
 - `005_indicators_provider_health.py` — indicators_history and provider_health tables (~606 tok)
+- `006_proposals.py` — proposals and parcela_payments tables (~1248 tok)
 
 ## backend/finacialsim_saas/
 
 - `__init__.py` — FinacialSim SaaS backend. (~10 tok)
 - `errors.py` — Declares AppError (~368 tok)
-- `main.py` — API router (~1205 tok)
-- `settings.py` — Settings: jwt_secret_key, access_token_expire_minutes, refresh_token_expire_days, frontend_base_url, maildir_path (~310 tok)
+- `main.py` — API router (~1282 tok)
+- `settings.py` — Settings: get_settings (~331 tok)
 
 ## backend/finacialsim_saas/api/
 
@@ -61,7 +63,9 @@
 - `fipe.py` — API: 5 endpoints (~727 tok)
 - `health.py` — API: 2 endpoints (~289 tok)
 - `indicators.py` — API: 3 endpoints (~442 tok)
+- `proposals.py` — Proposal API endpoints. (~1188 tok)
 - `simulations.py` — API: 7 endpoints (~1042 tok)
+- `storage.py` — Storage serve endpoint — validates HMAC token and streams the file. (~368 tok)
 - `users.py` — API: 4 endpoints (~1208 tok)
 - `vehicles.py` — API: 6 endpoints (~855 tok)
 - `vehicles.py` — API: 6 endpoints (~871 tok)
@@ -81,7 +85,7 @@
 ## backend/finacialsim_saas/data/
 
 - `database.py` — Base: build_engine, build_session_factory, check_db (~252 tok)
-- `models.py` — Declares as (~6190 tok)
+- `models.py` — Declares as (~7303 tok)
 
 ## backend/finacialsim_saas/integrations/
 
@@ -103,6 +107,13 @@
 
 - `logging.py` — configure_logging (~153 tok)
 
+## backend/finacialsim_saas/reports/
+
+- `carne.css` — CSS styles for payment booklet PDF (~200 tok)
+- `carne.html` — Jinja2 HTML template for payment booklet (carnê) PDF (~500 tok)
+- `proposta.css` — CSS styles for proposal PDF report (~200 tok)
+- `proposta.html` — Jinja2 HTML template for proposal PDF report (~500 tok)
+
 ## backend/finacialsim_saas/schemas/
 
 - `__init__.py` (~0 tok)
@@ -111,6 +122,7 @@
 - `clients.py` — Declares ClientIn (~381 tok)
 - `fipe.py` — Declares FipeBrandItem (~154 tok)
 - `indicators.py` — Declares IndicatorOut (~372 tok)
+- `proposals.py` — Proposal schemas: PropostaSnapshot (sealed) + API request/response models. (~1772 tok)
 - `simulations.py` — Declares FeeIn (~1052 tok)
 - `types.py` (~84 tok)
 - `vehicles.py` — Declares VehicleIn (~482 tok)
@@ -124,15 +136,28 @@
 - `fipe_cache.py` — PostgresFipeCache: name, fetch (~1332 tok)
 - `fipe_service.py` — FipeService: build_fipe_chain, get_brands, get_models, get_years + 1 more (~745 tok)
 - `indicators_service.py` — IndicatorsService: upsert, latest, latest_all, series (~1008 tok)
+- `proposal_service.py` — ProposalService — manages the full proposal lifecycle. (~2941 tok)
 - `rules_service.py` — RulesService: get_rules, snapshot, update (~724 tok)
 - `simulation_service.py` — from: preview, create (~8192 tok)
 - `vehicle_service.py` — VehicleService: create, get, list, update + 2 more (~2393 tok)
 
+## backend/finacialsim_saas/storage/
+
+- `__init__.py` — StorageBackend Protocol. (~120 tok)
+- `deps.py` — Build storage backend from settings. (~186 tok)
+- `local.py` — LocalVolumeBackend — stores files on disk; signs URLs with HMAC-SHA256. (~474 tok)
+- `s3.py` — S3Backend — boto3 against any S3-compatible endpoint (AWS S3, MinIO, R2). (~493 tok)
+
+## backend/finacialsim_saas/utils/
+
+- `__init__.py` (~0 tok)
+- `br_format.py` — Brazilian display formatters: R$, %, dd/mm/yyyy, CPF/CNPJ. (~306 tok)
+
 ## backend/finacialsim_saas/workers/
 
 - `maildir.py` — MaildirChannel: deliver, drain_outbox (~753 tok)
-- `tasks.py` — ping, update_bacen_indicators, prune_fipe_cache, verify_provider_health (~1221 tok)
-- `worker.py` — WorkerSettings: get_redis_settings, startup, shutdown (~468 tok)
+- `tasks.py` — ping, update_bacen_indicators, prune_fipe_cache, verify_provider_health (~3646 tok)
+- `worker.py` — WorkerSettings: get_redis_settings, startup, shutdown (~566 tok)
 
 ## backend/tests/
 
@@ -144,6 +169,7 @@
 - `test_auth_endpoints.py` — seed, test_login_returns_tokens, test_login_wrong_password_returns_401, test_refresh_returns_new_tok (~850 tok)
 - `test_auth_service.py` — tenant, test_register_and_authenticate, test_authenticate_wrong_password_raises, test_issue_tokens_r (~1184 tok)
 - `test_bacen_providers.py` — test_sgs_primary_ok, test_sgs_http_error_returns_err, test_chain_primary_fail_brasilapi_fallback, te (~903 tok)
+- `test_br_format.py` — test_format_brl_basic, test_format_brl_negative, test_format_brl_large, test_format_pct_default (~289 tok)
 - `test_business_rules_update.py` — test_put_business_rule_updates_value, test_put_business_rule_non_admin_forbidden, test_put_business_ (~832 tok)
 - `test_cep_service.py` — test_cep_lookup_returns_brasilapi_response, test_cep_lookup_fails_open_on_error, test_cep_invalid_le (~317 tok)
 - `test_cli.py` — runner, test_tenant_create_and_user_create (~270 tok)
@@ -158,11 +184,18 @@
 - `test_indicators_service.py` — test_upsert_and_latest, test_upsert_idempotent, test_series_returns_ordered_points, test_series_inva (~698 tok)
 - `test_maildir.py` — test_deliver_writes_eml_file (~122 tok)
 - `test_models.py` — test_all_phase1_models_importable_and_tables_exist, test_all_phase2_models_importable_and_tables_exi (~674 tok)
+- `test_proposal_endpoints.py` — Integration tests for proposal API endpoints. (~1505 tok)
+- `test_proposal_service_unit.py` — Unit tests for ProposalService using mocked session + arq. (~785 tok)
+- `test_proposal_service.py` — Integration tests for ProposalService against a real Postgres. (~2157 tok)
+- `test_proposal_snapshot.py` — test_build_snapshot_basic, test_build_snapshot_tarifas_computed, test_snapshot_rejects_extra_fields, (~1010 tok)
+- `test_render_tasks.py` — Worker render task tests — WeasyPrint is mocked. (~1147 tok)
 - `test_rules_update.py` — test_update_changes_value_and_writes_audit, test_update_with_motivo_stored_in_diff, test_update_publ (~949 tok)
 - `test_schemas.py` — M: test_decimal_str_serializes_as_string, test_decimal_str_parses_from_string, test_simulation_creat (~552 tok)
 - `test_settings.py` — test_settings_loads_with_valid_env, test_settings_missing_database_url_raises, test_settings_has_jwt (~329 tok)
 - `test_simulation_endpoints.py` — test_get_business_rules, test_preview_returns_schedule, test_create_simulation_returns_201, test_lis (~2167 tok)
 - `test_simulation_service.py` — tenant, user, rules_seeded, client_and_vehicle (~3287 tok)
+- `test_storage_contract.py` — Storage backend contract test — same assertions pass both Local and S3 (MinIO). (~590 tok)
+- `test_storage_local.py` — storage, test_put_and_get, test_signed_url_structure, test_signed_url_valid_hmac (~588 tok)
 - `test_tenant_isolation.py` — two_tenants, test_get_users_returns_only_own_tenant, test_get_me_returns_own_tenant, test_patch_user (~1047 tok)
 - `test_users_endpoints.py` — setup, test_get_me, test_get_users_as_admin_returns_staff_only, test_get_users_as_user_role_returns_ (~963 tok)
 - `test_vehicle_endpoints.py` — test_create_and_list_vehicles, test_set_vehicle_status, test_invalid_status_transition_returns_422 (~734 tok)
@@ -262,7 +295,7 @@
 
 ## frontend/src/
 
-- `App.tsx` — queryClient (~575 tok)
+- `App.tsx` — queryClient (~662 tok)
 - `index.css` — Styles: 1 rules (~7 tok)
 
 ## frontend/src/components/
@@ -298,6 +331,7 @@
 - `csv.ts` — Exports buildCsv, downloadCsv (~212 tok)
 - `decimal.ts` — Exports fmtBRL, fmtPct, fmtRate, parseBRL (~225 tok)
 - `fipe.ts` — Exports FipeBrand, FipeModel, FipeYear, FipePrice + 4 more (~385 tok)
+- `proposals.ts` — Exports ProposalOut, ProposalListItem, ProposalListPage, createProposal + 6 more (~603 tok)
 - `utils.ts` — Exports cn (~49 tok)
 - `vehicles.ts` — Exports VehicleOut, VehicleListPage, VehicleIn, listVehicles + 4 more (~583 tok)
 
@@ -309,7 +343,7 @@
 - `Login.tsx` — schema — renders form (~844 tok)
 - `ResetPassword.tsx` — schema — renders form (~827 tok)
 - `Simulacao.tsx` — Simulacao (~700 tok)
-- `SimulacaoEdit.tsx` — isoToDateStr (~1261 tok)
+- `SimulacaoEdit.tsx` — isoToDateStr (~3569 tok)
 
 ## frontend/src/routes/admin/
 
@@ -318,6 +352,10 @@
 ## frontend/src/routes/clientes/
 
 - `ClientesPage.tsx` — isValidCpf — renders form, table, modal (~4077 tok)
+
+## frontend/src/routes/propostas/
+
+- `PropostasPage.tsx` — STATUS_OPTIONS — renders table (~1328 tok)
 
 ## frontend/src/routes/simulacao/
 

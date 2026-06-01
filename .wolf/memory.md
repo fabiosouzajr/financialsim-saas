@@ -3,6 +3,19 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 20:00 | fix(phase5) lint+mypy: add type:ignore[import-untyped] for boto3/botocore/weasyprint/finacialsim_core; arq: Any; None-guard for tenant/user | s3.py, proposals.py, proposal_service.py, settings.py, tasks.py, worker.py | committed 7a1b02e; 172 passed 1 skipped | ~800 |
+
+| 19:55 | Phase 5 tasks 9-11: wrote ProposalService integration tests, proposal API endpoint tests, S3Backend stub + storage contract test | backend/tests/test_proposal_service.py, test_proposal_endpoints.py, test_storage_contract.py, storage/s3.py, pyproject.toml | 13 passed, 1 skipped (MinIO); commit e5703bb | ~6000 |
+
+| 2026-06-01 | Task 5: StorageBackend protocol + LocalVolumeBackend + HMAC serve endpoint | backend/finacialsim_saas/storage/, backend/finacialsim_saas/api/storage.py | 5/5 tests pass, committed 04856a4 | ~2k |
+| 2026-06-01 | Task 6: ProposalService with create/get/list/approve/cancel/carne/re-render | backend/finacialsim_saas/services/proposal_service.py | 3/3 tests pass, committed 637ead2 | ~3k |
+
+| 06:00 | phase5 task0: added weasyprint>=62.0 + jinja2>=3.1.0 to backend/pyproject.toml | backend/pyproject.toml | done | ~200 |
+| 06:01 | copied proposta.html, carne.html, proposta.css, carne.css to backend/finacialsim_saas/reports/ | backend/finacialsim_saas/reports/ | done | ~50 |
+| 06:02 | smoke test passed: proposta 16,339 bytes, carne 15,995 bytes, no CSS font issues | backend/smoke_weasyprint.py (deleted) | done | ~100 |
+| 06:03 | added WeasyPrint apt deps step to CI backend job | .github/workflows/ci.yml | done | ~50 |
+| 06:04 | committed phase5 task0 — SHA 18de020 | all above | done | ~50 |
+
 | 14:35 | Task 8: added PUT /business-rules/{chave} endpoint (admin-only) + 3 tests | backend/finacialsim_saas/api/business_rules.py, backend/tests/test_business_rules_update.py | 126 tests pass | ~2k |
 
 | 06-01 | fix: changed `if motivo:` to `if motivo is not None:` in RulesService.update | backend/finacialsim_saas/services/rules_service.py | 4/4 tests pass, committed 344319d | ~200 |
@@ -610,3 +623,75 @@
 | 19:20 | Edited docs/superpowers/plans/2026-06-01-saas-phase-5b-services.md | reduced (-10 lines) | ~61 |
 | 19:20 | Edited docs/superpowers/plans/2026-06-01-saas-phase-5b-services.md | inline fix | ~24 |
 | 19:20 | Session end: 6 writes across 4 files (2026-06-01-saas-phase-5a-foundations.md, 2026-06-01-saas-phase-5b-services.md, 2026-06-01-saas-phase-5c-tests.md, 2026-06-01-saas-phase-5d-frontend.md) | 16 reads | ~53632 tok |
+| 19:23 | Edited backend/pyproject.toml | 2→4 lines | ~18 |
+| 19:24 | Created backend/smoke_weasyprint.py | — | ~924 |
+| 19:24 | Edited .github/workflows/ci.yml | 3→5 lines | ~86 |
+| 19:27 | Created backend/tests/test_br_format.py | — | ~289 |
+| 19:27 | Created backend/finacialsim_saas/utils/__init__.py | — | ~0 |
+| 19:27 | Created backend/finacialsim_saas/utils/br_format.py | — | ~306 |
+| 19:27 | Created backend/tests/test_proposal_snapshot.py | — | ~1010 |
+| 19:28 | Created backend/finacialsim_saas/schemas/proposals.py | — | ~1705 |
+| 19:28 | Edited backend/finacialsim_saas/settings.py | 2→7 lines | ~83 |
+| 19:28 | Edited backend/finacialsim_saas/data/models.py | modified ProviderHealth() | ~1331 |
+| 19:29 | Created backend/alembic/versions/006_proposals.py | — | ~1248 |
+| 19:29 | Phase 5 Tasks 1-4: br_format utils, PropostaSnapshot schema, storage settings, Proposal+ParcelaPayment ORM models + migration 006 | backend/finacialsim_saas/utils/br_format.py, backend/finacialsim_saas/schemas/proposals.py, backend/finacialsim_saas/settings.py, backend/finacialsim_saas/data/models.py, backend/alembic/versions/006_proposals.py | 4 commits, all tests green | ~3500 |
+| 19:32 | Edited backend/finacialsim_saas/data/models.py | modified Proposal() | ~92 |
+| 18:32 | Removed redundant index=True from Proposal.tenant_id—composite ix_proposals_tenant_gerado_em covers queries | backend/finacialsim_saas/data/models.py | DONE: commit d8e7bb5 + tests pass | ~2k |
+| 19:35 | Edited backend/finacialsim_saas/schemas/proposals.py | 7→8 lines | ~83 |
+| 19:35 | Edited backend/finacialsim_saas/schemas/proposals.py | modified ProposalOut() | ~151 |
+| 19:35 | Edited backend/finacialsim_saas/schemas/proposals.py | modified ProposalListItem() | ~69 |
+| 22:50 | fix(phase5): ProposalOut/ListItem add from_attributes=True and enum types | backend/finacialsim_saas/schemas/proposals.py | DONE 31ac387 | ~2.5k |
+| 19:38 | Created backend/tests/test_storage_local.py | — | ~588 |
+| 19:38 | Created backend/finacialsim_saas/storage/__init__.py | — | ~120 |
+| 19:38 | Created backend/finacialsim_saas/storage/local.py | — | ~402 |
+| 19:38 | Created backend/finacialsim_saas/storage/deps.py | — | ~186 |
+| 19:38 | Created backend/finacialsim_saas/api/storage.py | — | ~368 |
+| 19:39 | Created backend/tests/test_proposal_service_unit.py | — | ~785 |
+| 19:39 | Created backend/finacialsim_saas/services/proposal_service.py | — | ~2923 |
+| 19:42 | Edited backend/finacialsim_saas/main.py | added 1 import(s) | ~464 |
+| 19:44 | Created backend/tests/test_render_tasks.py | — | ~1143 |
+| 19:45 | Edited backend/finacialsim_saas/workers/tasks.py | modified verify_provider_health() | ~2875 |
+| 19:45 | Edited backend/finacialsim_saas/workers/worker.py | modified from() | ~179 |
+| 19:45 | Edited backend/finacialsim_saas/workers/worker.py | added 1 import(s) | ~155 |
+| 19:45 | Edited backend/finacialsim_saas/workers/worker.py | 2→6 lines | ~44 |
+| 19:46 | Created backend/finacialsim_saas/api/proposals.py | — | ~1188 |
+| 19:46 | Edited backend/finacialsim_saas/main.py | added 1 import(s) | ~189 |
+| 19:46 | Edited backend/tests/test_render_tasks.py | inline fix | ~27 |
+| 22:55 | Task 7: render_proposta_pdf + render_carne_pdf appended to tasks.py; WorkerSettings updated with func(timeout=120); 3 unit tests pass | backend/finacialsim_saas/workers/tasks.py, worker.py, tests/test_render_tasks.py | DONE | ~3500 |
+| 22:58 | Task 8: proposals API router (8 endpoints) created; registered in main.py; smoke test 54 routes OK | backend/finacialsim_saas/api/proposals.py, main.py | DONE | ~1200 |
+| 19:49 | Edited backend/finacialsim_saas/workers/tasks.py | added 1 import(s) | ~31 |
+| 19:49 | Edited backend/finacialsim_saas/workers/tasks.py | write_pdf() → to_thread() | ~118 |
+| 19:49 | Edited backend/finacialsim_saas/workers/tasks.py | write_pdf() → to_thread() | ~115 |
+
+| 2026-06-01 | Phase 5 blocking WeasyPrint fix — wrapped write_pdf calls in asyncio.to_thread | backend/finacialsim_saas/workers/tasks.py | 3/3 render tests pass, commit bcf6518 | ~500 |
+| 19:52 | Created backend/tests/test_proposal_service.py | — | ~2157 |
+| 19:53 | Created backend/tests/test_proposal_endpoints.py | — | ~1693 |
+| 19:54 | Created backend/tests/test_proposal_endpoints.py | — | ~1505 |
+| 19:54 | Created backend/finacialsim_saas/storage/s3.py | — | ~475 |
+| 19:54 | Edited backend/pyproject.toml | 10→11 lines | ~62 |
+| 19:54 | Created backend/tests/test_storage_contract.py | — | ~590 |
+| 19:57 | Edited backend/finacialsim_saas/storage/s3.py | 2→2 lines | ~32 |
+| 19:58 | Edited backend/finacialsim_saas/schemas/proposals.py | inline fix | ~23 |
+| 19:58 | Edited backend/finacialsim_saas/services/proposal_service.py | added 1 import(s) | ~59 |
+| 19:58 | Edited backend/finacialsim_saas/services/proposal_service.py | inline fix | ~26 |
+| 19:58 | Edited backend/finacialsim_saas/services/proposal_service.py | 4→6 lines | ~89 |
+| 19:58 | Edited backend/finacialsim_saas/workers/tasks.py | inline fix | ~23 |
+| 19:58 | Edited backend/finacialsim_saas/workers/worker.py | inline fix | ~27 |
+| 19:58 | Edited backend/finacialsim_saas/settings.py | modified get_settings() | ~23 |
+| 20:02 | Created frontend/src/lib/proposals.ts | — | ~603 |
+| 20:02 | Edited frontend/src/routes/SimulacaoEdit.tsx | expanded (+10 lines) | ~202 |
+| 20:02 | Edited frontend/src/routes/SimulacaoEdit.tsx | added error handling | ~2254 |
+| 20:02 | Edited frontend/src/routes/SimulacaoEdit.tsx | 9→10 lines | ~99 |
+| 20:03 | Created frontend/src/routes/propostas/PropostasPage.tsx | — | ~1328 |
+| 20:03 | Edited frontend/src/App.tsx | added 1 import(s) | ~52 |
+| 20:03 | Edited frontend/src/App.tsx | expanded (+8 lines) | ~143 |
+| 20:05 | Edited frontend/src/App.tsx | 8→8 lines | ~69 |
+| 20:05 | Edited .gitignore | 2→3 lines | ~15 |
+| 20:09 | Edited backend/finacialsim_saas/storage/local.py | modified __init__() | ~265 |
+| 20:09 | Edited backend/finacialsim_saas/storage/local.py | modified delete() | ~27 |
+| 20:09 | Edited backend/finacialsim_saas/services/proposal_service.py | reduced (-6 lines) | ~28 |
+| 20:09 | Edited backend/finacialsim_saas/services/proposal_service.py | 5→5 lines | ~73 |
+| 20:09 | Edited backend/finacialsim_saas/services/proposal_service.py | modified _can_act_on() | ~91 |
+| 20:09 | Edited backend/finacialsim_saas/services/proposal_service.py | inline fix | ~11 |
+| 20:11 | Session end: 69 writes across 34 files (2026-06-01-saas-phase-5a-foundations.md, 2026-06-01-saas-phase-5b-services.md, 2026-06-01-saas-phase-5c-tests.md, 2026-06-01-saas-phase-5d-frontend.md, pyproject.toml) | 62 reads | ~142669 tok |
+| 20:18 | Session end: 69 writes across 34 files (2026-06-01-saas-phase-5a-foundations.md, 2026-06-01-saas-phase-5b-services.md, 2026-06-01-saas-phase-5c-tests.md, 2026-06-01-saas-phase-5d-frontend.md, pyproject.toml) | 62 reads | ~142669 tok |

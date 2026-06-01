@@ -3,309 +3,43 @@
   "bugs": [
     {
       "id": "bug-001",
-      "timestamp": "2026-05-29T15:45:43.784Z",
-      "error_message": "bacen/cached.py has forbidden import: from app.data.models import IndicatorHistory",
-      "file": "packages/finacialsim_core/finacialsim_core/integrations/bacen/cached.py",
-      "root_cause": "bacen/cached.py has SQLAlchemy-dependent imports — equivalent to fipe/cache.py. Not excluded by original EXCLUDED set.",
-      "fix": "Added 'cached.py' to EXCLUDED set in scripts/sync_core.py",
+      "timestamp": "2026-06-01T22:49:24.687Z",
+      "error_message": "Missing await",
+      "file": "backend/finacialsim_saas/workers/tasks.py",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call | Also: pdf = await asyncio.to_thread(HTML(string=html_str).write_pd",
       "tags": [
-        "sync-script",
-        "forbidden-imports",
-        "vendored-core"
+        "auto-detected",
+        "async-fix",
+        "py"
       ],
       "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-29T15:45:43.784Z"
+      "occurrences": 2,
+      "last_seen": "2026-06-01T22:49:28.580Z"
     },
     {
       "id": "bug-002",
-      "timestamp": "2026-05-29T15:48:00.000Z",
-      "error_message": "RuntimeError: Task got Future attached to a different loop — session-scoped async engine fixture in pytest-asyncio",
-      "file": "backend/tests/conftest.py",
-      "root_cause": "Session-scoped async fixture for engine creates asyncpg connection pool bound to setup event loop. Function-scoped tests use different event loops causing loop mismatch.",
-      "fix": "Made `engine` a sync fixture using asyncio.run() + NullPool (no pool caching). Added asyncio_default_test_loop_scope = 'session' to pytest config.",
+      "timestamp": "2026-06-01T22:58:11.847Z",
+      "error_message": "Wrong reference: object should be Any",
+      "file": "backend/finacialsim_saas/services/proposal_service.py",
+      "root_cause": "Used \"object\" instead of \"Any\"",
+      "fix": "Changed object → Any",
       "tags": [
-        "pytest-asyncio",
-        "sqlalchemy",
-        "asyncpg",
-        "event-loop",
-        "testcontainers"
+        "auto-detected",
+        "wrong-reference",
+        "py"
       ],
       "related_bugs": [],
       "occurrences": 1,
-      "last_seen": "2026-05-29T15:48:00.000Z"
+      "last_seen": "2026-06-01T22:58:11.847Z"
     },
     {
       "id": "bug-003",
-      "timestamp": "2026-05-29T15:49:00.000Z",
-      "error_message": "asyncpg: cannot manually rollback from within an async with block — session fixture teardown",
-      "file": "backend/tests/conftest.py",
-      "root_cause": "async_sessionmaker context manager auto-handles close/rollback on exit. Explicit await s.rollback() inside the async with block caused asyncpg error.",
-      "fix": "Removed explicit await s.rollback() from session fixture — rely on async_sessionmaker context manager.",
-      "tags": [
-        "pytest-asyncio",
-        "sqlalchemy",
-        "asyncpg",
-        "session-fixture"
-      ],
-      "related_bugs": [
-        "bug-002"
-      ],
-      "occurrences": 1,
-      "last_seen": "2026-05-29T15:49:00.000Z"
-    },
-    {
-      "id": "bug-004",
-      "timestamp": "2026-05-29T15:53:00.000Z",
-      "error_message": "pydantic ValidationError: DATABASE_URL missing — /version endpoint calls get_settings() in tests",
-      "file": "backend/tests/conftest.py",
-      "root_cause": "/version endpoint calls get_settings() which requires DATABASE_URL env var. Not set in test env.",
-      "fix": "Set os.environ['DATABASE_URL'] = dsn in db_url fixture (session-scoped) so it's available for all tests.",
-      "tags": [
-        "pydantic-settings",
-        "fastapi",
-        "tests",
-        "env-var"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-29T15:53:00.000Z"
-    },
-    {
-      "id": "bug-005",
-      "timestamp": "2026-05-29T15:55:00.000Z",
-      "error_message": "docker APIError 500: failed to pull redis:7-alpine — Docker Hub not reachable in WSL2",
-      "file": "backend/tests/conftest.py",
-      "root_cause": "WSL2 environment has intermittent Docker Hub connectivity issues. redis:7-alpine not locally cached.",
-      "fix": "Changed testcontainers Redis image to redis:7 (locally available). CI (GitHub Actions) uses redis:7-alpine fine.",
-      "tags": [
-        "docker",
-        "testcontainers",
-        "wsl2",
-        "network"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-29T15:55:00.000Z"
-    },
-    {
-      "id": "bug-006",
-      "timestamp": "2026-05-29T18:18:26.862Z",
-      "error_message": "Incorrect value in code",
-      "file": "docs/superpowers/specs/2026-05-28-saas-phase-1-auth-rbac.md",
-      "root_cause": "Had `TenantSessionMiddleware`",
-      "fix": "Changed to `get_db_session()`",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "md"
-      ],
-      "related_bugs": [],
-      "occurrences": 2,
-      "last_seen": "2026-05-29T18:18:30.325Z"
-    },
-    {
-      "id": "bug-007",
-      "timestamp": "2026-05-29T18:54:22.943Z",
-      "error_message": "Function not marked async",
-      "file": "backend/tests/conftest.py",
-      "root_cause": "Function uses await but wasn't declared async",
-      "fix": "Added async modifier",
-      "tags": [
-        "auto-detected",
-        "async-fix",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-29T18:54:22.943Z"
-    },
-    {
-      "id": "bug-008",
-      "timestamp": "2026-05-29T19:06:51.708Z",
-      "error_message": "Significant refactor of ",
-      "file": "backend/tests/conftest.py",
-      "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 8→11 lines (2 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-29T19:06:51.708Z"
-    },
-    {
-      "id": "bug-009",
-      "timestamp": "2026-05-29T19:10:00.000Z",
-      "error_message": "AttributeError: 'State' object has no attribute 'session_factory' when calling auth endpoints in tests",
-      "file": "backend/tests/conftest.py",
-      "root_cause": "Shared client fixture used ASGITransport without triggering lifespan, so app.state.session_factory was never set. get_db_session reads request.app.state.session_factory at request time.",
-      "fix": "Updated client fixture to manually inject app_state['engine'] and app.state.session_factory = build_session_factory(engine), bypassing lifespan entirely (consistent with health test approach).",
-      "tags": [
-        "fastapi",
-        "test",
-        "fixture",
-        "session_factory",
-        "lifespan"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-29T19:10:00.000Z"
-    },
-    {
-      "id": "bug-010",
-      "timestamp": "2026-05-29T19:12:00.000Z",
-      "error_message": "ConflictError: Email 'ep@test.com' already registered — seed fixture fails on 2nd+ test",
-      "file": "backend/tests/test_auth_endpoints.py",
-      "root_cause": "seed fixture committed data to shared DB; function-scoped sessions don't rollback between tests. Fixed email caused conflict on subsequent runs.",
-      "fix": "Made seed use unique email per invocation: f'ep-{uid}@test.com' where uid = uuid4().hex[:8]. Tests unpack (t, user, email) from seed.",
-      "tags": [
-        "test",
-        "fixture",
-        "unique-constraint",
-        "seed"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-29T19:12:00.000Z"
-    },
-    {
-      "id": "bug-011",
-      "timestamp": "2026-05-29T19:16:40.747Z",
-      "error_message": "Incorrect value in code",
-      "file": "frontend/src/context/AuthContext.tsx",
-      "root_cause": "Had \"../lib/api\"",
-      "fix": "Changed to \"react\"",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "tsx"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-29T19:16:40.747Z"
-    },
-    {
-      "id": "bug-012",
-      "timestamp": "2026-05-29T19:21:18.122Z",
-      "error_message": "CSS fix: queryFn",
-      "file": "frontend/src/routes/Health.tsx",
-      "root_cause": "queryFn: () => api.get(\"/healthz\").then((r) => r.data), → () => api.get<unknown>(\"/healthz\").then((r) => r.data),",
-      "fix": "Changed queryFn: () => api.get(\"/healthz\").then((r) => r.data), → () => api.get<unknown>(\"/healthz\").then((r) => r.data),",
-      "tags": [
-        "auto-detected",
-        "style-fix",
-        "tsx"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-29T19:21:18.122Z"
-    },
-    {
-      "id": "bug-013",
-      "timestamp": "2026-05-29T19:21:31.405Z",
-      "error_message": "Incorrect value in code",
-      "file": "frontend/vite.config.ts",
-      "root_cause": "Had \"vite\"",
-      "fix": "Changed to \"vitest/config\"",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "ts"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-29T19:21:31.405Z"
-    },
-    {
-      "id": "bug-014",
-      "timestamp": "2026-05-30T15:02:56.803Z",
-      "error_message": "Incorrect value in code",
-      "file": "docs/superpowers/specs/2026-05-28-saas-phase-2-simulacao.md",
-      "root_cause": "Had `extraordinary_amortizations`",
-      "fix": "Changed to `simulation_counters`",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "md"
-      ],
-      "related_bugs": [],
-      "occurrences": 2,
-      "last_seen": "2026-05-30T15:03:33.490Z"
-    },
-    {
-      "id": "bug-015",
-      "timestamp": "2026-05-30T15:12:37.914Z",
-      "error_message": "Incorrect value in code",
-      "file": "docs/superpowers/specs/2026-05-28-saas-phase-2-simulacao.md",
-      "root_cause": "Had 's `",
-      "fix": "Changed to `codigo`",
-      "tags": [
-        "auto-detected",
-        "wrong-value",
-        "md"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-30T15:12:37.914Z"
-    },
-    {
-      "id": "bug-016",
-      "timestamp": "2026-05-30T15:18:04.704Z",
-      "error_message": "Significant refactor of ",
-      "file": "docs/superpowers/specs/2026-05-28-saas-phase-2-simulacao.md",
-      "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 9→10 lines (2 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "md"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-30T15:18:04.704Z"
-    },
-    {
-      "id": "bug-017",
-      "timestamp": "2026-05-30T15:44:48.363Z",
-      "error_message": "Function not marked async",
-      "file": "backend/finacialsim_saas/cli/main.py",
-      "root_cause": "Function uses await but wasn't declared async",
-      "fix": "Added async modifier",
-      "tags": [
-        "auto-detected",
-        "async-fix",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-30T15:44:48.363Z"
-    },
-    {
-      "id": "bug-018",
-      "timestamp": "2026-05-30T15:50:12.050Z",
-      "error_message": "Significant refactor of ",
-      "file": "backend/finacialsim_saas/main.py",
-      "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 7→11 lines (3 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-30T15:50:12.050Z"
-    },
-    {
-      "id": "bug-019",
-      "timestamp": "2026-05-30T15:51:27.319Z",
+      "timestamp": "2026-06-01T22:58:46.925Z",
       "error_message": "Wrong return value",
-      "file": "backend/tests/test_simulation_endpoints.py",
-      "root_cause": "Was returning: tokens[\"access_token\"], t, u",
-      "fix": "Now returns: access_token, t, u",
+      "file": "backend/finacialsim_saas/settings.py",
+      "root_cause": "Was returning: Settings()",
+      "fix": "Now returns: Settings()  # type: ignore[call-arg]",
       "tags": [
         "auto-detected",
         "return-value",
@@ -313,31 +47,63 @@
       ],
       "related_bugs": [],
       "occurrences": 1,
-      "last_seen": "2026-05-30T15:51:27.319Z"
+      "last_seen": "2026-06-01T22:58:46.925Z"
     },
     {
-      "id": "bug-020",
-      "timestamp": "2026-05-30T17:11:51.083Z",
-      "error_message": "Incorrect value in code",
-      "file": "scripts/sync_core.py",
-      "root_cause": "Had \"__pycache__\"",
-      "fix": "Changed to \"factory.py\"",
+      "id": "bug-004",
+      "timestamp": "2026-06-01T23:02:49.585Z",
+      "error_message": "Missing error handling in isoToDateStr",
+      "file": "frontend/src/routes/SimulacaoEdit.tsx",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
-        "wrong-value",
+        "error-handling",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T23:02:49.585Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-06-01T23:05:43.159Z",
+      "error_message": "Wrong reference: propostas should be backend",
+      "file": ".gitignore",
+      "root_cause": "Used \"propostas\" instead of \"backend\"",
+      "fix": "Changed propostas → backend",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "unknown"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-01T23:05:43.159Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-06-01T23:09:04.762Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/finacialsim_saas/storage/local.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 17→23 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
         "py"
       ],
       "related_bugs": [],
       "occurrences": 1,
-      "last_seen": "2026-05-30T17:11:51.083Z"
+      "last_seen": "2026-06-01T23:09:04.762Z"
     },
     {
-      "id": "bug-021",
-      "timestamp": "2026-05-30T17:12:23.207Z",
-      "error_message": "Wrong reference: app should be finacialsim_core",
-      "file": "packages/finacialsim_core/finacialsim_core/integrations/http.py",
-      "root_cause": "Used \"app\" instead of \"finacialsim_core\"",
-      "fix": "Changed app → finacialsim_core",
+      "id": "bug-007",
+      "timestamp": "2026-06-01T23:09:08.454Z",
+      "error_message": "Wrong reference: _root should be _safe_path",
+      "file": "backend/finacialsim_saas/storage/local.py",
+      "root_cause": "Used \"_root\" instead of \"_safe_path\"",
+      "fix": "Changed _root → _safe_path",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -345,231 +111,7 @@
       ],
       "related_bugs": [],
       "occurrences": 1,
-      "last_seen": "2026-05-30T17:12:23.207Z"
-    },
-    {
-      "id": "bug-022",
-      "timestamp": "2026-05-30T17:13:31.959Z",
-      "error_message": "Missing await",
-      "file": "backend/tests/test_models.py",
-      "root_cause": "Async call without await — returned Promise instead of value",
-      "fix": "Added await to async call",
-      "tags": [
-        "auto-detected",
-        "async-fix",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-30T17:13:31.959Z"
-    },
-    {
-      "id": "bug-023",
-      "timestamp": "2026-05-30T17:21:24.523Z",
-      "error_message": "Significant refactor of ",
-      "file": "backend/finacialsim_saas/services/simulation_service.py",
-      "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 19→31 lines (2 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-30T17:21:24.523Z"
-    },
-    {
-      "id": "bug-024",
-      "timestamp": "2026-05-30T17:24:43.542Z",
-      "error_message": "Significant refactor of ",
-      "file": "backend/tests/test_simulation_endpoints.py",
-      "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 30→44 lines (2 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-30T17:24:43.542Z"
-    },
-    {
-      "id": "bug-025",
-      "timestamp": "2026-05-30T17:32:16.906Z",
-      "error_message": "Significant refactor of ",
-      "file": "backend/tests/test_client_endpoints.py",
-      "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 5→4 lines (3 removed) | Also: tenant, _user, email = await _seed(session); tokens = (await client.post(\"/api/v1/auth/login\",  | Also: t1, _, e1 = await _seed(session); t2, _, e2 = await _seed(session)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 3,
-      "last_seen": "2026-05-30T17:32:29.717Z"
-    },
-    {
-      "id": "bug-026",
-      "timestamp": "2026-05-30T17:32:45.302Z",
-      "error_message": "Significant refactor of ",
-      "file": "backend/tests/test_vehicle_endpoints.py",
-      "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 5→4 lines (3 removed) | Also: _, email = await _seed(session); tokens = (await client.post(\"/api/v1/auth/login\", ",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 3,
-      "last_seen": "2026-05-30T17:32:57.361Z"
-    },
-    {
-      "id": "bug-027",
-      "timestamp": "2026-05-30T17:55:28.241Z",
-      "error_message": "Type error",
-      "file": "frontend/src/routes/veiculos/VeiculosPage.tsx",
-      "root_cause": "Missing or incorrect type annotation",
-      "fix": "Added type assertion/annotation",
-      "tags": [
-        "auto-detected",
-        "type-fix",
-        "tsx"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-30T17:55:28.241Z"
-    },
-    {
-      "id": "bug-028",
-      "timestamp": "2026-05-30T17:55:35.158Z",
-      "error_message": "CSS fix: year_id",
-      "file": "frontend/src/routes/veiculos/VeiculosPage.tsx",
-      "root_cause": "year_id: fipeData.yearId, → fipeData.yearId, ...fipeData.price",
-      "fix": "Changed year_id: fipeData.yearId, → fipeData.yearId, ...fipeData.price",
-      "tags": [
-        "auto-detected",
-        "style-fix",
-        "tsx"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-30T17:55:35.158Z"
-    },
-    {
-      "id": "bug-029",
-      "timestamp": "2026-05-30T17:56:13.290Z",
-      "error_message": "Type error",
-      "file": "frontend/src/routes/simulacao/SimulacaoForm.tsx",
-      "root_cause": "Missing or incorrect type annotation",
-      "fix": "Added type assertion/annotation",
-      "tags": [
-        "auto-detected",
-        "type-fix",
-        "tsx"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-30T17:56:13.290Z"
-    },
-    {
-      "id": "bug-030",
-      "timestamp": "2026-05-30T17:56:40.728Z",
-      "error_message": "Type error",
-      "file": "frontend/src/routes/simulacao/ScheduleTable.tsx",
-      "root_cause": "Missing or incorrect type annotation",
-      "fix": "Added type assertion/annotation",
-      "tags": [
-        "auto-detected",
-        "type-fix",
-        "tsx"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-05-30T17:56:40.728Z"
-    },
-    {
-      "id": "bug-031",
-      "timestamp": "2026-06-01T17:00:52.823Z",
-      "error_message": "Significant refactor of ",
-      "file": "backend/finacialsim_saas/schemas/indicators.py",
-      "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 20→24 lines (4 removed) | Also: # Coerces Decimal/str/int to str at construction t; _DecimalAsStr = Annotated[str, BeforeValidator(lam | Also: \"\"\"Normalize Decimal to string, stripping trailing; return str(d.normalize())",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 3,
-      "last_seen": "2026-06-01T17:01:46.252Z"
-    },
-    {
-      "id": "bug-032",
-      "timestamp": "2026-06-01T17:27:43.577Z",
-      "error_message": "Wrong operator: == should be >=",
-      "file": "backend/tests/test_indicators_service.py",
-      "root_cause": "Used \"==\" instead of \">=\"",
-      "fix": "Changed operator == → >=",
-      "tags": [
-        "auto-detected",
-        "operator-fix",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-06-01T17:27:43.577Z"
-    },
-    {
-      "id": "bug-033",
-      "timestamp": "2026-06-01T17:34:08.091Z",
-      "error_message": "Missing await",
-      "file": "backend/finacialsim_saas/api/business_rules.py",
-      "root_cause": "Async call without await — returned Promise instead of value",
-      "fix": "Added await to async call",
-      "tags": [
-        "auto-detected",
-        "async-fix",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-06-01T17:34:08.091Z"
-    },
-    {
-      "id": "bug-034",
-      "timestamp": "2026-06-01T17:43:03.111Z",
-      "error_message": "Wrong reference: None should be AuditLogPage",
-      "file": "backend/finacialsim_saas/api/audit_log.py",
-      "root_cause": "Used \"None\" instead of \"AuditLogPage\"",
-      "fix": "Changed None → AuditLogPage",
-      "tags": [
-        "auto-detected",
-        "wrong-reference",
-        "py"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-06-01T17:43:03.111Z"
-    },
-    {
-      "id": "bug-035",
-      "timestamp": "2026-06-01T22:20:20.758Z",
-      "error_message": "Significant refactor of ",
-      "file": "docs/superpowers/plans/2026-06-01-saas-phase-5b-services.md",
-      "root_cause": "12 lines replaced/restructured",
-      "fix": "Rewrote 14→4 lines (12 removed)",
-      "tags": [
-        "auto-detected",
-        "refactor",
-        "md"
-      ],
-      "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-06-01T22:20:20.758Z"
+      "last_seen": "2026-06-01T23:09:08.454Z"
     }
   ]
 }
