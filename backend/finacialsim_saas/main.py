@@ -88,6 +88,7 @@ from finacialsim_saas.api.cep import router as cep_router                       
 from finacialsim_saas.api.indicators import router as indicators_router                # noqa: E402
 from finacialsim_saas.api.audit_log import router as audit_log_router                  # noqa: E402
 from finacialsim_saas.api.storage import router as storage_router                      # noqa: E402
+from finacialsim_saas.api.proposals import router as proposals_router                  # noqa: E402
 
 app.include_router(health_router)
 app.include_router(auth_router)
@@ -101,3 +102,4 @@ app.include_router(cep_router)
 app.include_router(indicators_router)
 app.include_router(audit_log_router)
 app.include_router(storage_router)
+app.include_router(proposals_router)
