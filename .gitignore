@@ -115,7 +115,8 @@ logs/
 *.log.gz
 
 # PDFs gerados localmente
-propostas/
+/backend/propostas/
+/storage/
 *.pdf
 !docs/**/*.pdf
 
