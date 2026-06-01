@@ -30,6 +30,11 @@ class Settings(BaseSettings):
     frontend_base_url: str = "http://localhost:5173"
     maildir_path: str = "./dev-mail"
 
+    storage_backend: str = "local"
+    storage_local_root: str = "./storage"
+    storage_hmac_secret: str = "change-storage-secret-in-production"
+    storage_base_url: str = "http://localhost:8000"
+
 
 def get_settings() -> Settings:
     return Settings()
