@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import time
 from datetime import date, datetime, timezone
 
@@ -288,7 +289,7 @@ async def render_proposta_pdf(ctx: dict, proposal_id: str) -> None:
             html_str = _jinja.get_template("proposta.html").render(**_proposta_ctx(snap, proposal))
             css_path = _REPORTS / "proposta.css"
             stylesheets = [CSS(filename=str(css_path))] if css_path.exists() else []
-            pdf = HTML(string=html_str).write_pdf(stylesheets=stylesheets)
+            pdf = await asyncio.to_thread(HTML(string=html_str).write_pdf, stylesheets=stylesheets)
 
             key = f"{proposal.tenant_id}/proposals/{proposal.id}/proposta.pdf"
             await storage.put(key, pdf, "application/pdf")
@@ -320,7 +321,7 @@ async def render_carne_pdf(ctx: dict, proposal_id: str) -> None:
             html_str = _jinja.get_template("carne.html").render(**_carne_ctx(snap, proposal))
             css_path = _REPORTS / "carne.css"
             stylesheets = [CSS(filename=str(css_path))] if css_path.exists() else []
-            pdf = HTML(string=html_str).write_pdf(stylesheets=stylesheets)
+            pdf = await asyncio.to_thread(HTML(string=html_str).write_pdf, stylesheets=stylesheets)
 
             key = f"{proposal.tenant_id}/proposals/{proposal.id}/carne.pdf"
             await storage.put(key, pdf, "application/pdf")
