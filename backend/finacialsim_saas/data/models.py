@@ -453,3 +453,45 @@ class FipeCache(Base):
             name="uq_fipe_cache_key",
         ),
     )
+
+
+class IndicatorHistory(Base):
+    __tablename__ = "indicators_history"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")
+    )
+    codigo: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    data_referencia: Mapped[datetime] = mapped_column(sa.Date, nullable=False)
+    valor: Mapped[Decimal] = mapped_column(sa.Numeric(10, 6), nullable=False)
+    unidade: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    fonte: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    payload_json: Mapped[dict | None] = mapped_column(sa.JSON, nullable=True)
+    coletado_em: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+
+    __table_args__ = (
+        sa.UniqueConstraint(
+            "codigo", "data_referencia", name="uq_indicators_history_codigo_date"
+        ),
+    )
+
+
+class ProviderHealth(Base):
+    __tablename__ = "provider_health"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")
+    )
+    provider_name: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    checked_at: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+    latency_ms: Mapped[int | None] = mapped_column(sa.Integer, nullable=True)
+    success: Mapped[bool] = mapped_column(sa.Boolean, nullable=False)
+    error: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+
+    __table_args__ = (
+        sa.Index("ix_provider_health_name_checked", "provider_name", "checked_at"),
+    )
