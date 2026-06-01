@@ -66,7 +66,7 @@ class RulesService:
         rule.atualizado_por = ctx.user_id
 
         diff: dict[str, Any] = {"before": before, "after": valor}
-        if motivo:
+        if motivo is not None:
             diff["motivo"] = motivo
 
         audit = AuditService(self._s)
