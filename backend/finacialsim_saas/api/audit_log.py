@@ -18,7 +18,7 @@ from finacialsim_saas.services.audit_service import AuditService
 router = APIRouter(prefix="/api/v1", tags=["audit-log"])
 
 
-@router.get("/audit-log", response_model=None)
+@router.get("/audit-log", response_model=AuditLogPage)
 async def list_audit_log(
     ctx: Annotated[RequestContext, Depends(get_current_ctx)],
     session: Annotated[AsyncSession, Depends(get_db_session)],
