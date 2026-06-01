@@ -495,3 +495,96 @@ class ProviderHealth(Base):
     __table_args__ = (
         sa.Index("ix_provider_health_name_checked", "provider_name", "checked_at"),
     )
+
+
+class ProposalRenderStatus(enum.Enum):
+    pending = "pending"
+    rendering = "rendering"
+    ready = "ready"
+    failed = "failed"
+
+
+class ProposalStatus(enum.Enum):
+    rascunho = "rascunho"
+    ready = "ready"
+    aprovada = "aprovada"
+    cancelada = "cancelada"
+
+
+class ParcelaPaymentStatus(enum.Enum):
+    pending = "pending"
+    paid = "paid"
+    canceled = "canceled"
+
+
+class Proposal(Base):
+    __tablename__ = "proposals"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")
+    )
+    tenant_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), sa.ForeignKey("tenants.id"), nullable=False, index=True
+    )
+    simulation_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), sa.ForeignKey("simulations.id"), nullable=False
+    )
+    codigo: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    gerado_por: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+    )
+    gerado_em: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+    validade_dias: Mapped[int] = mapped_column(
+        sa.Integer, nullable=False, server_default=sa.text("7")
+    )
+    snapshot_json: Mapped[dict] = mapped_column(sa.JSON, nullable=False)
+    pdf_key: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    carne_key: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    render_status: Mapped[ProposalRenderStatus] = mapped_column(
+        sa.Enum(ProposalRenderStatus, name="proposal_render_status", native_enum=True),
+        nullable=False, server_default=sa.text("'pending'"),
+    )
+    render_error: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    status: Mapped[ProposalStatus] = mapped_column(
+        sa.Enum(ProposalStatus, name="proposal_status", native_enum=True),
+        nullable=False, server_default=sa.text("'rascunho'"),
+    )
+    aprovado_por: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    aprovado_em: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True), nullable=True)
+    cancelado_por: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    cancelado_em: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        sa.UniqueConstraint("tenant_id", "codigo", name="uq_proposals_tenant_codigo"),
+        sa.UniqueConstraint("tenant_id", "simulation_id", name="uq_proposals_tenant_simulation"),
+        sa.Index("ix_proposals_tenant_gerado_em", "tenant_id", "gerado_em"),
+    )
+
+
+class ParcelaPayment(Base):
+    __tablename__ = "parcela_payments"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")
+    )
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    proposal_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        sa.ForeignKey("proposals.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    parcela_num: Mapped[int] = mapped_column(sa.Integer, nullable=False)
+    vencimento: Mapped[datetime] = mapped_column(sa.Date, nullable=False)
+    valor_parcela: Mapped[Decimal] = mapped_column(sa.Numeric(18, 2), nullable=False)
+    status: Mapped[ParcelaPaymentStatus] = mapped_column(
+        sa.Enum(ParcelaPaymentStatus, name="parcela_payment_status", native_enum=True),
+        nullable=False, server_default=sa.text("'pending'"),
+    )
+    paid_at: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True), nullable=True)
+    pix_charge_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+
+    __table_args__ = (
+        sa.Index("ix_parcela_payments_proposal_num", "proposal_id", "parcela_num"),
+    )
