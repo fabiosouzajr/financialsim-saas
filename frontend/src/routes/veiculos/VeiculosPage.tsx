@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -199,6 +199,7 @@ const STATUS_COLORS: Record<string, "success" | "warning" | "destructive" | "out
 };
 
 export default function VeiculosPage() {
+  useEffect(() => { document.title = "Veículos — FinacialSim"; }, []);
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");

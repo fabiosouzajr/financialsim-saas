@@ -21,6 +21,7 @@ const STATUS_BADGE: Record<string, string> = {
 };
 
 export default function PropostasPage() {
+  useEffect(() => { document.title = "Propostas — FinacialSim"; }, []);
   const [statusFilter, setStatusFilter] = useState("");
   const [page, setPage] = useState<ProposalListPage | null>(null);
   const [loading, setLoading] = useState(false);

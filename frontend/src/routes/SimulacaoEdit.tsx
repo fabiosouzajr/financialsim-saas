@@ -256,6 +256,7 @@ function ProposalSection({ simulationId }: { simulationId: string }) {
 }
 
 export default function SimulacaoEdit() {
+  useEffect(() => { document.title = "Editar Simulação — FinacialSim"; }, []);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const qc = useQueryClient();

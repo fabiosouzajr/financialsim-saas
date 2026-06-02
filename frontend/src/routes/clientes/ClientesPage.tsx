@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -279,6 +279,7 @@ const STATUS_VARIANT: Record<string, "success" | "outline"> = {
 };
 
 export default function ClientesPage() {
+  useEffect(() => { document.title = "Clientes — FinacialSim"; }, []);
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<ClientOut | null>(null);

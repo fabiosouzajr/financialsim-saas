@@ -10,6 +10,7 @@ interface UserItem {
 }
 
 export default function AdminUsers() {
+  useEffect(() => { document.title = "Usuários — FinacialSim"; }, []);
   const [users, setUsers] = useState<UserItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

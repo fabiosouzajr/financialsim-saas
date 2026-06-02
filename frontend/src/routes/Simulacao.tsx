@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "@/lib/api";
@@ -8,6 +9,7 @@ import { SimulacaoCharts } from "./simulacao/SimulacaoCharts";
 import type { SimulationFormValues, SimulationOut } from "./simulacao/types";
 
 export default function Simulacao() {
+  useEffect(() => { document.title = "Simulações — FinacialSim"; }, []);
   const navigate = useNavigate();
   const { preview, loading } = useSimulationPreview();
 

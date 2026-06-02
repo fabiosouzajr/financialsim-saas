@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const schema = z.object({
   password: z.string().min(6, "Mínimo 6 caracteres"),
@@ -15,6 +15,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function ResetPassword() {
+  useEffect(() => { document.title = "Redefinir senha — FinacialSim"; }, []);
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
   const [done, setDone] = useState(false);

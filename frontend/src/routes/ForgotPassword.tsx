@@ -3,12 +3,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import { api } from "../lib/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const schema = z.object({ email: z.string().email("Email inválido") });
 type FormData = z.infer<typeof schema>;
 
 export default function ForgotPassword() {
+  useEffect(() => { document.title = "Esqueci minha senha — FinacialSim"; }, []);
   const [sent, setSent] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitting } } =
     useForm<FormData>({ resolver: zodResolver(schema) });
