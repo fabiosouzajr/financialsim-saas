@@ -18,11 +18,14 @@ router = APIRouter(prefix="/api/v1/proposals", tags=["proposals"])
 
 
 def _svc(request: Request, session: AsyncSession) -> ProposalService:
+    from finacialsim_saas.auth.service import AuthService
     settings = get_settings()
+    auth_svc = AuthService(session, settings)
     return ProposalService(
         session=session,
         arq=request.app.state.arq,
         storage=get_storage_backend(settings),
+        auth_service=auth_svc,
     )
 
 

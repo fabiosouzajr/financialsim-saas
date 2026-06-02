@@ -49,7 +49,12 @@ async def ctx_and_session(engine):
         yield ctx, s
 
 
-async def _seed_simulation(session: AsyncSession, tenant_id: uuid.UUID, user_id: uuid.UUID) -> Simulation:
+async def _seed_simulation(
+    session: AsyncSession,
+    tenant_id: uuid.UUID,
+    user_id: uuid.UUID,
+    client_id: uuid.UUID | None = None,
+) -> Simulation:
     sim = Simulation(
         tenant_id=tenant_id,
         codigo=f"SIM-{uuid.uuid4().hex[:6]}",
@@ -70,6 +75,7 @@ async def _seed_simulation(session: AsyncSession, tenant_id: uuid.UUID, user_id:
         status=SimulationStatus.confirmado,
         rules_snapshot_json={},
         criado_por=user_id,
+        client_id=client_id,
     )
     session.add(sim)
     await session.flush()
@@ -153,9 +159,25 @@ async def test_approve_generates_parcela_payments(ctx_and_session, tmp_path):
 
 @pytest.mark.asyncio
 async def test_approve_writes_customer_invite_outbox(ctx_and_session, tmp_path):
+    """approve() writes customer_invite outbox when auth_service is injected and sim has client_id."""
+    from finacialsim_saas.data.models import Client, ClientType
     ctx, session = ctx_and_session
-    sim = await _seed_simulation(session, ctx.tenant_id, ctx.user_id)
-    svc = _make_svc(session, tmp_path)
+    # Create a client linked to the simulation
+    client = Client(
+        tenant_id=ctx.tenant_id,
+        nome="Cliente Teste",
+        cpf_cnpj=f"000.{uuid.uuid4().int % 999:03d}.000-00",
+        tipo=ClientType.pf,
+        email=f"cli-{uuid.uuid4().hex[:6]}@example.com",
+        criado_por=ctx.user_id,
+    )
+    session.add(client)
+    await session.flush()
+    sim = await _seed_simulation(session, ctx.tenant_id, ctx.user_id, client_id=client.id)
+    auth_svc = AuthService(session, get_settings())
+    arq = AsyncMock()
+    storage = LocalVolumeBackend(root=tmp_path, secret="s", base_url="http://localhost:8000")
+    svc = ProposalService(session, arq, storage, auth_service=auth_svc)
     proposal = await svc.create(sim.id, ctx)
     proposal.render_status = ProposalRenderStatus.ready
     proposal.status = ProposalStatus.ready

@@ -4,7 +4,7 @@ from __future__ import annotations
 import uuid
 from datetime import date, datetime, timezone
 from decimal import Decimal
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,15 +23,28 @@ from finacialsim_saas.schemas.proposals import (
 from finacialsim_saas.services.audit_service import AuditService
 from finacialsim_saas.storage import StorageBackend
 
+if TYPE_CHECKING:
+    from finacialsim_saas.auth.service import AuthService
+    from finacialsim_saas.pix.service import PixService
+
 UTC = timezone.utc
 
 
 class ProposalService:
-    def __init__(self, session: AsyncSession, arq: Any, storage: StorageBackend) -> None:
+    def __init__(
+        self,
+        session: AsyncSession,
+        arq: Any,
+        storage: StorageBackend,
+        auth_service: "AuthService | None" = None,
+        pix_service: "PixService | None" = None,
+    ) -> None:
         self._s = session
         self._arq = arq
         self._storage = storage
         self._audit = AuditService(session)
+        self._auth = auth_service
+        self._pix = pix_service
 
     async def _get_proposal_owned(self, proposal_id: uuid.UUID, ctx: RequestContext) -> Proposal:
         proposal = await self._s.get(Proposal, proposal_id)
@@ -172,20 +185,9 @@ class ProposalService:
                 )
             )
 
-        recipient = ""
         sim = await self._s.get(Simulation, proposal.simulation_id)
-        if sim and sim.client_id:
-            client = await self._s.get(Client, sim.client_id)
-            if client:
-                recipient = client.email or ""
-        self._s.add(
-            NotificationsOutbox(
-                tenant_id=ctx.tenant_id,
-                type="customer_invite",
-                recipient=recipient,
-                payload={"proposal_id": str(proposal.id)},
-            )
-        )
+        if sim and sim.client_id and self._auth is not None:
+            await self._auth.invite_customer(sim.client_id, ctx, proposal_id=proposal.id)
 
         proposal.status = ProposalStatus.aprovada
         proposal.aprovado_por = ctx.user_id
@@ -209,8 +211,22 @@ class ProposalService:
             .values(status=ParcelaPaymentStatus.canceled)
         )
 
-        # TODO Phase 6: deactivate customer User row linked to this proposal
-        # TODO Phase 6: cancel open pix_charges via pix_service.cancel_charge()
+        # Deactivate customer user linked to this proposal
+        sim = await self._s.get(Simulation, proposal.simulation_id)
+        if sim and sim.client_id:
+            customer = await self._s.scalar(
+                select(User).where(
+                    User.client_id == sim.client_id,
+                    User.role == Role.customer,
+                    User.tenant_id == ctx.tenant_id,
+                )
+            )
+            if customer is not None:
+                customer.is_active = False
+
+        # Cancel open pix charges
+        if self._pix is not None:
+            await self._pix.cancel_charges_for_proposal(proposal.id)
 
         self._s.add(
             NotificationsOutbox(
