@@ -19,6 +19,7 @@ class RequestContext:
     tenant_id: uuid.UUID
     role: Role
     iat: float
+    client_id: uuid.UUID | None = None
 
 
 async def _parse_bearer(request: Request) -> RequestContext | None:
@@ -36,6 +37,7 @@ async def _parse_bearer(request: Request) -> RequestContext | None:
         tenant_id=uuid.UUID(payload["tenant_id"]),
         role=Role(payload["role"]),
         iat=float(payload["iat"]),
+        client_id=uuid.UUID(payload["client_id"]) if "client_id" in payload else None,
     )
 
 
