@@ -19,13 +19,18 @@ router = APIRouter(prefix="/api/v1/proposals", tags=["proposals"])
 
 def _svc(request: Request, session: AsyncSession) -> ProposalService:
     from finacialsim_saas.auth.service import AuthService
+    from finacialsim_saas.pix.deps import get_pix_provider
+    from finacialsim_saas.pix.service import PixService
     settings = get_settings()
+    storage = get_storage_backend(settings)
     auth_svc = AuthService(session, settings)
+    pix_svc = PixService(session, get_pix_provider(settings), storage)
     return ProposalService(
         session=session,
         arq=request.app.state.arq,
-        storage=get_storage_backend(settings),
+        storage=storage,
         auth_service=auth_svc,
+        pix_service=pix_svc,
     )
 
 
