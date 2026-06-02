@@ -12,9 +12,10 @@
 
 ---
 
-### Task 1: Create api/portal.py
+## Task 1: Create api/portal.py
 
 **Files:**
+
 - Create: `backend/finacialsim_saas/api/portal.py`
 
 - [ ] **Step 1: Create portal.py**
@@ -170,6 +171,7 @@ async def download_portal_proposal(
 ```bash
 cd /home/fabio/git/financialsim-saas && uv run --directory backend python -c "from finacialsim_saas.api.portal import router; print('OK', len(router.routes), 'routes')"
 ```
+
 Expected: `OK 7 routes`
 
 - [ ] **Step 3: Commit**
@@ -184,6 +186,7 @@ git commit -m "feat(phase6): add portal API (me, financiamentos, parcelas, pix-c
 ### Task 2: Create api/webhooks.py
 
 **Files:**
+
 - Create: `backend/finacialsim_saas/api/webhooks.py`
 
 - [ ] **Step 1: Create webhooks.py**
@@ -224,6 +227,7 @@ async def pix_webhook(request: Request, session: _Session) -> dict:
 ```bash
 cd /home/fabio/git/financialsim-saas && uv run --directory backend python -c "from finacialsim_saas.api.webhooks import router; print('OK')"
 ```
+
 Expected: `OK`
 
 - [ ] **Step 3: Commit**
@@ -238,6 +242,7 @@ git commit -m "feat(phase6): add POST /webhooks/pix endpoint"
 ### Task 3: Create api/pix_admin.py
 
 **Files:**
+
 - Create: `backend/finacialsim_saas/api/pix_admin.py`
 
 - [ ] **Step 1: Create pix_admin.py**
@@ -377,6 +382,7 @@ async def list_pix_charges(
 ```bash
 cd /home/fabio/git/financialsim-saas && uv run --directory backend python -c "from finacialsim_saas.api.pix_admin import router; print('OK', len(router.routes), 'routes')"
 ```
+
 Expected: `OK 2 routes`
 
 - [ ] **Step 3: Commit**
@@ -391,6 +397,7 @@ git commit -m "feat(phase6): add pix admin endpoints (mark-paid, list charges)"
 ### Task 4: Add invite endpoint to api/clients.py
 
 **Files:**
+
 - Modify: `backend/finacialsim_saas/api/clients.py`
 
 - [ ] **Step 1: Read current clients.py to understand structure**
@@ -444,6 +451,7 @@ Also add `uuid` import if not already present. Check the current imports at the 
 ```bash
 cd /home/fabio/git/financialsim-saas && uv run --directory backend python -c "from finacialsim_saas.api.clients import router; routes = [r.path for r in router.routes]; print(routes)"
 ```
+
 Expected: includes `/{client_id}/invite`.
 
 - [ ] **Step 4: Commit**
@@ -458,6 +466,7 @@ git commit -m "feat(phase6): add POST /clients/{id}/invite endpoint"
 ### Task 5: Update main.py — register new routers
 
 **Files:**
+
 - Modify: `backend/finacialsim_saas/main.py`
 
 - [ ] **Step 1: Add router imports and include calls**
@@ -483,6 +492,7 @@ app.include_router(pix_admin_router)
 ```bash
 cd /home/fabio/git/financialsim-saas && uv run --directory backend python -c "from finacialsim_saas.main import app; print('routes:', len(app.routes))"
 ```
+
 Expected: routes count increases (no ImportError).
 
 - [ ] **Step 3: Commit**
@@ -497,6 +507,7 @@ git commit -m "feat(phase6): register portal, webhooks, pix_admin routers in mai
 ### Task 6: Add mark_overdue_parcelas cron to worker
 
 **Files:**
+
 - Modify: `backend/finacialsim_saas/workers/tasks.py`
 - Modify: `backend/finacialsim_saas/workers/worker.py`
 
@@ -565,6 +576,7 @@ async def startup(ctx: dict) -> None:
 ```bash
 cd /home/fabio/git/financialsim-saas && uv run --directory backend python -c "from finacialsim_saas.workers.worker import WorkerSettings; print('crons:', len(WorkerSettings.cron_jobs))"
 ```
+
 Expected: prints 4 crons (update_bacen_indicators, prune_fipe_cache, verify_provider_health, mark_overdue_parcelas).
 
 - [ ] **Step 4: Commit**
@@ -635,6 +647,7 @@ async def test_webhook_pix_always_200(client: AsyncClient):
 ```bash
 cd /home/fabio/git/financialsim-saas/backend && uv run pytest tests/test_portal_endpoints_smoke.py -x -q
 ```
+
 Expected: all 3 pass.
 
 - [ ] **Step 3: Run full backend test suite**
@@ -642,6 +655,7 @@ Expected: all 3 pass.
 ```bash
 cd /home/fabio/git/financialsim-saas/backend && uv run pytest tests/ -x -q --ignore=tests/test_pix_service.py --ignore=tests/test_portal_endpoints.py 2>&1 | tail -10
 ```
+
 Expected: all pass (the full test files for phase 6 are in Plan 6E).
 
 - [ ] **Step 4: Commit**

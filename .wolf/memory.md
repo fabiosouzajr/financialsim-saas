@@ -3,6 +3,14 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 2026-06-02 | Phase 7 full execution (7A–7G): migration 008, NotificationService, EmailChannel, templates, drain/schedule ARQ jobs, trigger wiring, /healthz Redis, JSON logging PII masking, CLI sub-cmds, UX polish, runbook | 10 commits be6b16d→df6c717 | all complete; CI needed for test verification | ~35k |
+| 18:55 | Phase 7C: drain/schedule ARQ jobs, wire trigger sites, delete maildir | workers/notifications.py, worker.py, auth/service.py, api/users.py, pix/service.py, parcela_service.py, settings.py, test_drain_outbox.py | committed 7d94803 | ~4500 |
+| 2026-06-02 | Phase 7E: add db migrate/reset and notifications drain/retry CLI sub-commands | cli/db.py (new), cli/notifications_cli.py (new), cli/main.py, tests/test_cli.py | committed dab4f75; all syntax checks passed | ~800 |
+
+| 2026-06-02 | Phase 7 planning: grilled 21 decisions on spec, wrote 8 plan files (index + 7A–7G) | docs/superpowers/plans/2026-06-02-saas-phase-7*.md | 8 plan files created; no code modified | ~18k |
+| 2026-06-02 | Phase 7G: incident runbook (4 scenarios) + deploy stubs (docker-compose + cloud/ECS) | docs/runbook/incidents.md, docs/deploy/docker-compose.md, docs/deploy/cloud.md | committed a85d5ff | ~800 |
+| 2026-06-02 | Phase 7F: index.html social meta, tab titles useEffect on 9 route files, FormErrorSummary component | frontend/index.html, frontend/src/routes/*, frontend/src/components/FormErrorSummary.tsx | committed df6c717 | ~600 |
+
 | 16:18 | Phase 6B: implement all 5 tasks — RequestContext.client_id, AuthService.invite_customer/re_invite, ParcelaService, PixService, ProposalService.approve/cancel | deps.py, auth/service.py, services/parcela_service.py, pix/service.py, services/proposal_service.py, api/proposals.py, 5 new test files | 184 passed, 0 failed | ~8000 |
 
 | 2026-06-02 | Phase 6A: added qrcode dep, migration 007 (pix_charges, pix_webhook_events), updated models (PixCharge, PixWebhookEvent, ParcelaPaymentStatus.open, PixChargeStatus), added pix/ module (protocol, fake, stub, deps), updated proposal_service pending→open | backend/pyproject.toml, backend/alembic/versions/007_phase6_pix.py, backend/finacialsim_saas/data/models.py, backend/finacialsim_saas/settings.py, backend/finacialsim_saas/pix/*.py, backend/finacialsim_saas/services/proposal_service.py, backend/tests/test_proposal_service.py | 12/12 proposal tests pass | ~4000 |
@@ -783,3 +791,150 @@
 | 13:16 | Edited backend/tests/test_proposal_service.py | modified _seed_simulation() | ~74 |
 | 13:16 | Edited backend/tests/test_proposal_service.py | 4→5 lines | ~40 |
 | 13:19 | Edited backend/finacialsim_saas/api/proposals.py | modified _svc() | ~175 |
+
+## Session: 2026-06-02 14:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:22 | Created backend/finacialsim_saas/api/portal.py | — | ~1242 |
+| 14:29 | created backend/finacialsim_saas/api/portal.py with 7 customer-portal routes | backend/finacialsim_saas/api/portal.py | committed 327dca4 | ~1350 |
+| 14:32 | Created backend/finacialsim_saas/api/webhooks.py | — | ~304 |
+| 14:33 | Created backend/finacialsim_saas/api/pix_admin.py | — | ~1173 |
+| 14:33 | Edited backend/finacialsim_saas/api/clients.py | inline fix | ~29 |
+| 14:33 | Edited backend/finacialsim_saas/api/clients.py | modified invite_client_customer() | ~337 |
+| 14:34 | Edited backend/finacialsim_saas/main.py | added 3 import(s) | ~116 |
+| 14:34 | Edited backend/finacialsim_saas/main.py | 1→4 lines | ~41 |
+| 14:34 | Edited backend/finacialsim_saas/workers/tasks.py | modified mark_overdue_parcelas() | ~169 |
+| 14:34 | Edited backend/finacialsim_saas/workers/worker.py | 8→9 lines | ~60 |
+| 14:34 | Edited backend/finacialsim_saas/workers/worker.py | 2→3 lines | ~45 |
+| 14:34 | Edited backend/finacialsim_saas/workers/worker.py | added 1 import(s) | ~72 |
+| 14:35 | Created backend/tests/test_portal_endpoints_smoke.py | — | ~368 |
+| 14:41 | Edited ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/settings.json | inline fix | ~45 |
+
+## Session: 2026-06-02 14:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-02 14:45
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-02 14:49
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-02 14:49
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:16 | Created docs/superpowers/plans/2026-06-02-saas-phase-7-index.md | — | ~1093 |
+| 15:17 | Created docs/superpowers/plans/2026-06-02-saas-phase-7a-data.md | — | ~2860 |
+| 15:18 | Created docs/superpowers/plans/2026-06-02-saas-phase-7b-notification-service.md | — | ~6617 |
+| 15:20 | Created docs/superpowers/plans/2026-06-02-saas-phase-7c-worker.md | — | ~7742 |
+| 15:21 | Created docs/superpowers/plans/2026-06-02-saas-phase-7d-observability.md | — | ~2213 |
+| 15:21 | Created docs/superpowers/plans/2026-06-02-saas-phase-7e-cli.md | — | ~2560 |
+| 15:22 | Created docs/superpowers/plans/2026-06-02-saas-phase-7f-ux-polish.md | — | ~2739 |
+| 15:23 | Created docs/superpowers/plans/2026-06-02-saas-phase-7g-docs.md | — | ~3006 |
+| 15:27 | Edited backend/tests/test_models.py | modified test_all_phase4_models_importable_and_tables_exist() | ~390 |
+| 15:28 | Edited backend/finacialsim_saas/data/models.py | modified NotificationsOutbox() | ~847 |
+| 15:28 | Edited backend/finacialsim_saas/auth/service.py | 9→9 lines | ~103 |
+| 15:28 | Edited backend/finacialsim_saas/auth/service.py | 12→12 lines | ~117 |
+| 15:28 | Edited backend/finacialsim_saas/services/parcela_service.py | 11→10 lines | ~107 |
+| 15:28 | Created backend/alembic/versions/008_phase7_notifications.py | — | ~998 |
+| 15:29 | Edited backend/finacialsim_saas/api/users.py | 8→8 lines | ~65 |
+| 15:29 | Edited backend/finacialsim_saas/services/proposal_service.py | 8→7 lines | ~67 |
+| 15:29 | Edited backend/finacialsim_saas/workers/maildir.py | modified _render_and_deliver() | ~462 |
+| 15:29 | Edited backend/tests/test_parcela_service.py | 8→8 lines | ~92 |
+| 15:29 | Edited backend/tests/test_proposal_service.py | 7→7 lines | ~90 |
+| 15:29 | Edited backend/tests/test_auth_invite.py | 11→11 lines | ~123 |
+| 18:30 | Phase 7A — updated NotificationsOutbox model (new schema), added EmailLog, migration 008, fixed all callers | models.py, auth/service.py, parcela_service.py, proposal_service.py, api/users.py, maildir.py, 3 test files | all syntax-checked OK | ~800 |
+| 15:41 | Edited backend/pyproject.toml | 1→2 lines | ~12 |
+| 15:41 | Edited backend/finacialsim_saas/settings.py | expanded (+11 lines) | ~115 |
+| 15:41 | Created backend/finacialsim_saas/notifications/__init__.py | — | ~0 |
+| 15:42 | Created backend/finacialsim_saas/notifications/channel.py | — | ~282 |
+| 15:42 | Created backend/finacialsim_saas/notifications/service.py | — | ~769 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/auth/password_reset/subject.txt | — | ~10 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/auth/user_invite/subject.txt | — | ~12 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/portal/customer_invite/subject.txt | — | ~15 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/portal/pix_link/subject.txt | — | ~18 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/portal/parcela_due_soon/subject.txt | — | ~14 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/portal/parcela_paid/subject.txt | — | ~14 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/portal/parcela_overdue/subject.txt | — | ~18 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/auth/password_reset/body.txt | — | ~74 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/auth/password_reset/body.html | — | ~164 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/auth/user_invite/body.txt | — | ~66 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/auth/user_invite/body.html | — | ~154 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/portal/customer_invite/body.txt | — | ~64 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/portal/customer_invite/body.html | — | ~155 |
+| 15:42 | Created backend/finacialsim_saas/notifications/templates/portal/pix_link/body.txt | — | ~66 |
+| 15:43 | Created backend/finacialsim_saas/notifications/templates/portal/pix_link/body.html | — | ~181 |
+| 15:43 | Created backend/finacialsim_saas/notifications/templates/portal/parcela_due_soon/body.txt | — | ~53 |
+| 15:43 | Created backend/finacialsim_saas/notifications/templates/portal/parcela_due_soon/body.html | — | ~142 |
+| 15:43 | Created backend/finacialsim_saas/notifications/templates/portal/parcela_paid/body.txt | — | ~39 |
+| 15:43 | Created backend/finacialsim_saas/notifications/templates/portal/parcela_paid/body.html | — | ~117 |
+| 15:43 | Created backend/finacialsim_saas/notifications/templates/portal/parcela_overdue/body.txt | — | ~49 |
+| 15:43 | Created backend/finacialsim_saas/notifications/templates/portal/parcela_overdue/body.html | — | ~120 |
+| 15:43 | Created backend/tests/test_notification_templates.py | — | ~1023 |
+| 15:43 | Created backend/tests/test_notification_service.py | — | ~846 |
+| 15:48 | Edited backend/finacialsim_saas/notifications/templates/auth/password_reset/body.html | inline fix | ~36 |
+| 15:48 | Edited backend/finacialsim_saas/notifications/templates/auth/user_invite/body.html | 3→4 lines | ~32 |
+| 15:48 | Edited backend/finacialsim_saas/notifications/templates/portal/customer_invite/body.html | 3→4 lines | ~33 |
+| 15:48 | Edited backend/finacialsim_saas/notifications/templates/portal/parcela_due_soon/body.txt | 1→2 lines | ~26 |
+| 15:48 | Edited backend/finacialsim_saas/notifications/templates/portal/parcela_paid/body.html | 4→5 lines | ~89 |
+| 15:48 | Edited backend/finacialsim_saas/notifications/templates/portal/parcela_overdue/body.txt | 1→4 lines | ~37 |
+| 15:48 | Edited backend/finacialsim_saas/notifications/templates/portal/parcela_overdue/body.html | 2→3 lines | ~66 |
+| 15:51 | Created backend/finacialsim_saas/workers/notifications.py | — | ~1892 |
+| 15:51 | Edited backend/finacialsim_saas/workers/worker.py | 9→13 lines | ~95 |
+| 15:51 | Edited backend/finacialsim_saas/workers/worker.py | 11→14 lines | ~195 |
+| 15:51 | Edited backend/finacialsim_saas/auth/service.py | "password_reset" → "auth.password_reset" | ~15 |
+| 15:51 | Edited backend/finacialsim_saas/auth/service.py | 12→16 lines | ~180 |
+| 15:52 | Edited backend/finacialsim_saas/api/users.py | "user_invite" → "auth.user_invite" | ~13 |
+| 15:52 | Edited backend/finacialsim_saas/pix/service.py | added 1 import(s) | ~190 |
+| 15:52 | Edited backend/finacialsim_saas/pix/service.py | modified in() | ~546 |
+| 15:52 | Edited backend/finacialsim_saas/pix/service.py | modified in() | ~579 |
+| 15:52 | Edited backend/finacialsim_saas/services/parcela_service.py | 4→4 lines | ~43 |
+| 15:52 | Edited backend/finacialsim_saas/services/parcela_service.py | modified in() | ~553 |
+| 15:53 | Created backend/tests/test_drain_outbox.py | — | ~1787 |
+| 15:53 | Edited backend/finacialsim_saas/settings.py | 4→3 lines | ~26 |
+| 15:53 | Edited backend/tests/test_settings.py | 2→1 lines | ~17 |
+| 15:58 | Edited backend/finacialsim_saas/auth/service.py | added 1 import(s) | ~117 |
+| 15:59 | Edited backend/finacialsim_saas/auth/service.py | added 1 import(s) | ~92 |
+| 15:59 | Edited backend/finacialsim_saas/auth/service.py | inline fix | ~10 |
+| 15:59 | Edited backend/finacialsim_saas/pix/service.py | 12→12 lines | ~193 |
+| 15:59 | Edited backend/finacialsim_saas/services/parcela_service.py | added 1 import(s) | ~22 |
+| 15:59 | Edited backend/finacialsim_saas/services/parcela_service.py | 2→1 lines | ~24 |
+| 15:59 | Edited backend/tests/test_drain_outbox.py | inline fix | ~15 |
+| 16:01 | Edited backend/finacialsim_saas/api/health.py | 2→2 lines | ~24 |
+| 16:01 | Edited backend/finacialsim_saas/api/health.py | modified healthz() | ~233 |
+| 16:01 | Created backend/finacialsim_saas/middleware/logging.py | — | ~685 |
+| 16:01 | Edited backend/finacialsim_saas/auth/deps.py | 5→8 lines | ~110 |
+| 16:01 | Edited backend/tests/test_health.py | modified test_healthz_returns_postgres_and_redis_keys() | ~105 |
+| 00:00 | Phase 7D observability: extended /healthz with Redis check, rewrote configure_logging with PII masking + contextvars, enriched auth deps with log context vars, added test | health.py, middleware/logging.py, auth/deps.py, tests/test_health.py | committed 8827227 | ~4k |
+| 16:02 | Edited backend/tests/test_health.py | 1→4 lines | ~34 |
+| 16:04 | Created backend/finacialsim_saas/cli/db.py | — | ~540 |
+| 16:04 | Created backend/finacialsim_saas/cli/notifications_cli.py | — | ~873 |
+| 16:04 | Edited backend/finacialsim_saas/cli/main.py | expanded (+6 lines) | ~119 |
+| 16:04 | Edited backend/tests/test_cli.py | modified test_db_migrate_runs_without_error() | ~311 |
+| 16:07 | Created docs/runbook/incidents.md | — | ~1471 |
+| 16:08 | Created docs/deploy/docker-compose.md | — | ~562 |
+| 16:08 | Created docs/deploy/cloud.md | — | ~359 |
+| 16:08 | Edited frontend/index.html | expanded (+6 lines) | ~171 |
+| 16:08 | Edited frontend/src/routes/Login.tsx | added 1 import(s) | ~85 |
+| 16:08 | Edited frontend/src/routes/Login.tsx | modified Login() | ~38 |
+| 16:08 | Edited frontend/src/routes/ForgotPassword.tsx | inline fix | ~13 |
+| 16:08 | Edited frontend/src/routes/ForgotPassword.tsx | modified ForgotPassword() | ~48 |
+| 16:08 | Edited frontend/src/routes/ResetPassword.tsx | inline fix | ~13 |
+| 16:09 | Edited frontend/src/routes/ResetPassword.tsx | modified ResetPassword() | ~49 |
+| 16:09 | Edited frontend/src/routes/Simulacao.tsx | added 1 import(s) | ~24 |
+| 16:09 | Edited frontend/src/routes/Simulacao.tsx | modified Simulacao() | ~42 |
+| 16:09 | Edited frontend/src/routes/SimulacaoEdit.tsx | modified SimulacaoEdit() | ~48 |
+| 16:09 | Edited frontend/src/routes/clientes/ClientesPage.tsx | inline fix | ~13 |
+| 16:09 | Edited frontend/src/routes/clientes/ClientesPage.tsx | modified ClientesPage() | ~41 |
+| 16:09 | Edited frontend/src/routes/veiculos/VeiculosPage.tsx | inline fix | ~13 |
+| 16:09 | Edited frontend/src/routes/veiculos/VeiculosPage.tsx | modified VeiculosPage() | ~41 |
+| 16:10 | Edited frontend/src/routes/propostas/PropostasPage.tsx | modified PropostasPage() | ~49 |
+| 16:10 | Edited frontend/src/routes/admin/Users.tsx | modified AdminUsers() | ~47 |
+| 16:10 | Created frontend/src/components/FormErrorSummary.tsx | — | ~197 |
