@@ -3,6 +3,8 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 16:18 | Phase 6B: implement all 5 tasks — RequestContext.client_id, AuthService.invite_customer/re_invite, ParcelaService, PixService, ProposalService.approve/cancel | deps.py, auth/service.py, services/parcela_service.py, pix/service.py, services/proposal_service.py, api/proposals.py, 5 new test files | 184 passed, 0 failed | ~8000 |
+
 | 2026-06-02 | Phase 6A: added qrcode dep, migration 007 (pix_charges, pix_webhook_events), updated models (PixCharge, PixWebhookEvent, ParcelaPaymentStatus.open, PixChargeStatus), added pix/ module (protocol, fake, stub, deps), updated proposal_service pending→open | backend/pyproject.toml, backend/alembic/versions/007_phase6_pix.py, backend/finacialsim_saas/data/models.py, backend/finacialsim_saas/settings.py, backend/finacialsim_saas/pix/*.py, backend/finacialsim_saas/services/proposal_service.py, backend/tests/test_proposal_service.py | 12/12 proposal tests pass | ~4000 |
 
 | 2026-06-02 | Phase 6 implementation plan: wrote 5 plan files (6A data+pix, 6B services, 6C api+worker, 6D frontend, 6E tests) + index | docs/superpowers/plans/2026-06-02-saas-phase-6*.md | 5 plan files created; no code modified | ~12k |
@@ -754,3 +756,30 @@
 | 12:39 | Created backend/finacialsim_saas/pix/deps.py | — | ~170 |
 | 12:43 | Edited backend/finacialsim_saas/services/proposal_service.py | inline fix | ~16 |
 | 12:45 | Edited backend/tests/test_proposal_service.py | inline fix | ~21 |
+| 13:02 | Edited backend/pyproject.toml | "qrcode>=7.4.2" → "qrcode[pil]>=7.4.2" | ~7 |
+| 13:02 | Edited backend/finacialsim_saas/data/models.py | 2→6 lines | ~77 |
+| 13:06 | Created backend/tests/test_deps_client_id.py | — | ~363 |
+| 13:07 | Created backend/tests/test_deps_client_id.py | — | ~491 |
+| 13:07 | Edited backend/finacialsim_saas/auth/deps.py | 6→7 lines | ~43 |
+| 13:07 | Edited backend/finacialsim_saas/auth/deps.py | 6→7 lines | ~82 |
+| 13:08 | Created backend/tests/test_auth_invite.py | — | ~1298 |
+| 13:08 | Edited backend/finacialsim_saas/auth/service.py | modified authenticate() | ~232 |
+| 13:08 | Edited backend/finacialsim_saas/auth/service.py | modified invite_customer() | ~840 |
+| 13:09 | Created backend/tests/test_parcela_service.py | — | ~1691 |
+| 13:10 | Created backend/finacialsim_saas/services/parcela_service.py | — | ~2015 |
+| 13:11 | Edited backend/finacialsim_saas/services/parcela_service.py | modified _vehicle_desc() | ~105 |
+| 13:11 | Edited backend/finacialsim_saas/services/parcela_service.py | model_validate() → _vehicle_desc() | ~62 |
+| 13:11 | Edited backend/finacialsim_saas/services/parcela_service.py | model_validate() → _vehicle_desc() | ~47 |
+| 13:11 | Edited backend/finacialsim_saas/services/parcela_service.py | 2→1 lines | ~14 |
+| 13:11 | Created backend/tests/test_pix_service_smoke.py | — | ~63 |
+| 13:12 | Created backend/finacialsim_saas/pix/service.py | — | ~2767 |
+| 13:13 | Created backend/tests/test_proposal_phase6.py | — | ~1335 |
+| 13:13 | Edited backend/finacialsim_saas/services/proposal_service.py | modified __init__() | ~454 |
+| 13:13 | Edited backend/finacialsim_saas/services/proposal_service.py | reduced (-11 lines) | ~266 |
+| 13:14 | Edited backend/finacialsim_saas/services/proposal_service.py | expanded (+14 lines) | ~247 |
+| 13:14 | Edited backend/finacialsim_saas/api/proposals.py | modified _svc() | ~108 |
+| 13:14 | Edited backend/tests/test_proposal_phase6.py | 24→23 lines | ~320 |
+| 13:16 | Edited backend/tests/test_proposal_service.py | modified test_approve_writes_customer_invite_outbox() | ~432 |
+| 13:16 | Edited backend/tests/test_proposal_service.py | modified _seed_simulation() | ~74 |
+| 13:16 | Edited backend/tests/test_proposal_service.py | 4→5 lines | ~40 |
+| 13:19 | Edited backend/finacialsim_saas/api/proposals.py | modified _svc() | ~175 |

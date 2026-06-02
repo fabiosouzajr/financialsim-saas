@@ -128,6 +128,118 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-02T14:19:40.450Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-06-02T15:43:59.362Z",
+      "error_message": "Wrong reference: pending should be open",
+      "file": "backend/finacialsim_saas/services/proposal_service.py",
+      "root_cause": "Used \"pending\" instead of \"open\"",
+      "fix": "Changed pending → open",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T15:43:59.362Z"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-06-02T15:45:05.194Z",
+      "error_message": "Wrong reference: pending should be open",
+      "file": "backend/tests/test_proposal_service.py",
+      "root_cause": "Used \"pending\" instead of \"open\"",
+      "fix": "Changed pending → open",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T15:45:05.194Z"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-06-02T16:02:31.738Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/pyproject.toml",
+      "root_cause": "Had \"qrcode>=7.4.2\"",
+      "fix": "Changed to \"qrcode[pil]>=7.4.2\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "toml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T16:02:31.738Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-06-02T16:08:46.238Z",
+      "error_message": "Missing await",
+      "file": "backend/finacialsim_saas/auth/service.py",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T16:08:46.238Z"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-06-02T16:11:12.933Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/finacialsim_saas/services/parcela_service.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 5→4 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T16:11:12.933Z"
+    },
+    {
+      "id": "bug-014",
+      "timestamp": "2026-06-02T16:14:02.568Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/finacialsim_saas/services/proposal_service.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 10→24 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T16:14:02.568Z"
+    },
+    {
+      "id": "bug-015",
+      "timestamp": "2026-06-02T16:16:16.312Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/tests/test_proposal_service.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 17→33 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T16:16:16.312Z"
     }
   ]
 }
