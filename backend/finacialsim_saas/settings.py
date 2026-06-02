@@ -38,6 +38,17 @@ class Settings(BaseSettings):
     pix_provider: str = "fake"
     pix_webhook_secret: str = ""
 
+    # Email delivery
+    email_provider: str = "smtp"  # smtp | ses | resend
+    smtp_host: str = "localhost"
+    smtp_port: int = 1025          # Mailpit default
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_tls: bool = False
+    smtp_from: str = "noreply@finacialsim.local"
+
+    max_emails_per_tenant_per_hour: int = 1000  # enforcement deferred to v2
+
 
 def get_settings() -> Settings:
     return Settings()  # type: ignore[call-arg]

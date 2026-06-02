@@ -1,0 +1,1 @@
+Pagamento confirmado — Parcela {{ parcela_num }}

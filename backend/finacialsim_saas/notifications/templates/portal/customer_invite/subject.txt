@@ -1,0 +1,1 @@
+Acesse seu portal de financiamento — {{ tenant_name }}

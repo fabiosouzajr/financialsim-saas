@@ -1,0 +1,7 @@
+Olá {{ user_name }},
+
+Sua Parcela {{ parcela_num }} ({{ valor_parcela }}) está vencida há {{ dias_atraso }} dias.
+
+Acesse o portal para regularizar sua situação.
+
+Equipe FinacialSim

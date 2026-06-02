@@ -1,0 +1,11 @@
+Olá {{ user_name }},
+
+Você solicitou a redefinição da sua senha no FinacialSim.
+
+Clique no link abaixo para criar uma nova senha:
+{{ reset_url }}
+
+O link é válido por 30 minutos. Se você não solicitou essa redefinição, ignore este e-mail.
+
+Atenciosamente,
+Equipe FinacialSim

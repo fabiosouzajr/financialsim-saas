@@ -1,0 +1,11 @@
+Olá {{ user_name }},
+
+{{ tenant_name }} liberou seu portal de acompanhamento de financiamento.
+
+Acesse em:
+{{ portal_url }}
+
+Pelo portal você pode consultar seu financiamento e efetuar pagamentos via Pix.
+
+Atenciosamente,
+{{ tenant_name }}

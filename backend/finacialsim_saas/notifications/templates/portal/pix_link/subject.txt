@@ -1,0 +1,1 @@
+Pix gerado — Parcela {{ parcela_num }} disponível para pagamento

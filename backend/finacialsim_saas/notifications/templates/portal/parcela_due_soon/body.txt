@@ -1,0 +1,8 @@
+Olá {{ user_name }},
+
+Sua Parcela {{ parcela_num }} ({{ valor_parcela }}) vence em {{ vencimento }}.
+
+Acesse o portal para efetuar o pagamento com antecedência.
+
+Atenciosamente,
+Equipe FinacialSim

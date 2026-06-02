@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><title>Pix disponível</title></head>
+<body style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px">
+  <h2>Pix disponível para pagamento</h2>
+  <p>Olá <strong>{{ user_name }}</strong>,</p>
+  <p>Seu Pix para a <strong>Parcela {{ parcela_num }}</strong> (<strong>{{ valor_parcela }}</strong>) está disponível.</p>
+  <p>
+    <a href="{{ pix_url }}" style="display:inline-block;padding:12px 24px;background:#16a34a;color:#fff;text-decoration:none;border-radius:6px">
+      Pagar via Pix
+    </a>
+  </p>
+  <p style="color:#6b7280;font-size:13px">O código Pix expira em 30 minutos.</p>
+</body>
+</html>

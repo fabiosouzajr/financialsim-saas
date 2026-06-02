@@ -1,0 +1,7 @@
+Olá {{ user_name }},
+
+O pagamento da sua Parcela {{ parcela_num }} ({{ valor_pago }}) foi confirmado com sucesso.
+
+Obrigado!
+
+Equipe FinacialSim

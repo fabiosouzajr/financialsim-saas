@@ -1,0 +1,11 @@
+Olá {{ user_name }},
+
+Seu Pix para a Parcela {{ parcela_num }} ({{ valor_parcela }}) foi gerado e está disponível.
+
+Acesse o portal para efetuar o pagamento:
+{{ pix_url }}
+
+O código Pix expira em 30 minutos.
+
+Atenciosamente,
+Equipe FinacialSim

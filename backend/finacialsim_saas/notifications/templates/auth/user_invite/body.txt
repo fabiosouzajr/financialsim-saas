@@ -1,0 +1,11 @@
+Olá {{ user_name }},
+
+Sua conta foi criada no FinacialSim para a loja {{ tenant_name }}.
+
+Acesse o sistema em:
+{{ login_url }}
+
+Use as credenciais fornecidas pelo administrador para fazer seu primeiro acesso.
+
+Atenciosamente,
+Equipe FinacialSim
