@@ -32,6 +32,9 @@
 - **TokenResponse key is `access`, not `access_token`:** The login endpoint returns `{"access": ..., "refresh": ...}`. Use `r.json()["access"]`. Or better: use `AuthService.issue_tokens(user)` directly in tests (per existing learning).
 - **conftest has no `session_factory` fixture:** Tests that need a factory call `build_session_factory(engine)` themselves with the `engine` fixture.
 
+- **qrcode PIL factory:** `qrcode` package uses `PilImage` (from `qrcode.image.pil`), NOT `PyPNGImage` (requires separate `pypng` package). Call `img.save(buf, format="PNG")` for PIL. Pillow is already installed as a transitive dep.
+- **Phase 6A enums:** `ParcelaPaymentStatus` now has `open` (not `pending`) + `overdue`. `PixChargeStatus` has `pending/paid/expired/canceled`. Tests asserting `.pending` must be updated to `.open`.
+
 ## Do-Not-Repeat
 
 <!-- Mistakes made and corrected. Each entry prevents the same mistake recurring. -->

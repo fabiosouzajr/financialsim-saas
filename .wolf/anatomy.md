@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T15:07:50.650Z
-> Files: 259 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T15:45:05.185Z
+> Files: 265 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/
 
@@ -29,7 +29,7 @@
 
 ## backend/
 
-- `pyproject.toml` (~308 tok)
+- `pyproject.toml` (~314 tok)
 - `smoke_weasyprint.py` — Run once locally to verify WeasyPrint renders on Linux. Delete after passing. (~924 tok)
 
 ## backend/alembic/
@@ -45,13 +45,14 @@
 - `004_cadastros.py` — cadastros — clients, vehicles, fipe_cache + FK columns on simulations (~1693 tok)
 - `005_indicators_provider_health.py` — indicators_history and provider_health tables (~606 tok)
 - `006_proposals.py` — proposals and parcela_payments tables (~1248 tok)
+- `007_phase6_pix.py` — phase6 — pix_charges, pix_webhook_events, parcela_payments updates (~1249 tok)
 
 ## backend/finacialsim_saas/
 
 - `__init__.py` — FinacialSim SaaS backend. (~10 tok)
 - `errors.py` — Declares AppError (~368 tok)
 - `main.py` — API router (~1282 tok)
-- `settings.py` — Settings: get_settings (~331 tok)
+- `settings.py` — Settings: get_settings (~350 tok)
 
 ## backend/finacialsim_saas/api/
 
@@ -85,7 +86,15 @@
 ## backend/finacialsim_saas/data/
 
 - `database.py` — Base: build_engine, build_session_factory, check_db (~252 tok)
-- `models.py` — Declares as (~7303 tok)
+- `models.py` — Declares as (~8073 tok)
+
+## backend/finacialsim_saas/pix/
+
+- `__init__.py` — Exports PixProvider, PixChargeData, WebhookEvent (~30 tok)
+- `protocol.py` — PixChargeData, WebhookEvent dataclasses; PixProvider Protocol (~200 tok)
+- `fake.py` — InMemoryFakePixProvider: create_charge (PIL QR PNG), cancel_charge, verify_webhook (~250 tok)
+- `stub.py` — StubExternalPixProvider: raises NotImplementedError for all methods (~120 tok)
+- `deps.py` — get_pix_provider(settings) → PixProvider (fake or external) (~100 tok)
 
 ## backend/finacialsim_saas/integrations/
 
@@ -106,6 +115,14 @@
 ## backend/finacialsim_saas/middleware/
 
 - `logging.py` — configure_logging (~153 tok)
+
+## backend/finacialsim_saas/pix/
+
+- `__init__.py` (~41 tok)
+- `deps.py` — get_pix_provider (~170 tok)
+- `fake.py` — InMemoryFakePixProvider: create_charge, cancel_charge, verify_webhook (~669 tok)
+- `protocol.py` — class: create_charge, cancel_charge, verify_webhook (~310 tok)
+- `stub.py` — StubExternalPixProvider: create_charge, cancel_charge, verify_webhook (~227 tok)
 
 ## backend/finacialsim_saas/reports/
 
@@ -136,7 +153,7 @@
 - `fipe_cache.py` — PostgresFipeCache: name, fetch (~1332 tok)
 - `fipe_service.py` — FipeService: build_fipe_chain, get_brands, get_models, get_years + 1 more (~745 tok)
 - `indicators_service.py` — IndicatorsService: upsert, latest, latest_all, series (~1008 tok)
-- `proposal_service.py` — ProposalService — manages the full proposal lifecycle. (~2941 tok)
+- `proposal_service.py` — ProposalService — manages the full proposal lifecycle. (~2940 tok)
 - `rules_service.py` — RulesService: get_rules, snapshot, update (~724 tok)
 - `simulation_service.py` — from: preview, create (~8192 tok)
 - `vehicle_service.py` — VehicleService: create, get, list, update + 2 more (~2393 tok)
@@ -186,7 +203,7 @@
 - `test_models.py` — test_all_phase1_models_importable_and_tables_exist, test_all_phase2_models_importable_and_tables_exi (~674 tok)
 - `test_proposal_endpoints.py` — Integration tests for proposal API endpoints. (~1505 tok)
 - `test_proposal_service_unit.py` — Unit tests for ProposalService using mocked session + arq. (~785 tok)
-- `test_proposal_service.py` — Integration tests for ProposalService against a real Postgres. (~2157 tok)
+- `test_proposal_service.py` — Integration tests for ProposalService against a real Postgres. (~2156 tok)
 - `test_proposal_snapshot.py` — test_build_snapshot_basic, test_build_snapshot_tarifas_computed, test_snapshot_rejects_extra_fields, (~1010 tok)
 - `test_render_tasks.py` — Worker render task tests — WeasyPrint is mocked. (~1147 tok)
 - `test_rules_update.py` — test_update_changes_value_and_writes_audit, test_update_with_motivo_stored_in_diff, test_update_publ (~949 tok)

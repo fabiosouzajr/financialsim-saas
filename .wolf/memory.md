@@ -3,6 +3,8 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 2026-06-02 | Phase 6A: added qrcode dep, migration 007 (pix_charges, pix_webhook_events), updated models (PixCharge, PixWebhookEvent, ParcelaPaymentStatus.open, PixChargeStatus), added pix/ module (protocol, fake, stub, deps), updated proposal_service pending→open | backend/pyproject.toml, backend/alembic/versions/007_phase6_pix.py, backend/finacialsim_saas/data/models.py, backend/finacialsim_saas/settings.py, backend/finacialsim_saas/pix/*.py, backend/finacialsim_saas/services/proposal_service.py, backend/tests/test_proposal_service.py | 12/12 proposal tests pass | ~4000 |
+
 | 2026-06-02 | Phase 6 implementation plan: wrote 5 plan files (6A data+pix, 6B services, 6C api+worker, 6D frontend, 6E tests) + index | docs/superpowers/plans/2026-06-02-saas-phase-6*.md | 5 plan files created; no code modified | ~12k |
 
 | 20:00 | fix(phase5) lint+mypy: add type:ignore[import-untyped] for boto3/botocore/weasyprint/finacialsim_core; arq: Any; None-guard for tenant/user | s3.py, proposals.py, proposal_service.py, settings.py, tasks.py, worker.py | committed 7a1b02e; 172 passed 1 skipped | ~800 |
@@ -727,3 +729,28 @@
 | 12:05 | Created docs/superpowers/plans/2026-06-02-saas-phase-6d-frontend.md | — | ~7466 |
 | 12:07 | Created docs/superpowers/plans/2026-06-02-saas-phase-6e-tests.md | — | ~8229 |
 | 12:07 | Created docs/superpowers/plans/2026-06-02-saas-phase-6-index.md | — | ~1201 |
+
+## Session: 2026-06-02 12:20
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-02 12:20
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:26 | Edited backend/pyproject.toml | 2→3 lines | ~12 |
+| 12:30 | Created backend/alembic/versions/007_phase6_pix.py | — | ~1249 |
+| 12:31 | Edited backend/finacialsim_saas/data/models.py | modified ParcelaPaymentStatus() | ~72 |
+| 12:31 | Edited backend/finacialsim_saas/data/models.py | 6→7 lines | ~142 |
+| 12:32 | Edited backend/finacialsim_saas/data/models.py | modified PixCharge() | ~734 |
+| 12:33 | Edited backend/finacialsim_saas/settings.py | 1→4 lines | ~34 |
+| 12:35 | Created backend/finacialsim_saas/pix/protocol.py | — | ~310 |
+| 12:35 | Created backend/finacialsim_saas/pix/__init__.py | — | ~41 |
+| 12:36 | Created backend/finacialsim_saas/pix/fake.py | — | ~667 |
+| 12:37 | Edited backend/finacialsim_saas/pix/fake.py | 2→2 lines | ~15 |
+| 12:37 | Edited backend/finacialsim_saas/pix/fake.py | 4→4 lines | ~44 |
+| 12:39 | Created backend/finacialsim_saas/pix/stub.py | — | ~227 |
+| 12:39 | Created backend/finacialsim_saas/pix/deps.py | — | ~170 |
+| 12:43 | Edited backend/finacialsim_saas/services/proposal_service.py | inline fix | ~16 |
+| 12:45 | Edited backend/tests/test_proposal_service.py | inline fix | ~21 |
