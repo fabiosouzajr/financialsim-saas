@@ -30,6 +30,16 @@ async def test_version_has_expected_keys(client):
 
 
 @pytest.mark.asyncio
+async def test_healthz_returns_postgres_and_redis_keys(client):
+    r = await client.get("/healthz")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["postgres"] == "ok"
+    assert data["redis"] == "ok"
+    assert data["status"] == "ok"
+
+
+@pytest.mark.asyncio
 async def test_app_error_handler_returns_structured_json(client):
     from fastapi import APIRouter
 

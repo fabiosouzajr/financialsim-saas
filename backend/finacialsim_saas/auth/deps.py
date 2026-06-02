@@ -70,6 +70,9 @@ async def get_current_ctx(
         revoked_ts = user.tokens_revoked_at.replace(tzinfo=timezone.utc).timestamp()
         if ctx.iat <= revoked_ts:
             raise AuthError("Token revoked")
+    from finacialsim_saas.middleware.logging import _log_tenant_id, _log_user_id
+    _log_tenant_id.set(str(ctx.tenant_id))
+    _log_user_id.set(str(ctx.user_id))
     return ctx
 
 
