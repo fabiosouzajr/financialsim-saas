@@ -480,6 +480,54 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-02T19:09:09.304Z"
+    },
+    {
+      "id": "bug-031",
+      "timestamp": "2026-06-02T19:57:46.808Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/alembic/versions/002_auth_tables.py",
+      "root_cause": "Had \"userrole\"",
+      "fix": "Changed to \"admin\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-02T20:00:03.144Z"
+    },
+    {
+      "id": "bug-032",
+      "timestamp": "2026-06-02T19:59:58.996Z",
+      "error_message": "Wrong reference: UUID should be ENUM",
+      "file": "backend/alembic/versions/002_auth_tables.py",
+      "root_cause": "Used \"UUID\" instead of \"ENUM\"",
+      "fix": "Changed UUID → ENUM",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T19:59:58.996Z"
+    },
+    {
+      "id": "bug-033",
+      "timestamp": "2026-06-02T20:01:57.841Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/alembic/versions/004_cadastros.py",
+      "root_cause": "Had \"pf\"",
+      "fix": "Changed to \"client_type\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T20:01:57.841Z"
     }
   ]
 }

@@ -62,10 +62,7 @@ def upgrade() -> None:
         sa.Column("expires_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column(
             "status",
-            sa.Enum(
-                "pending", "paid", "expired", "canceled",
-                name="pix_charge_status", create_type=False,
-            ),
+            postgresql.ENUM(name="pix_charge_status", create_type=False),
             nullable=False, server_default=sa.text("'pending'"),
         ),
         sa.Column("provider_payload_json", sa.JSON, nullable=True),

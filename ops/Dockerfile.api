@@ -1,7 +1,8 @@
 FROM python:3.12-slim AS builder
 WORKDIR /build
 RUN pip install uv
-COPY backend/pyproject.toml backend/
+COPY pyproject.toml .
+COPY backend/ backend/
 COPY packages/ packages/
 RUN cd backend && uv pip install --system --no-cache "."
 
@@ -9,6 +10,7 @@ FROM python:3.12-slim AS runtime
 WORKDIR /app
 COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
 COPY --from=builder /usr/local/bin/uvicorn /usr/local/bin/uvicorn
+COPY --from=builder /build/packages /build/packages
 COPY backend/ .
 RUN useradd -m appuser && chown -R appuser /app
 USER appuser

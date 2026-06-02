@@ -6,7 +6,7 @@ Create Date: 2026-05-29
 """
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects.postgresql import CITEXT, UUID
+from sqlalchemy.dialects.postgresql import CITEXT, ENUM as PgEnum, UUID
 
 revision = "002"
 down_revision = "001"
@@ -29,7 +29,7 @@ def upgrade() -> None:
         sa.Column("email", CITEXT, nullable=False),
         sa.Column("name", sa.Text, nullable=False),
         sa.Column("password_hash", sa.Text, nullable=False),
-        sa.Column("role", sa.Enum(name="userrole", create_type=False), nullable=False),
+        sa.Column("role", PgEnum(name="userrole", create_type=False), nullable=False),
         sa.Column("is_active", sa.Boolean, nullable=False, server_default=sa.true()),
         sa.Column("tokens_revoked_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False,

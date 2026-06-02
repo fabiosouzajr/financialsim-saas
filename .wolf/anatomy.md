@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T19:10:20.603Z
-> Files: 325 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T20:06:05.076Z
+> Files: 326 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -13,10 +13,11 @@
 
 ## ./
 
-- `.gitignore` — Git ignore rules (~1050 tok)
+- `.gitignore` — Git ignore rules (~1099 tok)
 - `CLAUDE.md` — CLAUDE.md (~1980 tok)
+- `dev.sh` — dev.sh — FinacialSim SaaS local dev runner (~2996 tok)
 - `pyproject.toml` (~34 tok)
-- `README.md` — Project documentation (~461 tok)
+- `README.md` — Project documentation (~1467 tok)
 
 ## .claude/
 
@@ -43,13 +44,13 @@
 ## backend/alembic/versions/
 
 - `001_create_tenants.py` — create tenants table (~240 tok)
-- `002_auth_tables.py` — auth tables — users, password_reset_tokens, refresh_tokens, audit_log, notifications_outbox (~1533 tok)
-- `003_simulation_tables.py` — simulation tables — business_rules, simulation_counters, simulations, fees, extras, rows, extraordin (~2285 tok)
-- `004_cadastros.py` — cadastros — clients, vehicles, fipe_cache + FK columns on simulations (~1440 tok)
+- `002_auth_tables.py` — auth tables — users, password_reset_tokens, refresh_tokens, audit_log, notifications_outbox (~1538 tok)
+- `003_simulation_tables.py` — simulation tables — business_rules, simulation_counters, simulations, fees, extras, rows, extraordin (~2290 tok)
+- `004_cadastros.py` — cadastros — clients, vehicles, fipe_cache + FK columns on simulations (~1675 tok)
 - `004_cadastros.py` — cadastros — clients, vehicles, fipe_cache + FK columns on simulations (~1693 tok)
 - `005_indicators_provider_health.py` — indicators_history and provider_health tables (~606 tok)
-- `006_proposals.py` — proposals and parcela_payments tables (~1248 tok)
-- `007_phase6_pix.py` — phase6 — pix_charges, pix_webhook_events, parcela_payments updates (~1249 tok)
+- `006_proposals.py` — proposals and parcela_payments tables (~1198 tok)
+- `007_phase6_pix.py` — phase6 — pix_charges, pix_webhook_events, parcela_payments updates (~1226 tok)
 - `008_phase7_notifications.py` — phase7 — finalize notifications_outbox schema; add email_log stub (~998 tok)
 
 ## backend/finacialsim_saas/
@@ -499,9 +500,9 @@
 
 - `Caddyfile` (~39 tok)
 - `docker-compose.yml` — Docker Compose services (~566 tok)
-- `Dockerfile.api` (~148 tok)
+- `Dockerfile.api` (~164 tok)
 - `Dockerfile.web` (~71 tok)
-- `Dockerfile.worker` (~257 tok)
+- `Dockerfile.worker` (~276 tok)
 - `nginx.conf` (~39 tok)
 
 ## packages/finacialsim_core/

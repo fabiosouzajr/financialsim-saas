@@ -6,7 +6,7 @@ Create Date: 2026-05-30
 """
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.dialects.postgresql import ENUM as PgEnum, JSONB, UUID
 
 revision = "004"
 down_revision = "003"
@@ -28,7 +28,7 @@ def upgrade() -> None:
                   sa.ForeignKey("tenants.id"), nullable=False),
         sa.Column("nome", sa.Text, nullable=False),
         sa.Column("cpf_cnpj", sa.Text, nullable=False),
-        sa.Column("tipo", sa.Enum("pf", "pj", name="client_type", create_type=False),
+        sa.Column("tipo", PgEnum(name="client_type", create_type=False),
                   nullable=False),
         sa.Column("rg", sa.Text, nullable=True),
         sa.Column("data_nasc", sa.Date, nullable=True),
@@ -73,8 +73,7 @@ def upgrade() -> None:
         sa.Column("odometro_km", sa.Integer, nullable=True),
         sa.Column(
             "status",
-            sa.Enum("ativo", "reservado", "vendido", "inativo",
-                    name="vehicle_status", create_type=False),
+            PgEnum(name="vehicle_status", create_type=False),
             nullable=False, server_default=sa.text("'ativo'"),
         ),
         sa.Column("snapshot_json", JSONB, nullable=True),

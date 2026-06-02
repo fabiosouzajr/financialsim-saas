@@ -6,7 +6,7 @@ Create Date: 2026-05-30
 """
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects.postgresql import JSONB, NUMERIC, UUID
+from sqlalchemy.dialects.postgresql import ENUM as PgEnum, JSONB, NUMERIC, UUID
 
 revision = "003"
 down_revision = "002"
@@ -69,7 +69,7 @@ def upgrade() -> None:
         sa.Column("total_juros", NUMERIC(18, 2), nullable=False),
         sa.Column("cet_mensal", NUMERIC(10, 6), nullable=False),
         sa.Column("cet_anual", NUMERIC(10, 6), nullable=False),
-        sa.Column("status", sa.Enum(name="simulation_status", create_type=False),
+        sa.Column("status", PgEnum(name="simulation_status", create_type=False),
                   nullable=False, server_default="confirmado"),
         sa.Column("rules_snapshot_json", JSONB, nullable=False),
         sa.Column("idempotency_key", sa.Text, nullable=True, unique=True),

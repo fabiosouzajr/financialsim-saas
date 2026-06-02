@@ -938,3 +938,37 @@
 | 16:10 | Edited frontend/src/routes/propostas/PropostasPage.tsx | modified PropostasPage() | ~49 |
 | 16:10 | Edited frontend/src/routes/admin/Users.tsx | modified AdminUsers() | ~47 |
 | 16:10 | Created frontend/src/components/FormErrorSummary.tsx | — | ~197 |
+| 16:15 | Created README.md | — | ~1565 |
+| 16:31 | Created dev.sh | — | ~2989 |
+| 16:31 | Edited dev.sh | 2→3 lines | ~42 |
+| 16:31 | Edited .gitignore | 3→8 lines | ~93 |
+
+## Session: 2026-06-02 16:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-02 16:44
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:52 | Edited ops/Dockerfile.worker | 5→5 lines | ~64 |
+| 16:52 | Edited ops/Dockerfile.worker | 5→5 lines | ~68 |
+| 16:53 | Edited ops/Dockerfile.api | 3→4 lines | ~38 |
+| 16:53 | Edited ops/Dockerfile.worker | 3→4 lines | ~38 |
+| 16:54 | Edited ops/Dockerfile.api | 3→3 lines | ~19 |
+| 16:54 | Edited ops/Dockerfile.worker | 3→3 lines | ~19 |
+| 16:57 | Edited backend/alembic/versions/002_auth_tables.py | inline fix | ~37 |
+| 16:59 | Edited backend/alembic/versions/002_auth_tables.py | inline fix | ~21 |
+| 17:00 | Edited backend/alembic/versions/002_auth_tables.py | inline fix | ~25 |
+| 17:01 | Edited backend/alembic/versions/003_simulation_tables.py | inline fix | ~23 |
+| 17:01 | Edited backend/alembic/versions/004_cadastros.py | inline fix | ~20 |
+| 17:01 | Edited backend/alembic/versions/003_simulation_tables.py | Enum() → PgEnum() | ~42 |
+| 17:01 | Edited backend/alembic/versions/004_cadastros.py | Enum() → PgEnum() | ~31 |
+| 17:02 | Edited backend/alembic/versions/004_cadastros.py | Enum() → PgEnum() | ~51 |
+| 17:02 | Edited backend/alembic/versions/006_proposals.py | Enum() → ENUM() | ~55 |
+| 17:02 | Edited backend/alembic/versions/006_proposals.py | Enum() → ENUM() | ~51 |
+| 17:02 | Edited backend/alembic/versions/006_proposals.py | Enum() → ENUM() | ~53 |
+| 17:02 | Edited backend/alembic/versions/007_phase6_pix.py | Enum() → ENUM() | ~55 |
+| 17:05 | Edited ops/Dockerfile.api | 5→6 lines | ~67 |
+| 17:06 | Edited ops/Dockerfile.worker | 3→4 lines | ~51 |
