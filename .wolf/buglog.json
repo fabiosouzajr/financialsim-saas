@@ -112,6 +112,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-01T23:09:08.454Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-06-02T14:19:40.450Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/superpowers/specs/2026-05-28-saas-phase-6-portal-cliente-pix.md",
+      "root_cause": "Had `(id, tenant_id, simulation_id, amortization_row_i",
+      "fix": "Changed to `(id, tenant_id, proposal_id, parcela_num, vencime",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-02T14:19:40.450Z"
     }
   ]
 }

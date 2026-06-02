@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-01T23:09:33.213Z
-> Files: 253 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T15:07:50.650Z
+> Files: 259 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/
 
@@ -249,6 +249,12 @@
 - `2026-06-01-saas-phase-5b-services.md` — Phase 5B — Services + Worker + API Implementation Plan (~11760 tok)
 - `2026-06-01-saas-phase-5c-tests.md` — Phase 5C — Integration Tests Implementation Plan (~6063 tok)
 - `2026-06-01-saas-phase-5d-frontend.md` — Phase 5D — Frontend Implementation Plan (~5184 tok)
+- `2026-06-02-saas-phase-6-index.md` — Phase 6 — Portal do Cliente + Pix Scaffold — Plan Index (~1126 tok)
+- `2026-06-02-saas-phase-6a-data-pix.md` — Phase 6A — Data Layer + Pix Module Implementation Plan (~5095 tok)
+- `2026-06-02-saas-phase-6b-services.md` — Phase 6B — Services Implementation Plan (~12284 tok)
+- `2026-06-02-saas-phase-6c-api.md` — Phase 6C — API Endpoints + Worker Cron Implementation Plan (~5061 tok)
+- `2026-06-02-saas-phase-6d-frontend.md` — Phase 6D — Frontend Portal Implementation Plan (~6999 tok)
+- `2026-06-02-saas-phase-6e-tests.md` — Phase 6E — Tests Implementation Plan (~7715 tok)
 
 ## docs/superpowers/plans/done/
 
@@ -272,7 +278,7 @@
 - `2026-05-28-saas-phase-3-cadastros.md` — Phase 3 — Cadastros (Clientes + Veículos + FIPE) (~1149 tok)
 - `2026-05-28-saas-phase-4-indicadores-rules.md` — Phase 4 — Indicadores + Business Rules UI + Scheduler + Audit log (~1212 tok)
 - `2026-05-28-saas-phase-5-propostas-pdf.md` — Phase 5 — Propostas + PDF/Carnê (worker-rendered) (~2010 tok)
-- `2026-05-28-saas-phase-6-portal-cliente-pix.md` — Phase 6 — Portal do cliente + Pix scaffold (~1730 tok)
+- `2026-05-28-saas-phase-6-portal-cliente-pix.md` — Phase 6 — Portal do cliente + Pix scaffold (~3512 tok)
 - `2026-05-28-saas-phase-7-notificacoes.md` — Phase 7 — Notificações (email) + polish (~1360 tok)
 - `2026-05-28-saas-roadmap.md` — FinacialSim SaaS — Master Roadmap (~4042 tok)
 
