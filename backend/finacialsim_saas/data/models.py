@@ -512,8 +512,16 @@ class ProposalStatus(enum.Enum):
 
 
 class ParcelaPaymentStatus(enum.Enum):
+    open = "open"
+    paid = "paid"
+    canceled = "canceled"
+    overdue = "overdue"
+
+
+class PixChargeStatus(enum.Enum):
     pending = "pending"
     paid = "paid"
+    expired = "expired"
     canceled = "canceled"
 
 
@@ -580,11 +588,66 @@ class ParcelaPayment(Base):
     valor_parcela: Mapped[Decimal] = mapped_column(sa.Numeric(18, 2), nullable=False)
     status: Mapped[ParcelaPaymentStatus] = mapped_column(
         sa.Enum(ParcelaPaymentStatus, name="parcela_payment_status", native_enum=True),
-        nullable=False, server_default=sa.text("'pending'"),
+        nullable=False, server_default=sa.text("'open'"),
     )
     paid_at: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True), nullable=True)
-    pix_charge_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    paid_amount: Mapped[Decimal | None] = mapped_column(sa.Numeric(18, 2), nullable=True)
+    last_pix_charge_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
 
     __table_args__ = (
         sa.Index("ix_parcela_payments_proposal_num", "proposal_id", "parcela_num"),
     )
+
+
+class PixCharge(Base):
+    __tablename__ = "pix_charges"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")
+    )
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    parcela_payment_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        sa.ForeignKey("parcela_payments.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    txid: Mapped[str] = mapped_column(sa.Text, nullable=False, unique=True)
+    brcode: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    qrcode_png_key: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    amount: Mapped[Decimal] = mapped_column(sa.Numeric(18, 2), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(sa.DateTime(timezone=True), nullable=False)
+    status: Mapped[PixChargeStatus] = mapped_column(
+        sa.Enum(PixChargeStatus, name="pix_charge_status", native_enum=True),
+        nullable=False, server_default=sa.text("'pending'"),
+    )
+    provider_payload_json: Mapped[dict | None] = mapped_column(sa.JSON, nullable=True)
+    criado_em: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+    atualizado_em: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+
+    __table_args__ = (
+        sa.Index("ix_pix_charges_parcela", "parcela_payment_id"),
+        sa.Index("ix_pix_charges_tenant_status", "tenant_id", "status"),
+    )
+
+
+class PixWebhookEvent(Base):
+    __tablename__ = "pix_webhook_events"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")
+    )
+    received_at: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+    signature_valid: Mapped[bool] = mapped_column(sa.Boolean, nullable=False)
+    headers_json: Mapped[dict] = mapped_column(sa.JSON, nullable=False)
+    body_json: Mapped[dict] = mapped_column(sa.JSON, nullable=False)
+    processed: Mapped[bool] = mapped_column(
+        sa.Boolean, nullable=False, server_default=sa.text("false")
+    )
+    processed_at: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True), nullable=True)
+    error: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
