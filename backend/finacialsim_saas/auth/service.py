@@ -85,10 +85,17 @@ class AuthService:
         return user
 
     async def authenticate(self, email: str, password: str) -> User:
+        # Search staff users first (globally unique email)
         result = await self._s.execute(
             select(User).where(User.email == email, User.role != Role.customer)
         )
         user = result.scalar_one_or_none()
+        if user is None:
+            # Try customer users (unique per tenant, first match wins)
+            result = await self._s.execute(
+                select(User).where(User.email == email, User.role == Role.customer)
+            )
+            user = result.scalars().first()
         if user is None or not self._check_pw(password, user.password_hash):
             raise AuthError("Invalid credentials")
         if not user.is_active:
@@ -199,6 +206,93 @@ class AuthService:
         user.password_hash = self._hash_pw(new_password)
         user.tokens_revoked_at = now
         prt.used_at = now
+
+    async def invite_customer(
+        self,
+        client_id: uuid.UUID,
+        ctx: "RequestContext",
+        *,
+        proposal_id: uuid.UUID | None = None,
+    ) -> User:
+        from finacialsim_saas.data.models import Client
+        from finacialsim_saas.errors import NotFoundError
+
+        client = await self._s.get(Client, client_id)
+        if client is None or client.tenant_id != ctx.tenant_id:
+            raise NotFoundError(f"client {client_id} not found")
+
+        # Find or create customer user
+        result = await self._s.execute(
+            select(User).where(
+                User.client_id == client_id,
+                User.role == Role.customer,
+                User.tenant_id == ctx.tenant_id,
+            )
+        )
+        user = result.scalar_one_or_none()
+        if user is None:
+            email = client.email or f"customer-{str(client_id)[:8]}@placeholder.invalid"
+            user = User(
+                tenant_id=ctx.tenant_id,
+                email=email,
+                name=client.nome,
+                password_hash="!unusable",
+                role=Role.customer,
+                client_id=client_id,
+                is_active=True,
+            )
+            self._s.add(user)
+            await self._s.flush()
+
+        # Invalidate any existing active reset tokens
+        now = datetime.now(timezone.utc)
+        await self._s.execute(
+            update(PasswordResetToken)
+            .where(
+                PasswordResetToken.user_id == user.id,
+                PasswordResetToken.used_at.is_(None),
+            )
+            .values(used_at=now)
+        )
+
+        # Issue new 72h token
+        raw = secrets.token_urlsafe(32)
+        prt = PasswordResetToken(
+            user_id=user.id,
+            tenant_id=user.tenant_id,
+            token_hash=self._hash_token(raw),
+            expires_at=now + timedelta(hours=72),
+        )
+        self._s.add(prt)
+
+        # Write outbox
+        payload: dict = {"user_id": str(user.id)}
+        if proposal_id is not None:
+            payload["proposal_id"] = str(proposal_id)
+        self._s.add(
+            NotificationsOutbox(
+                tenant_id=ctx.tenant_id,
+                type="customer_invite",
+                recipient=user.email,
+                payload=payload,
+            )
+        )
+        return user
+
+    async def re_invite(self, client_id: uuid.UUID, ctx: "RequestContext") -> User:
+        from finacialsim_saas.errors import NotFoundError
+
+        result = await self._s.execute(
+            select(User).where(
+                User.client_id == client_id,
+                User.role == Role.customer,
+                User.tenant_id == ctx.tenant_id,
+            )
+        )
+        user = result.scalar_one_or_none()
+        if user is None:
+            raise NotFoundError(f"no customer user for client {client_id}")
+        return await self.invite_customer(client_id, ctx)
 
     async def write_audit(
         self,
