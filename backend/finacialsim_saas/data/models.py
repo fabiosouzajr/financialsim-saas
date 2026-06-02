@@ -651,3 +651,7 @@ class PixWebhookEvent(Base):
     )
     processed_at: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True), nullable=True)
     error: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+
+    __table_args__ = (
+        sa.Index("ix_pix_webhook_events_received", "received_at"),
+    )
