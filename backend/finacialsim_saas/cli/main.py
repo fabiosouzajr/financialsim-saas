@@ -51,6 +51,12 @@ user_app = typer.Typer()
 app.add_typer(tenant_app, name="tenant")
 app.add_typer(user_app, name="user")
 
+from finacialsim_saas.cli.db import db_app
+from finacialsim_saas.cli.notifications_cli import notifications_app
+
+app.add_typer(db_app, name="db")
+app.add_typer(notifications_app, name="notifications")
+
 
 def _run(coro):
     return asyncio.run(coro)
