@@ -28,4 +28,3 @@ def test_settings_has_jwt_and_phase1_fields(monkeypatch):
     assert s.access_token_expire_minutes == 15
     assert s.refresh_token_expire_days == 7
     assert s.frontend_base_url == "http://localhost:5173"
-    assert s.maildir_path == "./dev-mail"

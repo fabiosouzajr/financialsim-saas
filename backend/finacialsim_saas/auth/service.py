@@ -182,7 +182,7 @@ class AuthService:
         self._s.add(
             NotificationsOutbox(
                 tenant_id=user.tenant_id,
-                template_key="password_reset",
+                template_key="auth.password_reset",
                 target_email=user.email,
                 payload_json={"reset_url": reset_url, "user_name": user.name},
             )
@@ -266,15 +266,19 @@ class AuthService:
         self._s.add(prt)
 
         # Write outbox
-        payload: dict = {"user_id": str(user.id)}
+        invite_payload: dict = {
+            "user_name": user.name,
+            "portal_url": f"{self._cfg.frontend_base_url}/portal/login",
+            "tenant_name": str(ctx.tenant_id),  # tenant name not available here; ID as fallback
+        }
         if proposal_id is not None:
-            payload["proposal_id"] = str(proposal_id)
+            invite_payload["proposal_id"] = str(proposal_id)
         self._s.add(
             NotificationsOutbox(
                 tenant_id=ctx.tenant_id,
-                template_key="customer_invite",
+                template_key="portal.customer_invite",
                 target_email=user.email,
-                payload_json=payload,
+                payload_json=invite_payload,
             )
         )
         return user

@@ -6,13 +6,14 @@ from datetime import datetime, timezone
 from decimal import Decimal
 from typing import Any
 
+from loguru import logger
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from finacialsim_saas.auth.deps import RequestContext
 from finacialsim_saas.data.models import (
     AuditLog, ParcelaPayment, ParcelaPaymentStatus, PixCharge,
-    PixChargeStatus, PixWebhookEvent, Proposal, Simulation,
+    PixChargeStatus, PixWebhookEvent, Proposal, Role, Simulation, User,
 )
 from finacialsim_saas.errors import NotFoundError, ValidationError
 from finacialsim_saas.pix.protocol import PixProvider
@@ -101,6 +102,38 @@ class PixService:
         self._s.add(charge)
         parcela.last_pix_charge_id = charge_id
         await self._s.commit()
+
+        # Notify customer: Pix link available
+        try:
+            from finacialsim_saas.notifications.service import NotificationService
+            proposal_obj = await self._s.get(Proposal, parcela.proposal_id)
+            if proposal_obj is not None:
+                sim_obj = await self._s.get(Simulation, proposal_obj.simulation_id)
+                if sim_obj is not None and sim_obj.client_id is not None:
+                    cu_result = await self._s.execute(
+                        select(User).where(
+                            User.client_id == sim_obj.client_id,
+                            User.role == Role.customer,
+                            User.is_active.is_(True),
+                        )
+                    )
+                    customer = cu_result.scalar_one_or_none()
+                    if customer and "@" in (customer.email or ""):
+                        pix_url = await self._storage.signed_url(qr_key, expires_in=1800)
+                        await NotificationService(self._s).enqueue(
+                            template_key="portal.pix_link",
+                            payload={
+                                "user_name": customer.name,
+                                "valor_parcela": str(parcela.valor_parcela),
+                                "parcela_num": parcela.parcela_num,
+                                "pix_url": pix_url,
+                            },
+                            target_email=customer.email,
+                            tenant_id=ctx.tenant_id,
+                        )
+                        await self._s.commit()
+        except Exception as exc:
+            logger.warning("pix_link notification failed", exc=str(exc))
 
         qr_url = await self._storage.signed_url(qr_key, expires_in=1800)
         return charge, qr_url
@@ -213,6 +246,37 @@ class PixService:
                 processed_at=now,
             )
         )
+
+        # Notify customer: payment confirmed
+        if parcela is not None:
+            try:
+                from finacialsim_saas.notifications.service import NotificationService
+                proposal_obj = await self._s.get(Proposal, parcela.proposal_id)
+                if proposal_obj is not None:
+                    sim_obj = await self._s.get(Simulation, proposal_obj.simulation_id)
+                    if sim_obj is not None and sim_obj.client_id is not None:
+                        cu_result = await self._s.execute(
+                            select(User).where(
+                                User.client_id == sim_obj.client_id,
+                                User.role == Role.customer,
+                            )
+                        )
+                        customer = cu_result.scalar_one_or_none()
+                        if customer and "@" in (customer.email or ""):
+                            await NotificationService(self._s).enqueue(
+                                template_key="portal.parcela_paid",
+                                payload={
+                                    "user_name": customer.name,
+                                    "valor_pago": str(parcela.paid_amount or charge.amount),
+                                    "parcela_num": parcela.parcela_num,
+                                },
+                                target_email=customer.email,
+                                tenant_id=parcela.tenant_id,
+                                idempotency_key=f"portal.parcela_paid:{parcela.id}",
+                            )
+            except Exception as exc:
+                logger.warning("parcela_paid notification failed", exc=str(exc))
+
         await self._s.commit()
 
     async def get_charge(

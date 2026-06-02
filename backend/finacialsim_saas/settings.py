@@ -28,7 +28,6 @@ class Settings(BaseSettings):
     refresh_token_expire_days: int = 7
 
     frontend_base_url: str = "http://localhost:5173"
-    maildir_path: str = "./dev-mail"
 
     storage_backend: str = "local"
     storage_local_root: str = "./storage"

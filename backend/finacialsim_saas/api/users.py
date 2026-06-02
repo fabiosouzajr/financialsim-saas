@@ -69,7 +69,7 @@ async def create_user(
     session.add(
         NotificationsOutbox(
             tenant_id=ctx.tenant_id,
-            template_key="user_invite",
+            template_key="auth.user_invite",
             target_email=user.email,
             payload_json={"user_name": user.name},
         )

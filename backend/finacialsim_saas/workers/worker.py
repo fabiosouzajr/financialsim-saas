@@ -7,6 +7,10 @@ from finacialsim_saas.data.database import build_engine, build_session_factory
 from finacialsim_saas.integrations.bacen.brasilapi import BrasilApiBacenProvider
 from finacialsim_saas.integrations.bacen.sgs import BcbSgsProvider
 from finacialsim_saas.settings import get_settings
+from finacialsim_saas.workers.notifications import (
+    drain_notifications_outbox,
+    schedule_parcela_due_reminders,
+)
 from finacialsim_saas.workers.tasks import (
     mark_overdue_parcelas,
     ping,
@@ -50,12 +54,15 @@ class WorkerSettings:
         ping,
         func(render_proposta_pdf, timeout=120),
         func(render_carne_pdf, timeout=120),
+        drain_notifications_outbox,
     ]
     cron_jobs = [
         cron(update_bacen_indicators, hour=12, minute=0),   # 09:00 BRT = 12:00 UTC
         cron(prune_fipe_cache, hour=6, minute=0),            # 03:00 BRT = 06:00 UTC
         cron(verify_provider_health, hour={0, 6, 12, 18}, minute=0),
         cron(mark_overdue_parcelas, hour=5, minute=0),   # 02:00 BRT = 05:00 UTC
+        cron(drain_notifications_outbox, second={0, 30}),          # every 30 s
+        cron(schedule_parcela_due_reminders, hour=11, minute=0),   # 08:00 BRT = 11:00 UTC
     ]
     on_startup = startup
     on_shutdown = shutdown

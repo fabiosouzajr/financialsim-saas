@@ -9,8 +9,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from finacialsim_saas.auth.deps import RequestContext
 from finacialsim_saas.data.models import (
-    AuditLog, NotificationsOutbox, ParcelaPayment, ParcelaPaymentStatus,
-    Proposal, ProposalStatus, Simulation,
+    AuditLog, ParcelaPayment, ParcelaPaymentStatus,
+    Proposal, ProposalStatus, Role, Simulation, User,
 )
 from finacialsim_saas.errors import NotFoundError
 
@@ -185,15 +185,37 @@ class ParcelaService:
                     },
                 )
             )
-            self._s.add(
-                NotificationsOutbox(
-                    tenant_id=parcela.tenant_id,
-                    template_key="parcela_overdue",
-                    payload_json={
-                        "parcela_id": str(parcela.id),
-                        "proposal_id": str(parcela.proposal_id),
-                    },
-                )
-            )
+            # Notify customer: parcela overdue
+            try:
+                from finacialsim_saas.notifications.service import NotificationService
+                proposal = await self._s.get(Proposal, parcela.proposal_id)
+                if proposal is not None:
+                    sim = await self._s.get(Simulation, proposal.simulation_id)
+                    if sim is not None and sim.client_id is not None:
+                        cu_result = await self._s.execute(
+                            select(User).where(
+                                User.client_id == sim.client_id,
+                                User.role == Role.customer,
+                                User.is_active.is_(True),
+                            )
+                        )
+                        customer = cu_result.scalar_one_or_none()
+                        if customer and "@" in (customer.email or ""):
+                            dias_atraso = (date.today() - parcela.vencimento).days
+                            await NotificationService(self._s).enqueue(
+                                template_key="portal.parcela_overdue",
+                                payload={
+                                    "user_name": customer.name,
+                                    "valor_parcela": str(parcela.valor_parcela),
+                                    "parcela_num": parcela.parcela_num,
+                                    "dias_atraso": max(dias_atraso, 1),
+                                },
+                                target_email=customer.email,
+                                tenant_id=parcela.tenant_id,
+                                idempotency_key=f"portal.parcela_overdue:{parcela.id}:{date.today().isoformat()}",
+                            )
+            except Exception as exc:
+                from loguru import logger as _logger
+                _logger.warning("parcela_overdue notification failed", exc=str(exc))
 
         await self._s.commit()
