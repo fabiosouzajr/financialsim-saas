@@ -148,7 +148,7 @@ async def test_approve_generates_parcela_payments(ctx_and_session, tmp_path):
         select(ParcelaPayment).where(ParcelaPayment.proposal_id == proposal.id)
     ))
     assert len(payments) == 3
-    assert all(p.status == ParcelaPaymentStatus.pending for p in payments)
+    assert all(p.status == ParcelaPaymentStatus.open for p in payments)
 
 
 @pytest.mark.asyncio

@@ -168,7 +168,7 @@ class ProposalService:
                     parcela_num=row.numero,
                     vencimento=date.fromisoformat(row.venc),
                     valor_parcela=Decimal(row.parcela_total),
-                    status=ParcelaPaymentStatus.pending,
+                    status=ParcelaPaymentStatus.open,
                 )
             )
 
