@@ -188,9 +188,8 @@ class ParcelaService:
             self._s.add(
                 NotificationsOutbox(
                     tenant_id=parcela.tenant_id,
-                    type="parcela_overdue",
-                    recipient="",
-                    payload={
+                    template_key="parcela_overdue",
+                    payload_json={
                         "parcela_id": str(parcela.id),
                         "proposal_id": str(parcela.proposal_id),
                     },

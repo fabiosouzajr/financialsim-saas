@@ -34,8 +34,8 @@ async def drain_outbox(ctx) -> None:  # noqa: ANN001 — ARQ context
         now = datetime.now(timezone.utc)
         result = await session.execute(
             select(NotificationsOutbox).where(
-                NotificationsOutbox.processed_at.is_(None),
-                NotificationsOutbox.failed_at.is_(None),
+                NotificationsOutbox.sent_at.is_(None),
+                NotificationsOutbox.status == "pending",
             ).limit(50)
         )
         rows = result.scalars().all()
@@ -43,30 +43,33 @@ async def drain_outbox(ctx) -> None:  # noqa: ANN001 — ARQ context
         for row in rows:
             try:
                 _render_and_deliver(channel, row)
-                row.processed_at = now
+                row.sent_at = now
+                row.status = "sent"
+                row.updated_at = now
             except Exception as exc:
                 row.attempts += 1
-                row.failed_at = now
-                row.error = str(exc)
+                row.last_error = str(exc)
+                row.status = "failed"
+                row.updated_at = now
 
         await session.commit()
 
 
 def _render_and_deliver(channel: MaildirChannel, row) -> None:  # noqa: ANN001
-    if row.type == "password_reset":
+    if row.template_key == "password_reset":
         subject = "Redefinição de senha — FinacialSim"
         body = (
-            f"Olá {row.payload.get('user_name', '')},\n\n"
-            f"Clique no link para redefinir sua senha:\n{row.payload['reset_url']}\n\n"
+            f"Olá {row.payload_json.get('user_name', '')},\n\n"
+            f"Clique no link para redefinir sua senha:\n{row.payload_json['reset_url']}\n\n"
             "Link válido por 30 minutos."
         )
-    elif row.type == "user_invite":
+    elif row.template_key == "user_invite":
         subject = "Bem-vindo ao FinacialSim"
         body = (
-            f"Olá {row.payload.get('user_name', '')},\n\n"
+            f"Olá {row.payload_json.get('user_name', '')},\n\n"
             "Sua conta foi criada. Use as credenciais fornecidas pelo administrador."
         )
     else:
-        subject = f"Notificação: {row.type}"
-        body = str(row.payload)
-    channel.deliver(to=row.recipient, subject=subject, body=body)
+        subject = f"Notificação: {row.template_key}"
+        body = str(row.payload_json)
+    channel.deliver(to=row.target_email or "", subject=subject, body=body)

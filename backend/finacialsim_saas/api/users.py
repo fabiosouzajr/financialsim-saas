@@ -69,9 +69,9 @@ async def create_user(
     session.add(
         NotificationsOutbox(
             tenant_id=ctx.tenant_id,
-            type="user_invite",
-            recipient=user.email,
-            payload={"user_name": user.name},
+            template_key="user_invite",
+            target_email=user.email,
+            payload_json={"user_name": user.name},
         )
     )
     await session.commit()

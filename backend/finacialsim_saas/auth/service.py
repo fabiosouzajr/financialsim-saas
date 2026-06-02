@@ -182,9 +182,9 @@ class AuthService:
         self._s.add(
             NotificationsOutbox(
                 tenant_id=user.tenant_id,
-                type="password_reset",
-                recipient=user.email,
-                payload={"reset_url": reset_url, "user_name": user.name},
+                template_key="password_reset",
+                target_email=user.email,
+                payload_json={"reset_url": reset_url, "user_name": user.name},
             )
         )
 
@@ -272,9 +272,9 @@ class AuthService:
         self._s.add(
             NotificationsOutbox(
                 tenant_id=ctx.tenant_id,
-                type="customer_invite",
-                recipient=user.email,
-                payload=payload,
+                template_key="customer_invite",
+                target_email=user.email,
+                payload_json=payload,
             )
         )
         return user

@@ -135,22 +135,63 @@ class AuditLog(Base):
 
 class NotificationsOutbox(Base):
     __tablename__ = "notifications_outbox"
+    __table_args__ = (
+        sa.Index("ix_notifications_outbox_status_scheduled", "status", "scheduled_for"),
+        sa.Index("ix_notifications_outbox_tenant", "tenant_id"),
+        sa.UniqueConstraint("idempotency_key", name="uq_notifications_outbox_idempotency_key"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")
     )
     tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
-    type: Mapped[str] = mapped_column(sa.Text, nullable=False)
-    recipient: Mapped[str] = mapped_column(sa.Text, nullable=False)
-    payload: Mapped[dict] = mapped_column(sa.JSON, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(
+    channel: Mapped[str] = mapped_column(sa.Text, nullable=False, default="email", server_default="email")
+    template_key: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    payload_json: Mapped[dict] = mapped_column(sa.JSON, nullable=False)
+    target_email: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    target_phone: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    scheduled_for: Mapped[datetime] = mapped_column(
         sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
     )
-    processed_at: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True), nullable=True)
-    failed_at: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True), nullable=True)
-    error: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    status: Mapped[str] = mapped_column(
+        sa.Text, nullable=False, default="pending", server_default="pending"
+    )
     attempts: Mapped[int] = mapped_column(
-        sa.Integer, nullable=False, server_default=sa.text("0")
+        sa.Integer, nullable=False, default=0, server_default=sa.text("0")
+    )
+    last_error: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    sent_at: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True), nullable=True)
+    idempotency_key: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+    criado_em: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
+    )
+
+
+class EmailLog(Base):
+    __tablename__ = "email_log"
+    __table_args__ = (
+        sa.Index("ix_email_log_outbox_id", "outbox_id"),
+        sa.Index("ix_email_log_tenant", "tenant_id"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")
+    )
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    outbox_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        sa.ForeignKey("notifications_outbox.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    provider_message_id: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    # accepted | delivered | bounced | complained — write path deferred to v2
+    status: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    provider_payload_json: Mapped[dict | None] = mapped_column(sa.JSON, nullable=True)
+    observed_at: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
     )
 
 

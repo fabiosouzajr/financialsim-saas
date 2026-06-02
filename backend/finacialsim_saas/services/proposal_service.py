@@ -231,9 +231,8 @@ class ProposalService:
         self._s.add(
             NotificationsOutbox(
                 tenant_id=ctx.tenant_id,
-                type="proposal_cancelled",
-                recipient="",
-                payload={"proposal_id": str(proposal.id)},
+                template_key="proposal_cancelled",
+                payload_json={"proposal_id": str(proposal.id)},
             )
         )
 
