@@ -35,6 +35,9 @@ class Settings(BaseSettings):
     storage_hmac_secret: str = "change-storage-secret-in-production"
     storage_base_url: str = "http://localhost:8000"
 
+    pix_provider: str = "fake"
+    pix_webhook_secret: str = ""
+
 
 def get_settings() -> Settings:
     return Settings()  # type: ignore[call-arg]
