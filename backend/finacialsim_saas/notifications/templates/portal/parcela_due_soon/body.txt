@@ -2,7 +2,8 @@ Olá {{ user_name }},
 
 Sua Parcela {{ parcela_num }} ({{ valor_parcela }}) vence em {{ vencimento }}.
 
-Acesse o portal para efetuar o pagamento com antecedência.
+Acesse o portal para efetuar o pagamento com antecedência:
+https://app.finacialsim.com.br/portal
 
 Atenciosamente,
 Equipe FinacialSim

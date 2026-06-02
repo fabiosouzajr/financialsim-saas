@@ -2,6 +2,9 @@ Olá {{ user_name }},
 
 Sua Parcela {{ parcela_num }} ({{ valor_parcela }}) está vencida há {{ dias_atraso }} dias.
 
-Acesse o portal para regularizar sua situação.
+Acesse o portal para regularizar sua situação:
+https://app.finacialsim.com.br/portal
+
+Entre em contato com a loja caso precise de auxílio.
 
 Equipe FinacialSim
