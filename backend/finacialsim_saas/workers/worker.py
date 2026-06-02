@@ -8,6 +8,7 @@ from finacialsim_saas.integrations.bacen.brasilapi import BrasilApiBacenProvider
 from finacialsim_saas.integrations.bacen.sgs import BcbSgsProvider
 from finacialsim_saas.settings import get_settings
 from finacialsim_saas.workers.tasks import (
+    mark_overdue_parcelas,
     ping,
     prune_fipe_cache,
     render_carne_pdf,
@@ -35,6 +36,8 @@ async def startup(ctx: dict) -> None:
     ])
     from finacialsim_saas.storage.deps import get_storage_backend as _get_storage
     ctx["storage_backend"] = _get_storage(settings)
+    from finacialsim_saas.pix.deps import get_pix_provider as _get_pix
+    ctx["pix_provider"] = _get_pix(settings)
 
 
 async def shutdown(ctx: dict) -> None:
@@ -52,6 +55,7 @@ class WorkerSettings:
         cron(update_bacen_indicators, hour=12, minute=0),   # 09:00 BRT = 12:00 UTC
         cron(prune_fipe_cache, hour=6, minute=0),            # 03:00 BRT = 06:00 UTC
         cron(verify_provider_health, hour={0, 6, 12, 18}, minute=0),
+        cron(mark_overdue_parcelas, hour=5, minute=0),   # 02:00 BRT = 05:00 UTC
     ]
     on_startup = startup
     on_shutdown = shutdown

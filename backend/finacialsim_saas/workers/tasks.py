@@ -334,3 +334,17 @@ async def render_carne_pdf(ctx: dict, proposal_id: str) -> None:
             logger.exception(f"render_carne_pdf: {proposal_id} failed")
             proposal.render_error = f"carne: {str(exc)[:990]}"
             await session.commit()
+
+
+# ── Phase 6: Parcela overdue cron ─────────────────────────────────────────────
+
+
+async def mark_overdue_parcelas(ctx: dict) -> None:
+    """Daily cron at 05:00 UTC: flip open parcelas past due to overdue."""
+    from finacialsim_saas.services.parcela_service import ParcelaService
+
+    session_factory = ctx["session_factory"]
+    async with session_factory() as session:
+        svc = ParcelaService(session)
+        await svc.mark_overdue()
+    logger.info("mark_overdue_parcelas: complete")
