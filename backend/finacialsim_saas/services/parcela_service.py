@@ -12,6 +12,7 @@ from finacialsim_saas.data.models import (
     AuditLog, ParcelaPayment, ParcelaPaymentStatus,
     Proposal, ProposalStatus, Role, Simulation, User,
 )
+from loguru import logger
 from finacialsim_saas.errors import NotFoundError
 
 UTC = timezone.utc
@@ -215,7 +216,6 @@ class ParcelaService:
                                 idempotency_key=f"portal.parcela_overdue:{parcela.id}:{date.today().isoformat()}",
                             )
             except Exception as exc:
-                from loguru import logger as _logger
-                _logger.warning("parcela_overdue notification failed", exc=str(exc))
+                logger.warning("parcela_overdue notification failed", exc=str(exc))
 
         await self._s.commit()

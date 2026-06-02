@@ -130,8 +130,8 @@ class PixService:
                             },
                             target_email=customer.email,
                             tenant_id=ctx.tenant_id,
+                            idempotency_key=f"portal.pix_link:{parcela_payment_id}",
                         )
-                        await self._s.commit()
         except Exception as exc:
             logger.warning("pix_link notification failed", exc=str(exc))
 

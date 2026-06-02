@@ -12,7 +12,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from finacialsim_saas.data.models import (
-    AuditLog, NotificationsOutbox, PasswordResetToken,
+    AuditLog, PasswordResetToken,
     RefreshToken, Role, User,
 )
 from finacialsim_saas.errors import AuthError, ConflictError
@@ -179,13 +179,12 @@ class AuthService:
         self._s.add(prt)
 
         reset_url = f"{self._cfg.frontend_base_url}/reset-password/{raw}"
-        self._s.add(
-            NotificationsOutbox(
-                tenant_id=user.tenant_id,
-                template_key="auth.password_reset",
-                target_email=user.email,
-                payload_json={"reset_url": reset_url, "user_name": user.name},
-            )
+        from finacialsim_saas.notifications.service import NotificationService
+        await NotificationService(self._s).enqueue(
+            template_key="auth.password_reset",
+            payload={"reset_url": reset_url, "user_name": user.name},
+            target_email=user.email,
+            tenant_id=user.tenant_id,
         )
 
     async def confirm_password_reset(self, raw_token: str, new_password: str) -> None:
@@ -273,13 +272,12 @@ class AuthService:
         }
         if proposal_id is not None:
             invite_payload["proposal_id"] = str(proposal_id)
-        self._s.add(
-            NotificationsOutbox(
-                tenant_id=ctx.tenant_id,
-                template_key="portal.customer_invite",
-                target_email=user.email,
-                payload_json=invite_payload,
-            )
+        from finacialsim_saas.notifications.service import NotificationService
+        await NotificationService(self._s).enqueue(
+            template_key="portal.customer_invite",
+            payload=invite_payload,
+            target_email=user.email,
+            tenant_id=ctx.tenant_id,
         )
         return user
 

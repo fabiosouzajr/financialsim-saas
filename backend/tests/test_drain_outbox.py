@@ -1,6 +1,6 @@
 """Tests for drain_notifications_outbox ARQ job (SMTP mocked)."""
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -184,5 +184,49 @@ async def test_drain_skips_non_email_channel(engine, session_factory):
         )
         row = result.scalar_one()
         assert row.status == "pending"
+
+    await ctx["redis"].aclose()
+
+
+async def test_drain_recovers_stuck_sending_row(engine, session_factory):
+    """A row stuck in 'sending' for > 60s is re-processed."""
+    from finacialsim_saas.workers.notifications import drain_notifications_outbox
+
+    tenant_id = uuid.uuid4()
+    now = datetime.now(UTC)
+    stuck_since = now - timedelta(seconds=65)
+
+    async with session_factory() as session:
+        row = NotificationsOutbox(
+            tenant_id=tenant_id,
+            channel="email",
+            template_key="auth.password_reset",
+            payload_json={"reset_url": "https://example.com/r/stuck", "user_name": "Stuck"},
+            target_email="stuck@example.com",
+            scheduled_for=stuck_since,
+            status="sending",  # stuck — worker crashed mid-send
+            attempts=1,
+            updated_at=stuck_since,
+            criado_em=stuck_since,
+        )
+        session.add(row)
+        await session.commit()
+
+    ctx = await _make_ctx(engine, session_factory)
+
+    with patch(
+        "finacialsim_saas.workers.notifications.EmailChannel.send",
+        new_callable=AsyncMock,
+    ) as mock_send:
+        await drain_notifications_outbox(ctx)
+
+    mock_send.assert_called_once()
+
+    async with session_factory() as session:
+        result = await session.execute(
+            select(NotificationsOutbox).where(NotificationsOutbox.tenant_id == tenant_id)
+        )
+        row = result.scalar_one()
+        assert row.status == "sent"
 
     await ctx["redis"].aclose()
