@@ -32,14 +32,18 @@ async def drain_notifications_outbox(ctx: dict) -> None:
     async with session_factory() as cfg_session:
         smtp = await SettingsService(cfg_session).get_all()
 
-    channel = EmailChannel(
-        smtp_host=smtp["smtp_host"][0],
-        smtp_port=int(smtp["smtp_port"][0]),
-        smtp_user=smtp["smtp_user"][0],
-        smtp_password=smtp["smtp_password"][0],
-        smtp_tls=smtp["smtp_tls"][0].lower() == "true",
-        smtp_from=smtp["smtp_from"][0],
-    )
+    try:
+        channel = EmailChannel(
+            smtp_host=smtp["smtp_host"][0],
+            smtp_port=int(smtp["smtp_port"][0]),
+            smtp_user=smtp["smtp_user"][0],
+            smtp_password=smtp["smtp_password"][0],
+            smtp_tls=smtp["smtp_tls"][0].lower() == "true",
+            smtp_from=smtp["smtp_from"][0],
+        )
+    except (KeyError, ValueError) as exc:
+        logger.error("drain_notifications_outbox: invalid SMTP config, skipping", error=str(exc))
+        return
 
     async with session_factory() as session:
         now = datetime.now(UTC)
