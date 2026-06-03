@@ -55,3 +55,35 @@ if [[ -z "${DATABASE_URL:-}" ]]; then
 fi
 
 ok "DATABASE_URL is set"
+
+# ── Step 2: Container readiness ───────────────────────────────────────────────
+section "Step 2/4: Container readiness"
+
+if ! command -v docker &>/dev/null; then
+    die "Docker not found. Install Docker Engine or Docker Desktop:\n  https://docs.docker.com/get-docker/"
+fi
+
+cd "$ROOT"
+
+_api_healthy() {
+    docker compose ps api 2>/dev/null | grep -q "healthy"
+}
+
+if _api_healthy; then
+    ok "API container already running and healthy — skipping start"
+else
+    info "Starting containers (docker compose up -d)..."
+    docker compose up -d
+
+    WAIT=0
+    until _api_healthy; do
+        if [[ $WAIT -ge 60 ]]; then
+            die "API container did not become healthy within 60 seconds.\n\n  Check logs: docker compose logs api --tail 30"
+        fi
+        sleep 3
+        WAIT=$((WAIT + 3))
+        info "Waiting for API to become healthy... ${WAIT}s"
+    done
+
+    ok "API container is healthy"
+fi
