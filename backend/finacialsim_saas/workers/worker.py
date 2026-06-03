@@ -55,6 +55,7 @@ class WorkerSettings:
         func(render_proposta_pdf, timeout=120),
         func(render_carne_pdf, timeout=120),
         drain_notifications_outbox,
+        update_bacen_indicators,  # also registered for ad-hoc enqueueing via /indicators/refresh
     ]
     cron_jobs = [
         cron(update_bacen_indicators, hour=12, minute=0),   # 09:00 BRT = 12:00 UTC
