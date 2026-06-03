@@ -96,3 +96,82 @@ if ! docker compose exec -T api python -m finacialsim_saas.cli.main db migrate 2
     die "Migration failed. Check the output above."
 fi
 ok "Database is up to date"
+
+# ── Step 4: Tenant creation ───────────────────────────────────────────────────
+section "Step 4/4: Create first tenant"
+
+_slugify() {
+    echo "$1" \
+        | tr '[:upper:]' '[:lower:]' \
+        | sed 's/[^a-z0-9]/-/g' \
+        | sed 's/--*/-/g' \
+        | sed 's/^-//;s/-$//'
+}
+
+# Tenant name
+if [[ -n "$OPT_NAME" ]]; then
+    TENANT_NAME="$OPT_NAME"
+else
+    read -rp "Tenant name (e.g. Acme Financiadora): " TENANT_NAME
+fi
+[[ -z "$TENANT_NAME" ]] && die "Tenant name cannot be empty."
+
+# Slug (auto-suggested from name)
+_suggested_slug=$(_slugify "$TENANT_NAME")
+if [[ -n "$OPT_SLUG" ]]; then
+    TENANT_SLUG="$OPT_SLUG"
+else
+    read -rp "Tenant slug [$_suggested_slug]: " TENANT_SLUG
+    TENANT_SLUG="${TENANT_SLUG:-$_suggested_slug}"
+fi
+[[ -z "$TENANT_SLUG" ]] && die "Tenant slug cannot be empty."
+
+# Admin email
+if [[ -n "$OPT_EMAIL" ]]; then
+    ADMIN_EMAIL="$OPT_EMAIL"
+else
+    read -rp "Admin email: " ADMIN_EMAIL
+fi
+[[ "$ADMIN_EMAIL" =~ ^[^@]+@[^@]+\.[^@]+$ ]] || die "Invalid email address: $ADMIN_EMAIL"
+
+# Admin password — always prompted, never from flags
+while true; do
+    read -rsp "Admin password (min 8 chars): " ADMIN_PASSWORD
+    echo
+    if [[ ${#ADMIN_PASSWORD} -lt 8 ]]; then
+        warn "Password must be at least 8 characters."
+        continue
+    fi
+    read -rsp "Confirm password: " ADMIN_PASSWORD2
+    echo
+    if [[ "$ADMIN_PASSWORD" == "$ADMIN_PASSWORD2" ]]; then
+        break
+    fi
+    warn "Passwords do not match. Try again."
+done
+
+# Create tenant — retry up to 3 times on slug collision
+_attempt=0
+while true; do
+    _attempt=$((_attempt + 1))
+    if [[ $_attempt -gt 3 ]]; then
+        die "Too many failed attempts.\n\n  Run manually:\n    docker compose exec api python -m finacialsim_saas.cli.main tenant create \\\n      --name \"$TENANT_NAME\" --slug <slug> --admin-email \"$ADMIN_EMAIL\""
+    fi
+
+    _output=$(docker compose exec -T api python -m finacialsim_saas.cli.main tenant create \
+        --name "$TENANT_NAME" \
+        --slug "$TENANT_SLUG" \
+        --admin-email "$ADMIN_EMAIL" \
+        --admin-password "$ADMIN_PASSWORD" 2>&1) && _exit=0 || _exit=$?
+
+    if [[ $_exit -eq 0 ]]; then
+        break
+    elif echo "$_output" | grep -qi "already exists"; then
+        warn "Slug '$TENANT_SLUG' is already taken."
+        read -rp "Choose a different slug: " TENANT_SLUG
+        [[ -z "$TENANT_SLUG" ]] && die "Slug cannot be empty."
+    else
+        echo "$_output" >&2
+        die "Tenant creation failed. See output above."
+    fi
+done
