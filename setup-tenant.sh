@@ -38,3 +38,20 @@ while [[ $# -gt 0 ]]; do
         *) die "Unknown option: $1\nUsage: ./setup-tenant.sh [--name NAME] [--slug SLUG] [--admin-email EMAIL]" ;;
     esac
 done
+
+# ── Step 1: Env check ─────────────────────────────────────────────────────────
+section "Step 1/4: Environment check"
+
+if [[ -f "$ROOT/.env" ]]; then
+    set -a
+    # shellcheck source=/dev/null
+    source "$ROOT/.env"
+    set +a
+    ok "Loaded .env"
+fi
+
+if [[ -z "${DATABASE_URL:-}" ]]; then
+    die "DATABASE_URL is not set.\n\n  Set it in $ROOT/.env or export it before running this script.\n  Example:\n    DATABASE_URL=postgresql+asyncpg://finacialsim:changeme@localhost:5432/finacialsim"
+fi
+
+ok "DATABASE_URL is set"
