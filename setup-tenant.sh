@@ -63,7 +63,7 @@ if ! command -v docker &>/dev/null; then
     die "Docker not found. Install Docker Engine or Docker Desktop:\n  https://docs.docker.com/get-docker/"
 fi
 
-cd "$ROOT"
+cd "$ROOT/ops"
 
 _api_healthy() {
     docker compose ps api 2>/dev/null | grep -q "(healthy)"
