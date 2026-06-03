@@ -6,7 +6,14 @@ import Index from "./routes/Index";
 import Login from "./routes/Login";
 import ForgotPassword from "./routes/ForgotPassword";
 import ResetPassword from "./routes/ResetPassword";
+import AdminLayout from "./routes/admin/AdminLayout";
 import AdminUsers from "./routes/admin/Users";
+import BusinessRules from "./routes/admin/BusinessRules";
+import Indicators from "./routes/admin/Indicators";
+import AuditLog from "./routes/admin/AuditLog";
+import SystemHealth from "./routes/admin/SystemHealth";
+import SmtpSettings from "./routes/admin/SmtpSettings";
+import PixSettings from "./routes/admin/PixSettings";
 import RequireRole from "./components/RequireRole";
 import Simulacao from "./routes/Simulacao";
 import SimulacaoEdit from "./routes/SimulacaoEdit";
@@ -34,13 +41,22 @@ export default function App() {
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/healthz" element={<Health />} />
             <Route
-              path="/admin/users"
+              path="/admin"
               element={
                 <RequireRole roles={["admin"]}>
-                  <AdminUsers />
+                  <AdminLayout />
                 </RequireRole>
               }
-            />
+            >
+              <Route index element={<Navigate to="regras" replace />} />
+              <Route path="regras" element={<BusinessRules />} />
+              <Route path="indicadores" element={<Indicators />} />
+              <Route path="auditoria" element={<AuditLog />} />
+              <Route path="saude" element={<SystemHealth />} />
+              <Route path="smtp" element={<SmtpSettings />} />
+              <Route path="pix" element={<PixSettings />} />
+              <Route path="users" element={<AdminUsers />} />
+            </Route>
             <Route path="/simulacao" element={<Simulacao />} />
             <Route path="/simulacao/:id" element={<SimulacaoEdit />} />
             <Route path="/clientes" element={<ClientesPage />} />

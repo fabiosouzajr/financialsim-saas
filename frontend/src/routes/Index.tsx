@@ -48,9 +48,9 @@ const NAV_ITEMS = [
     roles: ["admin", "manager", "user"],
   },
   {
-    label: "Usuários",
-    description: "Gerenciar usuários e permissões",
-    href: "/admin/users",
+    label: "Administração",
+    description: "Regras, indicadores, auditoria, SMTP e usuários",
+    href: "/admin",
     icon: ShieldCheck,
     roles: ["admin"],
   },
