@@ -35,19 +35,25 @@ class PostgresFipeCache:
 
     async def fetch(self, query: dict[str, Any]) -> Ok[Any] | Err:
         key = _build_key(query)
-        async with self._sf() as s:
-            row = await _get_row(s, key)
-            if row is not None and _is_fresh(row):
-                logger.debug("fipe_cache_hit", provider=self.name, **key)
-                return Ok(_deserialize(query.get("action", ""), row.payload_json))
+        try:
+            async with self._sf() as s:
+                row = await _get_row(s, key)
+                if row is not None and _is_fresh(row):
+                    logger.debug("fipe_cache_hit", provider=self.name, **key)
+                    return Ok(_deserialize(query.get("action", ""), row.payload_json))
+        except Exception as exc:
+            logger.warning("fipe_cache_read_error", provider=self.name, error=str(exc), **key)
 
         result = await self._provider.fetch(query)
         if result.is_ok:
             ttl = self._preco_ttl if query.get("action") == "price" else self._listas_ttl
-            async with self._sf() as s:
-                await _upsert(s, key, _serialize(query.get("action", ""), result.value), ttl)
-                await s.commit()
-            logger.debug("fipe_cache_miss", provider=self.name, **key)
+            try:
+                async with self._sf() as s:
+                    await _upsert(s, key, _serialize(query.get("action", ""), result.value), ttl)
+                    await s.commit()
+                logger.debug("fipe_cache_miss", provider=self.name, **key)
+            except Exception as exc:
+                logger.warning("fipe_cache_write_error", provider=self.name, error=str(exc), **key)
         return result
 
 

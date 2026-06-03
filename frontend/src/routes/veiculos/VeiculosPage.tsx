@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,6 +34,53 @@ const vehicleSchema = z.object({
 });
 
 type VehicleForm = z.infer<typeof vehicleSchema>;
+
+const TIPO_LABELS: Record<string, string> = {
+  carro: "Carro",
+  moto: "Moto",
+  caminhao: "Caminhão",
+};
+
+function ToggleGroup<T extends string>({
+  options,
+  value,
+  onChange,
+  labels,
+}: {
+  options: readonly T[];
+  value: T;
+  onChange: (v: T) => void;
+  labels?: Record<string, string>;
+}) {
+  return (
+    <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
+      {options.map(opt => (
+        <button
+          key={opt}
+          type="button"
+          onClick={() => onChange(opt)}
+          className={`flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-150 cursor-pointer ${
+            value === opt
+              ? "bg-white text-gray-900 shadow-sm border border-gray-200"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          {labels?.[opt] ?? opt}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function FormField({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+  return (
+    <div className="grid gap-1.5">
+      <Label className="text-gray-700 font-medium">{label}</Label>
+      {children}
+      {error && <p className="text-xs text-red-500">{error}</p>}
+    </div>
+  );
+}
 
 function VehicleModal({ onClose }: { onClose: () => void }) {
   const qc = useQueryClient();
@@ -86,104 +133,124 @@ function VehicleModal({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      {/* Tipo de veículo */}
       <div className="grid gap-2">
-        <Label>Tipo de Veículo</Label>
-        <div className="flex gap-2">
-          {TIPOS.map(t => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => { setTipo(t); setValue("tipo", t); }}
-              className={`px-3 py-1.5 rounded-md text-sm border ${tipo === t ? "bg-primary text-white border-primary" : "border-input"}`}
-            >
-              {t.charAt(0).toUpperCase() + t.slice(1)}
-            </button>
-          ))}
-        </div>
+        <Label className="text-gray-700 font-medium">Tipo de Veículo</Label>
+        <ToggleGroup
+          options={TIPOS}
+          value={tipo}
+          onChange={t => { setTipo(t); setValue("tipo", t); }}
+          labels={TIPO_LABELS}
+        />
         <input type="hidden" {...register("tipo")} value={tipo} />
       </div>
 
-      <div className="flex gap-2">
-        {(["fipe", "manual"] as const).map(m => (
-          <button
-            key={m}
-            type="button"
-            onClick={() => { setModo(m); setValue("modo", m); setFipeData(null); }}
-            className={`px-3 py-1.5 rounded-md text-sm border ${modo === m ? "bg-primary text-white border-primary" : "border-input"}`}
-          >
-            {m === "fipe" ? "Consultar FIPE" : "Preencher manualmente"}
-          </button>
-        ))}
+      {/* Modo de entrada */}
+      <div className="grid gap-2">
+        <Label className="text-gray-700 font-medium">Fonte do Valor</Label>
+        <ToggleGroup
+          options={["fipe", "manual"] as const}
+          value={modo}
+          onChange={m => { setModo(m); setValue("modo", m); setFipeData(null); }}
+          labels={{ fipe: "Tabela FIPE", manual: "Manual" }}
+        />
+        <input type="hidden" {...register("modo")} value={modo} />
       </div>
-      <input type="hidden" {...register("modo")} value={modo} />
 
+      <div className="border-t border-gray-100" />
+
+      {/* FIPE or manual fields */}
       {modo === "fipe" ? (
-        <>
+        <div className="space-y-4">
           <FipeCascadePicker tipo={tipo} onPriceSelected={handlePriceSelected} />
+
           {fipeData && (
-            <div className="rounded-md bg-green-50 border border-green-200 p-3 text-sm text-green-800 space-y-1">
-              <p className="font-medium">{fipeData.price.marca} {fipeData.price.modelo} {fipeData.price.ano_modelo}</p>
-              <p>FIPE: R$ {Number(fipeData.price.valor).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-              <p className="text-xs text-green-600">Referência: {fipeData.price.mes_referencia}</p>
+            <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                <p className="text-sm font-semibold text-emerald-900">
+                  {fipeData.price.marca} {fipeData.price.modelo} {fipeData.price.ano_modelo}
+                </p>
+              </div>
+              <div className="flex items-baseline justify-between">
+                <span className="text-xs text-emerald-700">Valor FIPE</span>
+                <span className="text-lg font-bold text-emerald-800">
+                  R$ {Number(fipeData.price.valor).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-xs text-emerald-600">
+                <span>{fipeData.price.combustivel}</span>
+                <span>Ref: {fipeData.price.mes_referencia}</span>
+              </div>
+              {fipeData.price.codigo_fipe && (
+                <p className="text-xs text-emerald-500">Cód. FIPE: {fipeData.price.codigo_fipe}</p>
+              )}
             </div>
           )}
-        </>
+
+          {!fipeData && (
+            <p className="text-xs text-gray-400 text-center">
+              Selecione marca, modelo e ano, depois clique em "Consultar FIPE"
+            </p>
+          )}
+        </div>
       ) : (
-        <>
+        <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <div className="grid gap-2">
-              <Label>Marca</Label>
-              <Input {...register("marca")} placeholder="Ex: Toyota" />
-              {errors.marca && <p className="text-xs text-red-500">{errors.marca.message}</p>}
-            </div>
-            <div className="grid gap-2">
-              <Label>Modelo</Label>
-              <Input {...register("modelo")} placeholder="Ex: Corolla" />
-              {errors.modelo && <p className="text-xs text-red-500">{errors.modelo.message}</p>}
-            </div>
+            <FormField label="Marca" error={errors.marca?.message}>
+              <Input {...register("marca")} placeholder="Ex: Toyota" className="bg-white border-gray-300 text-gray-900" />
+            </FormField>
+            <FormField label="Modelo" error={errors.modelo?.message}>
+              <Input {...register("modelo")} placeholder="Ex: Corolla" className="bg-white border-gray-300 text-gray-900" />
+            </FormField>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="grid gap-2">
-              <Label>Ano</Label>
-              <Input type="number" {...register("ano_modelo")} placeholder="2023" />
-            </div>
-            <div className="grid gap-2">
-              <Label>Combustível</Label>
-              <Input {...register("combustivel")} placeholder="Gasolina" />
-            </div>
+            <FormField label="Ano">
+              <Input type="number" {...register("ano_modelo")} placeholder="2023" className="bg-white border-gray-300 text-gray-900" />
+            </FormField>
+            <FormField label="Combustível">
+              <Input {...register("combustivel")} placeholder="Gasolina" className="bg-white border-gray-300 text-gray-900" />
+            </FormField>
           </div>
-          <div className="grid gap-2">
-            <Label>Valor de referência</Label>
-            <Input {...register("valor_fipe")} placeholder="0.00" />
-          </div>
-        </>
+          <FormField label="Valor de Referência (R$)">
+            <Input {...register("valor_fipe")} placeholder="0,00" className="bg-white border-gray-300 text-gray-900" />
+          </FormField>
+        </div>
       )}
 
+      <div className="border-t border-gray-100" />
+
+      {/* Additional fields */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="grid gap-2">
-          <Label>Cor</Label>
-          <Input {...register("cor")} placeholder="Prata" />
-        </div>
-        <div className="grid gap-2">
-          <Label>Placa</Label>
-          <Input {...register("placa")} placeholder="ABC1D23" />
-        </div>
+        <FormField label="Cor">
+          <Input {...register("cor")} placeholder="Prata" className="bg-white border-gray-300 text-gray-900" />
+        </FormField>
+        <FormField label="Placa">
+          <Input {...register("placa")} placeholder="ABC1D23" className="bg-white border-gray-300 text-gray-900 uppercase" />
+        </FormField>
       </div>
-      <div className="grid gap-2">
-        <Label>Odômetro (km)</Label>
-        <Input type="number" {...register("odometro_km")} placeholder="0" />
-      </div>
+      <FormField label="Odômetro (km)">
+        <Input type="number" {...register("odometro_km")} placeholder="0" className="bg-white border-gray-300 text-gray-900" />
+      </FormField>
 
       {create.error && (
-        <p className="text-sm text-red-500">
-          {(create.error as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Erro ao salvar"}
-        </p>
+        <div className="rounded-md bg-red-50 border border-red-200 p-3">
+          <p className="text-sm text-red-700">
+            {(create.error as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Erro ao salvar veículo"}
+          </p>
+        </div>
       )}
 
-      <div className="flex justify-end gap-2 pt-2">
-        <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
-        <Button type="submit" disabled={create.isPending || (modo === "fipe" && !fipeData)}>
+      <div className="flex justify-end gap-2 pt-1">
+        <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer">
+          Cancelar
+        </Button>
+        <Button
+          type="submit"
+          disabled={create.isPending || (modo === "fipe" && !fipeData)}
+          className="bg-slate-800 hover:bg-slate-700 text-white cursor-pointer"
+        >
           {create.isPending ? "Salvando..." : "Registrar Veículo"}
         </Button>
       </div>
@@ -227,9 +294,9 @@ export default function VeiculosPage() {
           <DialogTrigger asChild>
             <Button>+ Novo Veículo</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-white text-gray-900">
             <DialogHeader>
-              <DialogTitle>Registrar Veículo</DialogTitle>
+              <DialogTitle className="text-gray-900 text-lg font-semibold">Registrar Veículo</DialogTitle>
             </DialogHeader>
             <VehicleModal onClose={() => setOpen(false)} />
           </DialogContent>

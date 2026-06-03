@@ -1,23 +1,19 @@
-# Design System Master File
+## Design System Master File
 
-> **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.
-> If that file exists, its rules **override** this Master file.
-> If not, strictly follow the rules below.
+\> **LOGIC:** When building a specific page, first check `design-system/financialsim/DESIGN.md`.  
+\> If that file exists, its rules **override** this Master file.  
+\> If not, strictly follow the rules below.
 
----
-
-**Project:** FinancialSim
-**Generated:** 2026-05-27 10:42:02
+**Project:** FinancialSim  
+**Generated:** 2026-05-27 10:42:02  
 **Category:** Financial Dashboard
-
----
 
 ## Global Rules
 
 ### Color Palette
 
 | Role | Hex | CSS Variable |
-| ------ | ----- | -------------- |
+| --- | --- | --- |
 | Primary | `#0F172A` | `--color-primary` |
 | Secondary | `#1E293B` | `--color-secondary` |
 | CTA/Accent | `#22C55E` | `--color-cta` |
@@ -28,21 +24,21 @@
 
 ### Typography
 
-- **Heading Font:** IBM Plex Sans
-- **Body Font:** IBM Plex Sans
-- **Mood:** financial, trustworthy, professional, corporate, banking, serious
-- **Google Fonts:** [IBM Plex Sans + IBM Plex Sans](https://fonts.google.com/share?selection.family=IBM+Plex+Sans:wght@300;400;500;600;700)
+*   **Heading Font:** IBM Plex Sans
+*   **Body Font:** IBM Plex Sans
+*   **Mood:** financial, trustworthy, professional, corporate, banking, serious
+*   **Google Fonts:** [IBM Plex Sans + IBM Plex Sans](https://fonts.google.com/share?selection.family=IBM+Plex+Sans:wght@300;400;500;600;700)
 
 **CSS Import:**
 
 ```css
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;display=swap');
 ```
 
 ### Spacing Variables
 
 | Token | Value | Usage |
-| ------- | ------- | ------- |
+| --- | --- | --- |
 | `--space-xs` | `4px` / `0.25rem` | Tight gaps |
 | `--space-sm` | `8px` / `0.5rem` | Icon gaps, inline spacing |
 | `--space-md` | `16px` / `1rem` | Standard padding |
@@ -54,13 +50,11 @@
 ### Shadow Depths
 
 | Level | Value | Usage |
-| ------- | ------- | ------- |
+| --- | --- | --- |
 | `--shadow-sm` | `0 1px 2px rgba(0,0,0,0.05)` | Subtle lift |
 | `--shadow-md` | `0 4px 6px rgba(0,0,0,0.1)` | Cards, buttons |
 | `--shadow-lg` | `0 10px 15px rgba(0,0,0,0.1)` | Modals, dropdowns |
 | `--shadow-xl` | `0 20px 25px rgba(0,0,0,0.15)` | Hero images, featured cards |
-
----
 
 ## Component Specs
 
@@ -150,8 +144,6 @@
 }
 ```
 
----
-
 ## Style Guidelines
 
 **Style:** Dark Mode (OLED)
@@ -166,38 +158,34 @@
 
 **Pattern Name:** Data-Dense Dashboard
 
-- **CTA Placement:** Above fold
-- **Section Order:** Hero > Features > CTA
-
----
+*   **CTA Placement:** Above fold
+*   **Section Order:** Hero > Features > CTA
 
 ## Anti-Patterns (Do NOT Use)
 
-- ❌ Light mode default
-- ❌ Slow rendering
+*   ❌ Light mode default
+*   ❌ Slow rendering
 
 ### Additional Forbidden Patterns
 
-- ❌ **Emojis as icons** — Use SVG icons (Heroicons, Lucide, Simple Icons)
-- ❌ **Missing cursor:pointer** — All clickable elements must have cursor:pointer
-- ❌ **Layout-shifting hovers** — Avoid scale transforms that shift layout
-- ❌ **Low contrast text** — Maintain 4.5:1 minimum contrast ratio
-- ❌ **Instant state changes** — Always use transitions (150-300ms)
-- ❌ **Invisible focus states** — Focus states must be visible for a11y
-
----
+*   ❌ **Emojis as icons** — Use SVG icons (Heroicons, Lucide, Simple Icons)
+*   ❌ **Missing cursor:pointer** — All clickable elements must have cursor:pointer
+*   ❌ **Layout-shifting hovers** — Avoid scale transforms that shift layout
+*   ❌ **Low contrast text** — Maintain 4.5:1 minimum contrast ratio
+*   ❌ **Instant state changes** — Always use transitions (150-300ms)
+*   ❌ **Invisible focus states** — Focus states must be visible for a11y
 
 ## Pre-Delivery Checklist
 
 Before delivering any UI code, verify:
 
-- [ ] No emojis used as icons (use SVG instead)
-- [ ] All icons from consistent icon set (Heroicons/Lucide)
-- [ ] `cursor-pointer` on all clickable elements
-- [ ] Hover states with smooth transitions (150-300ms)
-- [ ] Light mode: text contrast 4.5:1 minimum
-- [ ] Focus states visible for keyboard navigation
-- [ ] `prefers-reduced-motion` respected
-- [ ] Responsive: 375px, 768px, 1024px, 1440px
-- [ ] No content hidden behind fixed navbars
-- [ ] No horizontal scroll on mobile
+*   No emojis used as icons (use SVG instead)
+*   All icons from consistent icon set (Heroicons/Lucide)
+*   `cursor-pointer` on all clickable elements
+*   Hover states with smooth transitions (150-300ms)
+*   Light mode: text contrast 4.5:1 minimum
+*   Focus states visible for keyboard navigation
+*   `prefers-reduced-motion` respected
+*   Responsive: 375px, 768px, 1024px, 1440px
+*   No content hidden behind fixed navbars
+*   No horizontal scroll on mobile

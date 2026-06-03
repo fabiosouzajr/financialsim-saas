@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-02T20:06:05.076Z
-> Files: 326 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-03T14:08:55.806Z
+> Files: 329 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -18,6 +18,7 @@
 - `dev.sh` — dev.sh — FinacialSim SaaS local dev runner (~2996 tok)
 - `pyproject.toml` (~34 tok)
 - `README.md` — Project documentation (~1467 tok)
+- `setup-tenant.sh` — setup-tenant.sh — FinacialSim SaaS first-tenant setup wizard (~1710 tok)
 
 ## .claude/
 
@@ -207,7 +208,7 @@
 - `audit_service.py` — AuditService: log, list (~854 tok)
 - `cep_service.py` — lookup_cep (~196 tok)
 - `client_service.py` — ClientService: create, get, list, update + 1 more (~2079 tok)
-- `fipe_cache.py` — PostgresFipeCache: name, fetch (~1332 tok)
+- `fipe_cache.py` — PostgresFipeCache: name, fetch (~1427 tok)
 - `fipe_service.py` — FipeService: build_fipe_chain, get_brands, get_models, get_years + 1 more (~745 tok)
 - `indicators_service.py` — IndicatorsService: upsert, latest, latest_all, series (~1008 tok)
 - `parcela_service.py` — ParcelaService: list_for_customer, get_schedule, get_parcela, mark_overdue (~2470 tok)
@@ -356,6 +357,7 @@
 - `2026-06-02-saas-phase-7e-cli.md` — Phase 7E — CLI Implementation Plan (~2400 tok)
 - `2026-06-02-saas-phase-7f-ux-polish.md` — Phase 7F — UX Polish Implementation Plan (~2567 tok)
 - `2026-06-02-saas-phase-7g-docs.md` — Phase 7G — Documentation Implementation Plan (~2818 tok)
+- `2026-06-03-setup-tenant-script.md` — Setup Tenant Script Implementation Plan (~3471 tok)
 
 ## docs/superpowers/plans/done/
 
@@ -382,6 +384,7 @@
 - `2026-05-28-saas-phase-6-portal-cliente-pix.md` — Phase 6 — Portal do cliente + Pix scaffold (~3512 tok)
 - `2026-05-28-saas-phase-7-notificacoes.md` — Phase 7 — Notificações (email) + polish (~1360 tok)
 - `2026-05-28-saas-roadmap.md` — FinacialSim SaaS — Master Roadmap (~4042 tok)
+- `2026-06-03-setup-tenant-script.md` — Setup Tenant Script — Design Spec (~1039 tok)
 
 ## docs/superpowers/specs/done/
 
@@ -399,7 +402,7 @@
 - `package.json` — Node.js package manifest (~316 tok)
 - `tailwind.config.ts` — /*.{ts,tsx}"], (~50 tok)
 - `tsconfig.app.json` (~187 tok)
-- `vite.config.ts` (~170 tok)
+- `vite.config.ts` (~154 tok)
 
 ## frontend/src/
 
@@ -448,7 +451,7 @@
 
 - `ForgotPassword.tsx` — schema — renders form (~714 tok)
 - `Health.tsx` — Health (~162 tok)
-- `Index.tsx` — Index (~87 tok)
+- `Index.tsx` — Dashboard home: nav cards for Simulação/Clientes/Veículos/Propostas/Usuários, role-filtered, logout button (~990 tok)
 - `Login.tsx` — schema — renders form (~874 tok)
 - `ResetPassword.tsx` — schema — renders form (~853 tok)
 - `Simulacao.tsx` — Simulacao (~731 tok)
@@ -476,8 +479,8 @@
 
 ## frontend/src/routes/veiculos/
 
-- `FipeCascadePicker.tsx` — FipeCascadePicker (~1154 tok)
-- `VeiculosPage.tsx` — TIPOS — renders form, table, modal (~3707 tok)
+- `FipeCascadePicker.tsx` — selectClass (~1854 tok)
+- `VeiculosPage.tsx` — TIPOS — renders form, table, modal (~4406 tok)
 
 ## frontend/src/tests/
 
@@ -498,8 +501,8 @@
 
 ## ops/
 
-- `Caddyfile` (~39 tok)
-- `docker-compose.yml` — Docker Compose services (~566 tok)
+- `Caddyfile` (~31 tok)
+- `docker-compose.yml` — Docker Compose services (~695 tok)
 - `Dockerfile.api` (~164 tok)
 - `Dockerfile.web` (~71 tok)
 - `Dockerfile.worker` (~276 tok)

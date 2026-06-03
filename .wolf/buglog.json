@@ -528,6 +528,102 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-02T20:01:57.841Z"
+    },
+    {
+      "id": "bug-034",
+      "timestamp": "2026-06-03T12:42:00.742Z",
+      "error_message": "Incorrect value in code",
+      "file": "ops/docker-compose.yml",
+      "root_cause": "Had \"curl -sf http://localhost:8000/healthz || exit 1\"",
+      "fix": "Changed to \"python -c \\\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T12:42:00.742Z"
+    },
+    {
+      "id": "bug-035",
+      "timestamp": "2026-06-03T12:47:55.846Z",
+      "error_message": "Incorrect value in code",
+      "file": "setup-tenant.sh",
+      "root_cause": "Had '\\033[0m'",
+      "fix": "Changed to '\\033[2m'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "sh"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T12:47:55.846Z"
+    },
+    {
+      "id": "bug-036",
+      "timestamp": "2026-06-03T12:48:04.186Z",
+      "error_message": "Significant refactor of ",
+      "file": "setup-tenant.sh",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 8→14 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "sh"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T12:48:04.186Z"
+    },
+    {
+      "id": "bug-037",
+      "timestamp": "2026-06-03T13:01:53.082Z",
+      "error_message": "Incorrect value in code",
+      "file": "setup-tenant.sh",
+      "root_cause": "Had \"healthy\"",
+      "fix": "Changed to \"(healthy)\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "sh"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-03T13:05:03.135Z"
+    },
+    {
+      "id": "bug-038",
+      "timestamp": "2026-06-03T13:52:29.406Z",
+      "error_message": "CSS fix: FIPE, Ex",
+      "file": "frontend/src/routes/veiculos/VeiculosPage.tsx",
+      "root_cause": "FIPE: R$ {Number(fipeData.price.valor).toLocaleString(\"pt-BR\", { minimumFractionDigits: 2 → {fipeData.price.codigo_fipe; Ex: Corolla\" /> → Corolla\" className=\"bg-white border-gray-300 text-gray-900\" />",
+      "fix": "Changed FIPE: R$ {Number(fipeData.price.valor).toLocaleString(\"pt-BR\", { minimumFractionDigits: 2 → {fipeData.price.codigo_fipe; Ex: Corolla\" /> → Corolla\" className=\"bg-white border-gray-300 text-gray-900\" />",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T13:52:29.406Z"
+    },
+    {
+      "id": "bug-039",
+      "timestamp": "2026-06-03T13:52:35.634Z",
+      "error_message": "Significant refactor of ",
+      "file": "frontend/src/routes/veiculos/VeiculosPage.tsx",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 4→4 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T13:52:35.634Z"
     }
   ]
 }
