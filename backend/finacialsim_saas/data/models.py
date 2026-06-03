@@ -696,3 +696,14 @@ class PixWebhookEvent(Base):
     __table_args__ = (
         sa.Index("ix_pix_webhook_events_received", "received_at"),
     )
+
+
+class SystemSetting(Base):
+    __tablename__ = "system_settings"
+
+    key: Mapped[str] = mapped_column(sa.String, primary_key=True)
+    value: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=False
+    )
+    updated_by: Mapped[str | None] = mapped_column(sa.String, nullable=True)
