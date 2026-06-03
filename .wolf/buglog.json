@@ -688,6 +688,134 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-03T14:51:34.782Z"
+    },
+    {
+      "id": "bug-044",
+      "timestamp": "2026-06-03T15:50:57.862Z",
+      "error_message": "Missing await",
+      "file": "backend/finacialsim_saas/workers/notifications.py",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T15:50:57.862Z"
+    },
+    {
+      "id": "bug-045",
+      "timestamp": "2026-06-03T15:52:28.488Z",
+      "error_message": "Wrong return value",
+      "file": "backend/tests/conftest.py",
+      "root_cause": "Was returning: f\"redis://{host}:{port}\"",
+      "fix": "Now returns: url",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T15:52:28.488Z"
+    },
+    {
+      "id": "bug-046",
+      "timestamp": "2026-06-03T15:52:44.601Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/tests/conftest.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 4→5 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T15:52:44.601Z"
+    },
+    {
+      "id": "bug-047",
+      "timestamp": "2026-06-03T15:53:03.964Z",
+      "error_message": "Missing await",
+      "file": "backend/tests/conftest.py",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T15:53:03.964Z"
+    },
+    {
+      "id": "bug-048",
+      "timestamp": "2026-06-03T16:12:19.961Z",
+      "error_message": "CSS fix: label, description, href",
+      "file": "frontend/src/routes/Index.tsx",
+      "root_cause": "label: \"Usuários\", → \"Administração\",; description: \"Gerenciar usuários e permissões\", → \"Regras, indicadores, auditoria, SMTP e usuários\",; href: \"/admin/users\", → \"/admin\",",
+      "fix": "Changed label: \"Usuários\", → \"Administração\",; description: \"Gerenciar usuários e permissões\", → \"Regras, indicadores, auditoria, SMTP e usuários\",; href: \"/admin/users\", → \"/admin\",",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T16:12:19.961Z"
+    },
+    {
+      "id": "bug-049",
+      "timestamp": "2026-06-03T16:18:59.514Z",
+      "error_message": "Null/undefined access in ",
+      "file": "frontend/src/routes/admin/AuditLog.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T16:18:59.514Z"
+    },
+    {
+      "id": "bug-050",
+      "timestamp": "2026-06-03T16:19:07.082Z",
+      "error_message": "Null/undefined access in ",
+      "file": "frontend/src/routes/admin/SmtpSettings.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-03T16:19:07.082Z"
+    },
+    {
+      "id": "bug-051",
+      "timestamp": "2026-06-03T16:23:24.132Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend/vite.config.ts",
+      "root_cause": "Had \"http://localhost:8000\"",
+      "fix": "Changed to \"http://localhost:80\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-03T16:27:12.087Z"
     }
   ]
 }

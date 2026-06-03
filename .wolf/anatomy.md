@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-03T15:10:29.598Z
-> Files: 334 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-03T16:27:12.076Z
+> Files: 354 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -60,16 +60,19 @@
 - `006_proposals.py` — proposals and parcela_payments tables (~1198 tok)
 - `007_phase6_pix.py` — phase6 — pix_charges, pix_webhook_events, parcela_payments updates (~1226 tok)
 - `008_phase7_notifications.py` — phase7 — finalize notifications_outbox schema; add email_log stub (~998 tok)
+- `009_system_settings.py` — system_settings global config table (~227 tok)
 
 ## backend/finacialsim_saas/
 
 - `__init__.py` — FinacialSim SaaS backend. (~10 tok)
 - `errors.py` — Declares AppError (~368 tok)
-- `main.py` — API router (~1400 tok)
+- `main.py` — API router (~1482 tok)
 - `settings.py` — Settings: get_settings (~445 tok)
 
 ## backend/finacialsim_saas/api/
 
+- `admin_health.py` — API: 1 endpoints (~511 tok)
+- `admin_settings.py` — API: 2 endpoints (~457 tok)
 - `audit_log.py` — API: 1 endpoints (~659 tok)
 - `auth.py` — API: 5 endpoints (~820 tok)
 - `business_rules.py` — API: 2 endpoints (~672 tok)
@@ -105,7 +108,7 @@
 ## backend/finacialsim_saas/data/
 
 - `database.py` — Base: build_engine, build_session_factory, check_db (~252 tok)
-- `models.py` — Declares as (~8656 tok)
+- `models.py` — Declares as (~8775 tok)
 
 ## backend/finacialsim_saas/integrations/
 
@@ -130,7 +133,7 @@
 ## backend/finacialsim_saas/notifications/
 
 - `__init__.py` (~0 tok)
-- `channel.py` — EmailChannel: send (~282 tok)
+- `channel.py` — EmailChannel: send (~329 tok)
 - `service.py` — NotificationService: render_template, enqueue (~769 tok)
 
 ## backend/finacialsim_saas/notifications/templates/auth/password_reset/
@@ -199,7 +202,8 @@
 ## backend/finacialsim_saas/schemas/
 
 - `__init__.py` (~0 tok)
-- `audit_log.py` — Declares AuditLogItem (~127 tok)
+- `admin_settings.py` — Declares SettingItem (~54 tok)
+- `audit_log.py` — Declares AuditLogItem (~138 tok)
 - `business_rules.py` — Declares RateCurvePointOut (~236 tok)
 - `clients.py` — Declares ClientIn (~381 tok)
 - `fipe.py` — Declares FipeBrandItem (~154 tok)
@@ -212,7 +216,7 @@
 ## backend/finacialsim_saas/services/
 
 - `__init__.py` (~0 tok)
-- `audit_service.py` — AuditService: log, list (~854 tok)
+- `audit_service.py` — AuditService: log, list (~947 tok)
 - `cep_service.py` — lookup_cep (~196 tok)
 - `client_service.py` — ClientService: create, get, list, update + 1 more (~2079 tok)
 - `fipe_cache.py` — PostgresFipeCache: name, fetch (~1427 tok)
@@ -221,6 +225,7 @@
 - `parcela_service.py` — ParcelaService: list_for_customer, get_schedule, get_parcela, mark_overdue (~2470 tok)
 - `proposal_service.py` — ProposalService — manages the full proposal lifecycle. (~3092 tok)
 - `rules_service.py` — RulesService: get_rules, snapshot, update (~724 tok)
+- `settings_service.py` — SettingsService: get_all, update (~684 tok)
 - `simulation_service.py` — from: preview, create (~8192 tok)
 - `vehicle_service.py` — VehicleService: create, get, list, update + 2 more (~2393 tok)
 
@@ -238,15 +243,18 @@
 
 ## backend/finacialsim_saas/workers/
 
-- `notifications.py` — drain_notifications_outbox (every 30s, Redis lock, backoff/deadletter), schedule_parcela_due_reminders (daily 11:00 UTC) (~1892 tok)
+- `notifications.py` — drain_notifications_outbox, schedule_parcela_due_reminders (~2073 tok)
 - `tasks.py` — ping, update_bacen_indicators, prune_fipe_cache, verify_provider_health (~3788 tok)
 - `worker.py` — WorkerSettings: get_redis_settings, startup, shutdown (~724 tok)
 
 ## backend/tests/
 
-- `conftest.py` — ── Postgres ────────────────────────────────────────────────────────────────── (~809 tok)
+- `conftest.py` — ── Postgres ────────────────────────────────────────────────────────────────── (~1005 tok)
+- `test_admin_health.py` — test_admin_health_returns_expected_shape, test_admin_health_non_admin_returns_403 (~653 tok)
+- `test_admin_settings.py` — clean_settings, test_get_settings_returns_env_defaults, test_put_get_round_trip, test_put_non_admin_ (~1055 tok)
 - `test_arq_jobs.py` — test_update_bacen_indicators_populates_db, test_verify_provider_health_prunes_to_50 (~989 tok)
 - `test_audit_backfill.py` — Integration tests: every CUD operation produces a correct audit_log entry. (~1904 tok)
+- `test_audit_email_enrichment.py` — test_audit_log_includes_usuario_email (~476 tok)
 - `test_audit_log_endpoints.py` — test_audit_log_returns_entries, test_audit_log_filter_by_acao, test_audit_log_user_role_sees_only_ow (~1204 tok)
 - `test_audit_service.py` — test_log_and_list, test_list_user_sees_only_own, test_cursor_pagination, test_cross_tenant_isolation (~1019 tok)
 - `test_auth_endpoints.py` — seed, test_login_returns_tokens, test_login_wrong_password_returns_401, test_refresh_returns_new_tok (~850 tok)
@@ -283,6 +291,7 @@
 - `test_render_tasks.py` — Worker render task tests — WeasyPrint is mocked. (~1147 tok)
 - `test_rules_update.py` — test_update_changes_value_and_writes_audit, test_update_with_motivo_stored_in_diff, test_update_publ (~949 tok)
 - `test_schemas.py` — M: test_decimal_str_serializes_as_string, test_decimal_str_parses_from_string, test_simulation_creat (~552 tok)
+- `test_settings_service.py` — clean_settings, test_get_all_returns_env_defaults_when_table_empty, test_update_and_get_round_trip, (~596 tok)
 - `test_settings.py` — test_settings_loads_with_valid_env, test_settings_missing_database_url_raises, test_settings_has_jwt (~313 tok)
 - `test_simulation_endpoints.py` — test_get_business_rules, test_preview_returns_schedule, test_create_simulation_returns_201, test_lis (~2167 tok)
 - `test_simulation_service.py` — tenant, user, rules_seeded, client_and_vehicle (~3287 tok)
@@ -364,6 +373,7 @@
 - `2026-06-02-saas-phase-7e-cli.md` — Phase 7E — CLI Implementation Plan (~2400 tok)
 - `2026-06-02-saas-phase-7f-ux-polish.md` — Phase 7F — UX Polish Implementation Plan (~2567 tok)
 - `2026-06-02-saas-phase-7g-docs.md` — Phase 7G — Documentation Implementation Plan (~2818 tok)
+- `2026-06-03-admin-dashboard.md` — Admin Dashboard Implementation Plan (~16492 tok)
 - `2026-06-03-setup-tenant-script.md` — Setup Tenant Script Implementation Plan (~3471 tok)
 
 ## docs/superpowers/plans/done/
@@ -391,7 +401,7 @@
 - `2026-05-28-saas-phase-6-portal-cliente-pix.md` — Phase 6 — Portal do cliente + Pix scaffold (~3512 tok)
 - `2026-05-28-saas-phase-7-notificacoes.md` — Phase 7 — Notificações (email) + polish (~1360 tok)
 - `2026-05-28-saas-roadmap.md` — FinacialSim SaaS — Master Roadmap (~4042 tok)
-- `2026-06-03-admin-dashboard-design.md` — Admin Dashboard — Design Spec (~1552 tok)
+- `2026-06-03-admin-dashboard-design.md` — Admin Dashboard — Design Spec (~2194 tok)
 - `2026-06-03-setup-tenant-script.md` — Setup Tenant Script — Design Spec (~1039 tok)
 
 ## docs/superpowers/specs/done/
@@ -414,11 +424,12 @@
 
 ## frontend/src/
 
-- `App.tsx` — queryClient (~662 tok)
+- `App.tsx` — queryClient (~923 tok)
 - `index.css` — Styles: 1 rules (~7 tok)
 
 ## frontend/src/components/
 
+- `EditableField.tsx` — EditableField (~1441 tok)
 - `FormErrorSummary.tsx` — FormErrorSummary (~197 tok)
 - `RequireRole.tsx` — RequireRole (~178 tok)
 
@@ -445,7 +456,9 @@
 
 ## frontend/src/lib/
 
+- `admin-settings.ts` — API routes: PUT (1 endpoints) (~124 tok)
 - `api.ts` — In dev: Vite proxy forwards /api/* → http://localhost:8000/* (~697 tok)
+- `audit-log.ts` — Exports AuditLogItem, AuditLogPage, AuditLogParams, listAuditLog (~179 tok)
 - `cep.ts` — Exports CepResult, lookupCep (~113 tok)
 - `clients.ts` — Exports ClientOut, ClientListPage, ClientIn, listClients + 4 more (~503 tok)
 - `csv.ts` — Exports buildCsv, downloadCsv (~212 tok)
@@ -459,7 +472,7 @@
 
 - `ForgotPassword.tsx` — schema — renders form (~714 tok)
 - `Health.tsx` — Health (~162 tok)
-- `Index.tsx` — Dashboard home: nav cards for Simulação/Clientes/Veículos/Propostas/Usuários, role-filtered, logout button (~990 tok)
+- `Index.tsx` — decodeRole (~995 tok)
 - `Login.tsx` — schema — renders form (~874 tok)
 - `ResetPassword.tsx` — schema — renders form (~853 tok)
 - `Simulacao.tsx` — Simulacao (~789 tok)
@@ -467,6 +480,13 @@
 
 ## frontend/src/routes/admin/
 
+- `AdminLayout.tsx` — NAV_ITEMS (~634 tok)
+- `AuditLog.tsx` — ACAO_OPTIONS — renders table (~1546 tok)
+- `BusinessRules.tsx` — BusinessRules admin panel with EditableField UI; 4 sections (Financiamento, Taxas w/ curve table, IOF, Padrões); fetchRules useQuery, updateRule PUT, makeSave with qc.invalidateQueries (~2500 tok)
+- `Indicators.tsx` — LABELS (~589 tok)
+- `PixSettings.tsx` — Query getAdminSettings, display pix_provider + pix_webhook_secret (env-only, read-only) (~270 tok)
+- `SmtpSettings.tsx` — EMAIL_PROVIDERS (~670 tok)
+- `SystemHealth.tsx` — Query /v1/admin/health (refetch 30s), StatusPill component, display postgres/redis + providers with latency/error (~420 tok)
 - `Users.tsx` — ── Types ──────────────────────────────────────────────────────────────────── (~4016 tok)
 
 ## frontend/src/routes/clientes/

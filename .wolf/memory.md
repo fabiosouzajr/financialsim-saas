@@ -3,6 +3,12 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 2026-06-03 | Task 10: BusinessRules admin panel | frontend/src/routes/admin/BusinessRules.tsx | Replaced stub with full component: useQuery fetchRules, 4 sections (Financing, Rates w/ read-only curve table, IOF, Defaults), EditableField for 13 rules + 1 toggle, queryClient invalidation on save | ~500 tok |
+| 2026-06-03 | Task 9: AdminLayout + routing wiring | frontend/src/routes/admin/AdminLayout.tsx, frontend/src/App.tsx, frontend/src/routes/Index.tsx + 6 stubs | Created AdminLayout sidebar, nested /admin/* routes, updated Index dashboard card | ~800 tok |
+
+| 2026-06-03 | Task 2: SystemSetting model + SettingsService — TDD, 3 tests pass | models.py, services/settings_service.py, tests/test_settings_service.py | committed dfe1641 | ~800 |
+| 14:23 | Task 7: Created admin-settings.ts and audit-log.ts API lib helpers | frontend/src/lib/admin-settings.ts, audit-log.ts | committed b865a0b | ~200 |
+
 | 13:52 | redesign VeiculosPage modal: fixed dark transparent bg (bg-background had no CSS var → transparent), redesigned FipeCascadePicker selects with explicit bg-white, added ToggleGroup + FormField helpers, FIPE result card now visible | VeiculosPage.tsx, FipeCascadePicker.tsx | fixed | ~1800 |
 
 | 2026-06-02 | Phase 7 full execution (7A–7G): migration 008, NotificationService, EmailChannel, templates, drain/schedule ARQ jobs, trigger wiring, /healthz Redis, JSON logging PII masking, CLI sub-cmds, UX polish, runbook | 10 commits be6b16d→df6c717 | all complete; CI needed for test verification | ~35k |
@@ -1082,3 +1088,64 @@
 | 12:04 | Created .superpowers/brainstorm/179066-1780498739/content/rules-edit.html | — | ~2222 |
 | 12:07 | Created .superpowers/brainstorm/179066-1780498739/content/waiting.html | — | ~39 |
 | 12:10 | Created docs/superpowers/specs/2026-06-03-admin-dashboard-design.md | — | ~1655 |
+| 12:22 | Created docs/superpowers/specs/2026-06-03-admin-dashboard-design.md | — | ~2340 |
+| 12:35 | Created docs/superpowers/plans/2026-06-03-admin-dashboard.md | — | ~17580 |
+| 12:36 | Edited docs/superpowers/plans/2026-06-03-admin-dashboard.md | modified admin_health() | ~258 |
+| 12:38 | Created backend/alembic/versions/009_system_settings.py | — | ~217 |
+
+| 12:38 | Task 1: Migration — system_settings table | backend/alembic/versions/009_system_settings.py | created, verified syntax, committed ff561d2 | ~300 |
+| 12:40 | Edited backend/alembic/versions/009_system_settings.py | added 1 import(s) | ~56 |
+| 12:41 | Created backend/tests/test_settings_service.py | — | ~509 |
+| 12:41 | Edited backend/finacialsim_saas/data/models.py | modified SystemSetting() | ~146 |
+| 12:42 | Created backend/finacialsim_saas/services/settings_service.py | — | ~671 |
+| 12:45 | Edited backend/finacialsim_saas/services/settings_service.py | 2→2 lines | ~24 |
+| 12:45 | Edited backend/finacialsim_saas/services/settings_service.py | 3→4 lines | ~36 |
+| 12:45 | Created backend/tests/test_settings_service.py | — | ~596 |
+| 12:46 | Created backend/tests/test_admin_settings.py | — | ~951 |
+| 12:47 | Created backend/finacialsim_saas/schemas/admin_settings.py | — | ~54 |
+| 12:47 | Created backend/finacialsim_saas/api/admin_settings.py | — | ~457 |
+| 12:47 | Edited backend/finacialsim_saas/main.py | added 1 import(s) | ~68 |
+| 12:47 | Edited backend/finacialsim_saas/main.py | 1→2 lines | ~23 |
+| 15:50 | Implemented Task 3: Admin Settings API + tests (GET /api/v1/admin/settings, PUT /api/v1/admin/settings/{key}) | backend/finacialsim_saas/schemas/admin_settings.py, backend/finacialsim_saas/api/admin_settings.py, backend/finacialsim_saas/main.py, backend/tests/test_admin_settings.py | 4/4 tests pass, committed 526c84e | ~400 |
+| 12:49 | Edited backend/tests/test_admin_settings.py | modified test_put_readonly_key_returns_422() | ~208 |
+| 12:50 | Created backend/finacialsim_saas/notifications/channel.py | — | ~329 |
+| 12:50 | Edited backend/finacialsim_saas/workers/notifications.py | 3→3 lines | ~64 |
+| 12:50 | Edited backend/finacialsim_saas/workers/notifications.py | expanded (+11 lines) | ~152 |
+| 12:51 | Edited backend/tests/conftest.py | modified session_factory() | ~100 |
+| 12:52 | Edited backend/tests/conftest.py | modified redis_url() | ~74 |
+| 12:52 | Edited backend/tests/conftest.py | modified session_factory() | ~79 |
+| 12:53 | Edited backend/tests/conftest.py | modified _clear_drain_lock() | ~121 |
+| 12:55 | Edited backend/finacialsim_saas/workers/notifications.py | 8→12 lines | ~143 |
+| 12:56 | Created backend/tests/test_audit_email_enrichment.py | — | ~476 |
+| 12:57 | Edited backend/finacialsim_saas/schemas/audit_log.py | modified AuditLogItem() | ~90 |
+| 12:57 | Edited backend/finacialsim_saas/services/audit_service.py | inline fix | ~18 |
+| 12:57 | Edited backend/finacialsim_saas/services/audit_service.py | expanded (+9 lines) | ~451 |
+| 12:58 | Task 5: enriched AuditLogItem with usuario_email via LEFT JOIN on User table; switched scalars() → execute(); added dynamic attr trick for Pydantic from_attributes | audit_log.py, audit_service.py, test_audit_email_enrichment.py | 10 tests pass, committed 6cbae26 | ~800 |
+| 13:02 | Created backend/tests/test_admin_health.py | — | ~653 |
+| 13:02 | Created backend/finacialsim_saas/api/admin_health.py | — | ~511 |
+| 13:03 | Edited backend/finacialsim_saas/main.py | added 1 import(s) | ~244 |
+| 13:05 | Task 6: admin health endpoint | backend/finacialsim_saas/api/admin_health.py, backend/finacialsim_saas/main.py, backend/tests/test_admin_health.py | 2 new tests pass, 213 existing pass, 6 pre-existing failures unchanged | ~500 |
+| 13:09 | Created frontend/src/lib/admin-settings.ts | — | ~124 |
+| 13:09 | Created frontend/src/lib/audit-log.ts | — | ~179 |
+| 13:11 | Created frontend/src/components/EditableField.tsx | — | ~1391 |
+| 16:15 | Created EditableField shared inline-edit component | frontend/src/components/EditableField.tsx | created, build clean, committed 3b1152c | ~1391 |
+| 13:11 | Created frontend/src/routes/admin/AdminLayout.tsx | — | ~634 |
+| 13:11 | Created frontend/src/routes/admin/BusinessRules.tsx | — | ~34 |
+| 13:11 | Created frontend/src/routes/admin/Indicators.tsx | — | ~33 |
+| 13:11 | Created frontend/src/routes/admin/AuditLog.tsx | — | ~33 |
+| 13:12 | Created frontend/src/routes/admin/SystemHealth.tsx | — | ~34 |
+| 13:12 | Created frontend/src/routes/admin/SmtpSettings.tsx | — | ~34 |
+| 13:12 | Created frontend/src/routes/admin/PixSettings.tsx | — | ~34 |
+| 13:12 | Created frontend/src/App.tsx | — | ~923 |
+| 13:12 | Edited frontend/src/routes/Index.tsx | 7→7 lines | ~49 |
+| 13:15 | Edited frontend/src/components/EditableField.tsx | modified if() | ~246 |
+| 13:16 | Created frontend/src/routes/admin/BusinessRules.tsx | — | ~1603 |
+| 13:18 | Created frontend/src/routes/admin/Indicators.tsx | — | ~600 |
+| 13:18 | Created frontend/src/routes/admin/SystemHealth.tsx | — | ~770 |
+| 13:18 | Created frontend/src/routes/admin/PixSettings.tsx | — | ~458 |
+| 13:18 | Edited frontend/src/routes/admin/AuditLog.tsx | added optional chaining | ~1546 |
+| 13:19 | Edited frontend/src/routes/admin/SmtpSettings.tsx | added optional chaining | ~670 |
+| 2026-06-03 | Task 11: Three admin components (Indicators, SystemHealth, PixSettings) | frontend/src/routes/admin/*.tsx | Replaced 3 stubs with full implementations: Indicators (useQuery indicators + refresh mutation), SystemHealth (health check with provider list), PixSettings (read-only env config), all TSD build pass, committed 5a22b0a | ~300 tok |
+| 13:21 | Edited frontend/src/routes/admin/Indicators.tsx | 5→4 lines | ~55 |
+| 13:23 | Edited frontend/vite.config.ts | "http://localhost:8000" → "http://localhost:80" | ~11 |
+| 13:27 | Edited frontend/vite.config.ts | "http://localhost:80" → "http://localhost:8000" | ~12 |
