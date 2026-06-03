@@ -97,3 +97,14 @@ async def test_put_readonly_key_returns_422(client: AsyncClient, engine: AsyncEn
         headers={"Authorization": f"Bearer {token}"},
     )
     assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_put_unknown_key_returns_422(client: AsyncClient, engine: AsyncEngine):
+    token = await _seed_user(engine, Role.admin)
+    resp = await client.put(
+        "/api/v1/admin/settings/nonexistent_key",
+        json={"value": "value"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert resp.status_code == 422
