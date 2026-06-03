@@ -46,26 +46,26 @@ export interface VehicleIn {
 }
 
 export async function listVehicles(params?: { status?: string; placa?: string; cursor?: string }): Promise<VehicleListPage> {
-  const { data } = await api.get<VehicleListPage>("/api/v1/vehicles", { params });
+  const { data } = await api.get<VehicleListPage>("/v1/vehicles", { params });
   return data;
 }
 
 export async function createVehicle(body: VehicleIn): Promise<VehicleOut> {
-  const { data } = await api.post<VehicleOut>("/api/v1/vehicles", body);
+  const { data } = await api.post<VehicleOut>("/v1/vehicles", body);
   return data;
 }
 
 export async function getVehicle(id: string): Promise<VehicleOut> {
-  const { data } = await api.get<VehicleOut>(`/api/v1/vehicles/${id}`);
+  const { data } = await api.get<VehicleOut>(`/v1/vehicles/${id}`);
   return data;
 }
 
 export async function setVehicleStatus(id: string, status: string): Promise<VehicleOut> {
-  const { data } = await api.post<VehicleOut>(`/api/v1/vehicles/${id}/status`, { status });
+  const { data } = await api.post<VehicleOut>(`/v1/vehicles/${id}/status`, { status });
   return data;
 }
 
 export async function refreshVehicleFipe(id: string): Promise<VehicleOut> {
-  const { data } = await api.post<VehicleOut>(`/api/v1/vehicles/${id}/refresh-fipe`);
+  const { data } = await api.post<VehicleOut>(`/v1/vehicles/${id}/refresh-fipe`);
   return data;
 }

@@ -34,14 +34,14 @@ export interface ProposalListPage {
 }
 
 export async function createProposal(simulationId: string): Promise<ProposalOut> {
-  const { data } = await api.post<ProposalOut>("/api/v1/proposals", {
+  const { data } = await api.post<ProposalOut>("/v1/proposals", {
     simulation_id: simulationId,
   });
   return data;
 }
 
 export async function getProposal(id: string): Promise<ProposalOut> {
-  const { data } = await api.get<ProposalOut>(`/api/v1/proposals/${id}`);
+  const { data } = await api.get<ProposalOut>(`/v1/proposals/${id}`);
   return data;
 }
 
@@ -50,22 +50,22 @@ export async function listProposals(params?: {
   cursor?: string;
   limit?: number;
 }): Promise<ProposalListPage> {
-  const { data } = await api.get<ProposalListPage>("/api/v1/proposals", { params });
+  const { data } = await api.get<ProposalListPage>("/v1/proposals", { params });
   return data;
 }
 
 export async function approveProposal(id: string): Promise<ProposalOut> {
-  const { data } = await api.post<ProposalOut>(`/api/v1/proposals/${id}/approve`);
+  const { data } = await api.post<ProposalOut>(`/v1/proposals/${id}/approve`);
   return data;
 }
 
 export async function cancelProposal(id: string): Promise<ProposalOut> {
-  const { data } = await api.post<ProposalOut>(`/api/v1/proposals/${id}/cancel`);
+  const { data } = await api.post<ProposalOut>(`/v1/proposals/${id}/cancel`);
   return data;
 }
 
 export async function generateCarne(id: string): Promise<ProposalOut> {
-  const { data } = await api.post<ProposalOut>(`/api/v1/proposals/${id}/render-carne`);
+  const { data } = await api.post<ProposalOut>(`/v1/proposals/${id}/render-carne`);
   return data;
 }
 

@@ -6,7 +6,7 @@ export function useBusinessRules() {
   return useQuery<BusinessRules>({
     queryKey: ["business-rules"],
     queryFn: async () => {
-      const res = await api.get<BusinessRules>("/api/v1/business-rules");
+      const res = await api.get<BusinessRules>("/v1/business-rules");
       return res.data;
     },
     staleTime: 5 * 60 * 1000,

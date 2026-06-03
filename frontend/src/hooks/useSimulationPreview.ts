@@ -20,7 +20,7 @@ export function useSimulationPreview() {
       setError(null);
       try {
         const res = await api.post<PreviewResponse>(
-          "/api/v1/simulations/preview",
+          "/v1/simulations/preview",
           payload,
           { signal: abortRef.current.signal }
         );

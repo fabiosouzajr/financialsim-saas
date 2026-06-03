@@ -19,21 +19,21 @@ export interface FipePrice {
 }
 
 export async function getFipeBrands(tipo: string): Promise<FipeBrand[]> {
-  const { data } = await api.get<FipeBrand[]>("/api/v1/fipe/brands", { params: { tipo } });
+  const { data } = await api.get<FipeBrand[]>("/v1/fipe/brands", { params: { tipo } });
   return data;
 }
 
 export async function getFipeModels(tipo: string, brand_id: string): Promise<FipeModel[]> {
-  const { data } = await api.get<FipeModel[]>("/api/v1/fipe/models", { params: { tipo, brand_id } });
+  const { data } = await api.get<FipeModel[]>("/v1/fipe/models", { params: { tipo, brand_id } });
   return data;
 }
 
 export async function getFipeYears(tipo: string, brand_id: string, model_id: string): Promise<FipeYear[]> {
-  const { data } = await api.get<FipeYear[]>("/api/v1/fipe/years", { params: { tipo, brand_id, model_id } });
+  const { data } = await api.get<FipeYear[]>("/v1/fipe/years", { params: { tipo, brand_id, model_id } });
   return data;
 }
 
 export async function getFipePrice(tipo: string, brand_id: string, model_id: string, year_id: string): Promise<FipePrice> {
-  const { data } = await api.get<FipePrice>("/api/v1/fipe/price", { params: { tipo, brand_id, model_id, year_id } });
+  const { data } = await api.get<FipePrice>("/v1/fipe/price", { params: { tipo, brand_id, model_id, year_id } });
   return data;
 }

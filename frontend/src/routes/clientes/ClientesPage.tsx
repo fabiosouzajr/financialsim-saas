@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -280,6 +281,7 @@ const STATUS_VARIANT: Record<string, "success" | "outline"> = {
 
 export default function ClientesPage() {
   useEffect(() => { document.title = "Clientes — FinacialSim"; }, []);
+  const navigate = useNavigate();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<ClientOut | null>(null);
@@ -301,6 +303,9 @@ export default function ClientesPage() {
 
   return (
     <div className="p-6 space-y-4">
+      <button onClick={() => navigate("/")} className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 transition-colors cursor-pointer">
+        ← Voltar
+      </button>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Clientes</h1>
         <Dialog open={open} onOpenChange={setOpen}>

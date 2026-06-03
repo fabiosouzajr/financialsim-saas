@@ -1,0 +1,124 @@
+<h2>Admin Dashboard — Navigation Layout</h2>
+<p class="subtitle">7 sections: Business Rules · Indicators · Audit Log · Health · SMTP · Pix · Users</p>
+
+<div class="cards">
+
+  <!-- Option A: Tabbed -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="font-family:monospace;font-size:11px;background:#0F172A;border:1px solid #1E293B;border-radius:6px;overflow:hidden">
+        <div style="background:#020617;border-bottom:1px solid #1E293B;padding:7px 12px;display:flex;align-items:center">
+          <span style="color:#22C55E;font-weight:600;font-size:11px">FinacialSim</span>
+          <span style="color:#475569;margin-left:auto;font-size:9px">Admin</span>
+        </div>
+        <div style="display:flex;border-bottom:1px solid #1E293B;padding:0 8px;gap:0;overflow:hidden">
+          <div style="padding:7px 8px;color:#22C55E;border-bottom:2px solid #22C55E;font-size:9px;white-space:nowrap">Regras</div>
+          <div style="padding:7px 7px;color:#475569;font-size:9px;white-space:nowrap">Indicadores</div>
+          <div style="padding:7px 7px;color:#475569;font-size:9px;white-space:nowrap">Auditoria</div>
+          <div style="padding:7px 7px;color:#475569;font-size:9px;white-space:nowrap">Saúde</div>
+          <div style="padding:7px 7px;color:#475569;font-size:9px;white-space:nowrap">SMTP</div>
+          <div style="padding:7px 7px;color:#475569;font-size:9px;white-space:nowrap">Pix</div>
+          <div style="padding:7px 7px;color:#475569;font-size:9px;white-space:nowrap">Usuários</div>
+        </div>
+        <div style="padding:12px">
+          <div style="color:#94A3B8;font-size:9px;margin-bottom:6px">REGRAS DE NEGÓCIO</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+            <div style="background:#1E293B;border-radius:4px;padding:7px">
+              <div style="color:#64748B;font-size:8px">Entrada mínima</div>
+              <div style="color:#F8FAFC;font-size:10px;margin-top:2px">20%</div>
+            </div>
+            <div style="background:#1E293B;border-radius:4px;padding:7px">
+              <div style="color:#64748B;font-size:8px">Prazo máximo</div>
+              <div style="color:#F8FAFC;font-size:10px;margin-top:2px">60 meses</div>
+            </div>
+          </div>
+          <div style="color:#64748B;font-size:8px;margin-top:6px;font-style:italic">7 tabs — may feel cramped at narrow widths</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Tabbed (horizontal)</h3>
+      <p>Compact. 7 tabs is pushing the limit — may need to scroll or truncate on smaller screens.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Left sidebar -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="font-family:monospace;font-size:11px;background:#0F172A;border:1px solid #1E293B;border-radius:6px;overflow:hidden;display:flex;min-height:140px">
+        <div style="width:90px;background:#020617;border-right:1px solid #1E293B;padding:6px 0;flex-shrink:0">
+          <div style="padding:6px 10px;color:#22C55E;font-size:8px;font-weight:600;letter-spacing:.5px">ADMIN</div>
+          <div style="padding:5px 10px;color:#22C55E;background:#22C55E10;border-left:2px solid #22C55E;font-size:8px">⚙ Regras</div>
+          <div style="padding:5px 10px;color:#64748B;font-size:8px">📈 Indicadores</div>
+          <div style="padding:5px 10px;color:#64748B;font-size:8px">📋 Auditoria</div>
+          <div style="padding:5px 10px;color:#64748B;font-size:8px">❤ Saúde</div>
+          <div style="padding:5px 10px;color:#64748B;font-size:8px">✉ SMTP</div>
+          <div style="padding:5px 10px;color:#64748B;font-size:8px">💳 Pix</div>
+          <div style="padding:5px 10px;color:#64748B;font-size:8px">👤 Usuários</div>
+        </div>
+        <div style="flex:1;padding:10px">
+          <div style="color:#94A3B8;font-size:9px;margin-bottom:6px">REGRAS DE NEGÓCIO</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+            <div style="background:#1E293B;border-radius:3px;padding:6px">
+              <div style="color:#64748B;font-size:7px">Entrada mínima</div>
+              <div style="color:#F8FAFC;font-size:9px;margin-top:2px">20%</div>
+            </div>
+            <div style="background:#1E293B;border-radius:3px;padding:6px">
+              <div style="color:#64748B;font-size:7px">Prazo máximo</div>
+              <div style="color:#F8FAFC;font-size:9px;margin-top:2px">60 meses</div>
+            </div>
+            <div style="background:#1E293B;border-radius:3px;padding:6px">
+              <div style="color:#64748B;font-size:7px">Taxa mínima</div>
+              <div style="color:#F8FAFC;font-size:9px;margin-top:2px">1.2% a.m.</div>
+            </div>
+            <div style="background:#1E293B;border-radius:3px;padding:6px">
+              <div style="color:#64748B;font-size:7px">IOF diário</div>
+              <div style="color:#F8FAFC;font-size:9px;margin-top:2px">0.0082%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Left sidebar (recommended)</h3>
+      <p>Handles 7 sections cleanly. Persistent nav, scalable for future additions. Feels like a proper admin panel.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Accordion -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="font-family:monospace;font-size:11px;background:#0F172A;border:1px solid #1E293B;border-radius:6px;overflow:hidden">
+        <div style="background:#020617;border-bottom:1px solid #1E293B;padding:7px 12px">
+          <span style="color:#22C55E;font-weight:600;font-size:11px">Configurações Admin</span>
+        </div>
+        <div style="padding:8px 10px">
+          <div style="background:#1E293B;border-radius:3px;padding:7px 9px;margin-bottom:4px;display:flex;justify-content:space-between">
+            <span style="color:#F8FAFC;font-size:9px">⚙ Regras de Negócio</span><span style="color:#475569;font-size:9px">▼</span>
+          </div>
+          <div style="border:1px solid #22C55E30;border-radius:3px;margin-bottom:4px">
+            <div style="background:#22C55E08;padding:7px 9px;display:flex;justify-content:space-between">
+              <span style="color:#22C55E;font-size:9px">📈 Indicadores</span><span style="color:#22C55E;font-size:9px">▲</span>
+            </div>
+            <div style="padding:7px 9px;display:flex;gap:4px">
+              <div style="background:#1E293B;border-radius:2px;padding:3px 5px;font-size:7px;color:#94A3B8">SELIC 10.50%</div>
+              <div style="background:#1E293B;border-radius:2px;padding:3px 5px;font-size:7px;color:#94A3B8">CDI 10.40%</div>
+            </div>
+          </div>
+          <div style="background:#1E293B;border-radius:3px;padding:7px 9px;margin-bottom:4px;display:flex;justify-content:space-between">
+            <span style="color:#64748B;font-size:9px">📋 Auditoria</span><span style="color:#475569;font-size:9px">▼</span>
+          </div>
+          <div style="background:#1E293B;border-radius:3px;padding:7px 9px;margin-bottom:4px;display:flex;justify-content:space-between">
+            <span style="color:#64748B;font-size:9px">❤ Saúde · ✉ SMTP · 💳 Pix · 👤 Usuários</span><span style="color:#475569;font-size:9px">▼</span>
+          </div>
+          <div style="color:#475569;font-size:7px;font-style:italic">scroll down for remaining sections...</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Accordion (single page)</h3>
+      <p>Everything on one scrollable page. Simple. Audit log table inside an accordion is awkward — best suited for pure settings.</p>
+    </div>
+  </div>
+
+</div>

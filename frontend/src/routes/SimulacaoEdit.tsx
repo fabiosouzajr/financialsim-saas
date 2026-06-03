@@ -264,7 +264,7 @@ export default function SimulacaoEdit() {
   const { data: sim, isLoading } = useQuery<SimulationOut>({
     queryKey: ["simulation", id],
     queryFn: async () => {
-      const res = await api.get<SimulationOut>(`/api/v1/simulations/${id}`);
+      const res = await api.get<SimulationOut>(`/v1/simulations/${id}`);
       return res.data;
     },
     enabled: !!id,
@@ -272,7 +272,7 @@ export default function SimulacaoEdit() {
 
   const save = useMutation({
     mutationFn: async (values: SimulationFormValues) => {
-      const res = await api.patch<SimulationOut>(`/api/v1/simulations/${id}`, {
+      const res = await api.patch<SimulationOut>(`/v1/simulations/${id}`, {
         client_id: values.client_id || undefined,
         vehicle_id: values.vehicle_id || undefined,
         cliente_nome: values.cliente_nome || null,
@@ -327,6 +327,9 @@ export default function SimulacaoEdit() {
     <div className="min-h-screen bg-zinc-50">
       <div className="max-w-5xl mx-auto py-8 px-4 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
+          <button onClick={() => navigate("/")} className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 transition-colors cursor-pointer mb-4">
+            ← Voltar
+          </button>
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-xl font-bold text-zinc-900">{sim.codigo}</h1>

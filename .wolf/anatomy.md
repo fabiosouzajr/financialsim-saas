@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-03T14:08:55.806Z
-> Files: 329 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-03T15:10:29.598Z
+> Files: 334 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -32,6 +32,13 @@
 ## .github/workflows/
 
 - `ci.yml` — CI: CI (~630 tok)
+
+## .superpowers/brainstorm/179066-1780498739/content/
+
+- `layout-v2.html` (~2077 tok)
+- `layout.html` (~2213 tok)
+- `rules-edit.html` (~2222 tok)
+- `waiting.html` (~39 tok)
 
 ## backend/
 
@@ -384,6 +391,7 @@
 - `2026-05-28-saas-phase-6-portal-cliente-pix.md` — Phase 6 — Portal do cliente + Pix scaffold (~3512 tok)
 - `2026-05-28-saas-phase-7-notificacoes.md` — Phase 7 — Notificações (email) + polish (~1360 tok)
 - `2026-05-28-saas-roadmap.md` — FinacialSim SaaS — Master Roadmap (~4042 tok)
+- `2026-06-03-admin-dashboard-design.md` — Admin Dashboard — Design Spec (~1552 tok)
 - `2026-06-03-setup-tenant-script.md` — Setup Tenant Script — Design Spec (~1039 tok)
 
 ## docs/superpowers/specs/done/
@@ -442,8 +450,8 @@
 - `clients.ts` — Exports ClientOut, ClientListPage, ClientIn, listClients + 4 more (~503 tok)
 - `csv.ts` — Exports buildCsv, downloadCsv (~212 tok)
 - `decimal.ts` — Exports fmtBRL, fmtPct, fmtRate, parseBRL (~225 tok)
-- `fipe.ts` — Exports FipeBrand, FipeModel, FipeYear, FipePrice + 4 more (~385 tok)
-- `proposals.ts` — Exports ProposalOut, ProposalListItem, ProposalListPage, createProposal + 6 more (~603 tok)
+- `fipe.ts` — Exports FipeBrand, FipeModel, FipeYear, FipePrice + 4 more (~380 tok)
+- `proposals.ts` — Exports ProposalOut, ProposalListItem, ProposalListPage, createProposal + 6 more (~596 tok)
 - `utils.ts` — Exports cn (~49 tok)
 - `vehicles.ts` — Exports VehicleOut, VehicleListPage, VehicleIn, listVehicles + 4 more (~583 tok)
 
@@ -454,33 +462,33 @@
 - `Index.tsx` — Dashboard home: nav cards for Simulação/Clientes/Veículos/Propostas/Usuários, role-filtered, logout button (~990 tok)
 - `Login.tsx` — schema — renders form (~874 tok)
 - `ResetPassword.tsx` — schema — renders form (~853 tok)
-- `Simulacao.tsx` — Simulacao (~731 tok)
-- `SimulacaoEdit.tsx` — isoToDateStr (~3592 tok)
+- `Simulacao.tsx` — Simulacao (~789 tok)
+- `SimulacaoEdit.tsx` — isoToDateStr (~3650 tok)
 
 ## frontend/src/routes/admin/
 
-- `Users.tsx` — AdminUsers — renders table (~589 tok)
+- `Users.tsx` — ── Types ──────────────────────────────────────────────────────────────────── (~4016 tok)
 
 ## frontend/src/routes/clientes/
 
-- `ClientesPage.tsx` — isValidCpf — renders form, table, modal (~4100 tok)
+- `ClientesPage.tsx` — isValidCpf — renders form, modal (~4178 tok)
 
 ## frontend/src/routes/propostas/
 
-- `PropostasPage.tsx` — STATUS_OPTIONS — renders table (~1349 tok)
+- `PropostasPage.tsx` — STATUS_OPTIONS — renders table (~1428 tok)
 
 ## frontend/src/routes/simulacao/
 
 - `ResultCards.tsx` — Card (~516 tok)
 - `ScheduleTable.tsx` — CSV_HEADERS — renders table (~742 tok)
 - `SimulacaoCharts.tsx` — SimulacaoCharts (~970 tok)
-- `SimulacaoForm.tsx` — schema — renders form (~5284 tok)
+- `SimulacaoForm.tsx` — schema — renders form (~5951 tok)
 - `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~862 tok)
 
 ## frontend/src/routes/veiculos/
 
 - `FipeCascadePicker.tsx` — selectClass (~1854 tok)
-- `VeiculosPage.tsx` — TIPOS — renders form, table, modal (~4406 tok)
+- `VeiculosPage.tsx` — TIPOS — renders form, modal (~4525 tok)
 
 ## frontend/src/tests/
 

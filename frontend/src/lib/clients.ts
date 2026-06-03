@@ -40,26 +40,26 @@ export interface ClientIn {
 }
 
 export async function listClients(params?: { q?: string; cursor?: string }): Promise<ClientListPage> {
-  const { data } = await api.get<ClientListPage>("/api/v1/clients", { params });
+  const { data } = await api.get<ClientListPage>("/v1/clients", { params });
   return data;
 }
 
 export async function createClient(body: ClientIn): Promise<ClientOut> {
-  const { data } = await api.post<ClientOut>("/api/v1/clients", body);
+  const { data } = await api.post<ClientOut>("/v1/clients", body);
   return data;
 }
 
 export async function getClient(id: string): Promise<ClientOut> {
-  const { data } = await api.get<ClientOut>(`/api/v1/clients/${id}`);
+  const { data } = await api.get<ClientOut>(`/v1/clients/${id}`);
   return data;
 }
 
 export async function updateClient(id: string, body: ClientIn): Promise<ClientOut> {
-  const { data } = await api.patch<ClientOut>(`/api/v1/clients/${id}`, body);
+  const { data } = await api.patch<ClientOut>(`/v1/clients/${id}`, body);
   return data;
 }
 
 export async function deactivateClient(id: string): Promise<ClientOut> {
-  const { data } = await api.post<ClientOut>(`/api/v1/clients/${id}/deactivate`);
+  const { data } = await api.post<ClientOut>(`/v1/clients/${id}/deactivate`);
   return data;
 }

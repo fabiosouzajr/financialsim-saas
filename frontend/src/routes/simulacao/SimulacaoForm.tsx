@@ -10,6 +10,7 @@ import { useBusinessRules, suggestRate } from "@/hooks/useBusinessRules";
 import { useSimulationPreview } from "@/hooks/useSimulationPreview";
 import { listClients } from "@/lib/clients";
 import { listVehicles } from "@/lib/vehicles";
+import { fmtBRL, parseBRL } from "@/lib/decimal";
 import type { SimulationFormValues, PreviewPayload } from "./types";
 
 const schema = z.object({
@@ -64,6 +65,63 @@ function toPayload(values: SimulationFormValues): PreviewPayload {
   };
 }
 
+function CurrencyInput({ id, value, onChange, onBlur }: {
+  id?: string; value: string; onChange: (v: string) => void; onBlur?: () => void;
+}) {
+  const [focused, setFocused] = useState(false);
+  const [editValue, setEditValue] = useState("");
+  const formatted = value && !isNaN(Number(value)) ? fmtBRL(value) : "";
+  return (
+    <input
+      id={id}
+      type="text"
+      inputMode="decimal"
+      className="w-full border rounded px-3 py-2 text-sm"
+      placeholder="R$ 0,00"
+      value={focused ? editValue : formatted}
+      onFocus={() => { setFocused(true); setEditValue(value || ""); }}
+      onChange={e => setEditValue(e.target.value)}
+      onBlur={() => {
+        setFocused(false);
+        const raw = parseBRL(editValue);
+        const n = parseFloat(raw);
+        onChange(isNaN(n) ? "0" : n.toFixed(2));
+        onBlur?.();
+      }}
+    />
+  );
+}
+
+function PercentInput({ id, value, onChange }: {
+  id?: string; value: string; onChange: (v: string) => void;
+}) {
+  const [focused, setFocused] = useState(false);
+  const [editValue, setEditValue] = useState("");
+  const n = parseFloat(value);
+  const formatted = !isNaN(n) ? (n * 100).toFixed(4).replace(".", ",") : "";
+  return (
+    <div className="relative">
+      <input
+        id={id}
+        type="text"
+        inputMode="decimal"
+        className="w-full border rounded px-3 py-2 pr-8 text-sm"
+        placeholder="0,0000"
+        value={focused ? editValue : formatted}
+        onFocus={() => { setFocused(true); setEditValue(formatted); }}
+        onChange={e => setEditValue(e.target.value)}
+        onBlur={() => {
+          setFocused(false);
+          const raw = editValue.replace(",", ".");
+          const pct = parseFloat(raw);
+          if (!isNaN(pct)) onChange((pct / 100).toFixed(6));
+        }}
+      />
+      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 pointer-events-none">%</span>
+    </div>
+  );
+}
+
 function ClientPicker({ value, onChange, error }: {
   value: string; onChange: (id: string) => void; error?: string;
 }) {
@@ -102,7 +160,7 @@ function ClientPicker({ value, onChange, error }: {
 }
 
 function VehiclePicker({ value, onChange, error }: {
-  value: string; onChange: (id: string) => void; error?: string;
+  value: string; onChange: (id: string, fipeValue: string | null) => void; error?: string;
 }) {
   const [q, setQ] = useState("");
   const { data } = useQuery({
@@ -126,13 +184,18 @@ function VehiclePicker({ value, onChange, error }: {
               key={v.id}
               type="button"
               onClick={() => {
-                onChange(v.id);
+                onChange(v.id, v.valor_fipe ?? v.valor_referencia ?? null);
                 setQ(`${v.marca} ${v.modelo} ${v.ano_modelo}`);
               }}
               className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${value === v.id ? "bg-zinc-100 font-medium" : ""}`}
             >
               {v.marca} {v.modelo} {v.ano_modelo}
               {v.placa && <span className="text-zinc-400 text-xs ml-1">· {v.placa}</span>}
+              {(v.valor_fipe ?? v.valor_referencia) && (
+                <span className="text-zinc-400 text-xs ml-1">
+                  · R$ {Number(v.valor_fipe ?? v.valor_referencia).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -243,7 +306,10 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
       />
       <VehiclePicker
         value={watch("vehicle_id") ?? ""}
-        onChange={v => setValue("vehicle_id", v)}
+        onChange={(id, fipeValue) => {
+          setValue("vehicle_id", id);
+          if (fipeValue) setValue("valor_veiculo", fipeValue);
+        }}
       />
 
       {/* Valor do Veículo */}
@@ -251,12 +317,10 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
         <label className="block text-sm font-medium mb-1" htmlFor="valor_veiculo">
           Valor do Veículo (R$)
         </label>
-        <input
+        <CurrencyInput
           id="valor_veiculo"
-          type="number"
-          step="0.01"
-          className="w-full border rounded px-3 py-2 text-sm"
-          {...register("valor_veiculo")}
+          value={watch("valor_veiculo")}
+          onChange={v => setValue("valor_veiculo", v)}
         />
       </div>
 
@@ -266,12 +330,11 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
           <label className="block text-sm font-medium mb-1" htmlFor="valor_entrada_brl">
             Entrada R$
           </label>
-          <input
+          <CurrencyInput
             id="valor_entrada_brl"
-            type="number"
-            step="0.01"
-            className="w-full border rounded px-3 py-2 text-sm"
-            {...register("valor_entrada_brl")}
+            value={watch("valor_entrada_brl")}
+            onChange={v => setValue("valor_entrada_brl", v)}
+            onBlur={handlePctBlur}
           />
         </div>
         <div>
@@ -317,12 +380,10 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
             </span>
           )}
         </label>
-        <input
+        <PercentInput
           id="taxa_mensal"
-          type="number"
-          step="0.0001"
-          className="w-full border rounded px-3 py-2 text-sm"
-          {...register("taxa_mensal")}
+          value={watch("taxa_mensal")}
+          onChange={v => setValue("taxa_mensal", v)}
         />
       </div>
 

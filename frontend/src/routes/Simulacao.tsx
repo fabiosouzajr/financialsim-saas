@@ -15,7 +15,7 @@ export default function Simulacao() {
 
   const save = useMutation({
     mutationFn: async (values: SimulationFormValues) => {
-      const res = await api.post<SimulationOut>("/api/v1/simulations", {
+      const res = await api.post<SimulationOut>("/v1/simulations", {
         client_id: values.client_id || undefined,
         vehicle_id: values.vehicle_id || undefined,
         cliente_nome: values.cliente_nome || null,
@@ -39,6 +39,9 @@ export default function Simulacao() {
     <div className="min-h-screen bg-zinc-50">
       <div className="max-w-5xl mx-auto py-8 px-4 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
+          <button onClick={() => navigate("/")} className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 transition-colors cursor-pointer mb-4">
+            ← Voltar
+          </button>
           <h1 className="text-xl font-bold text-zinc-900 mb-6">Nova Simulação</h1>
           <SimulacaoForm onSave={(v) => save.mutate(v)} />
           {save.error && (

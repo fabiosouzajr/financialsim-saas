@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -267,6 +268,7 @@ const STATUS_COLORS: Record<string, "success" | "warning" | "destructive" | "out
 
 export default function VeiculosPage() {
   useEffect(() => { document.title = "Veículos — FinacialSim"; }, []);
+  const navigate = useNavigate();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
@@ -288,6 +290,9 @@ export default function VeiculosPage() {
 
   return (
     <div className="p-6 space-y-4">
+      <button onClick={() => navigate("/")} className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 transition-colors cursor-pointer">
+        ← Voltar
+      </button>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Veículos</h1>
         <Dialog open={open} onOpenChange={setOpen}>
@@ -303,12 +308,16 @@ export default function VeiculosPage() {
         </Dialog>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {["", "ativo", "reservado", "vendido", "inativo"].map(s => (
           <button
             key={s}
             onClick={() => setStatusFilter(s)}
-            className={`px-3 py-1 rounded-full text-xs border ${statusFilter === s ? "bg-primary text-white border-primary" : "border-input text-muted-foreground"}`}
+            className={`px-3 py-1 rounded-full text-xs border cursor-pointer transition-colors ${
+              statusFilter === s
+                ? "bg-slate-800 text-white border-slate-800"
+                : "border-gray-300 text-gray-600 hover:border-gray-500 hover:text-gray-800"
+            }`}
           >
             {s || "Todos"}
           </button>

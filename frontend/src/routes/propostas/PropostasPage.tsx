@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   type ProposalListItem,
   type ProposalListPage,
@@ -22,6 +23,7 @@ const STATUS_BADGE: Record<string, string> = {
 
 export default function PropostasPage() {
   useEffect(() => { document.title = "Propostas — FinacialSim"; }, []);
+  const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState("");
   const [page, setPage] = useState<ProposalListPage | null>(null);
   const [loading, setLoading] = useState(false);
@@ -58,6 +60,9 @@ export default function PropostasPage() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
+      <button onClick={() => navigate("/")} className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 transition-colors cursor-pointer mb-2">
+        ← Voltar
+      </button>
       <h1 className="text-2xl font-semibold mb-4">Propostas</h1>
 
       <div className="mb-4 flex items-center gap-3">

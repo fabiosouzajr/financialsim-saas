@@ -1,0 +1,128 @@
+<h2>Business Rules — Edit Interaction</h2>
+<p class="subtitle">Each rule is a key/value in the DB. How should admins edit them?</p>
+
+<div class="cards">
+
+  <!-- Option A: Click-to-edit inline -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="font-family:monospace;font-size:11px;background:#0F172A;border:1px solid #1E293B;border-radius:6px;overflow:hidden;padding:10px">
+        <div style="color:#94A3B8;font-size:9px;margin-bottom:8px;letter-spacing:.5px">REGRAS DE NEGÓCIO</div>
+
+        <!-- Normal row -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 8px;background:#1E293B;border-radius:4px;margin-bottom:4px">
+          <div>
+            <div style="color:#64748B;font-size:8px">Prazo máximo</div>
+            <div style="color:#F8FAFC;font-size:10px">60 meses</div>
+          </div>
+          <span style="color:#475569;font-size:8px">✏</span>
+        </div>
+
+        <!-- Active (being edited) row -->
+        <div style="border:1px solid #22C55E50;border-radius:4px;padding:8px;margin-bottom:4px;background:#22C55E08">
+          <div style="color:#64748B;font-size:8px;margin-bottom:4px">Entrada mínima (%)</div>
+          <div style="display:flex;gap:4px;align-items:center">
+            <input value="20" style="background:#0F172A;border:1px solid #22C55E;border-radius:3px;padding:3px 6px;color:#F8FAFC;font-size:10px;width:50px;outline:none">
+            <button style="background:#22C55E;color:#020617;border:none;border-radius:3px;padding:3px 7px;font-size:8px;cursor:pointer">✓</button>
+            <button style="background:transparent;color:#64748B;border:1px solid #334155;border-radius:3px;padding:3px 7px;font-size:8px;cursor:pointer">✕</button>
+          </div>
+          <div style="margin-top:5px">
+            <div style="color:#64748B;font-size:8px;margin-bottom:2px">Motivo (opcional)</div>
+            <input placeholder="ex: ajuste regulatório Q2" style="background:#0F172A;border:1px solid #334155;border-radius:3px;padding:3px 6px;color:#94A3B8;font-size:8px;width:100%;box-sizing:border-box;outline:none">
+          </div>
+        </div>
+
+        <!-- Another normal row -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 8px;background:#1E293B;border-radius:4px">
+          <div>
+            <div style="color:#64748B;font-size:8px">Taxa mínima mensal</div>
+            <div style="color:#F8FAFC;font-size:10px">1.20%</div>
+          </div>
+          <span style="color:#475569;font-size:8px">✏</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Inline edit (recommended)</h3>
+      <p>Click the pencil on any row to edit it in place. One field at a time. Simple — matches how the existing API works (PUT /business-rules/{chave}).</p>
+    </div>
+  </div>
+
+  <!-- Option B: Full-form edit modal -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="font-family:monospace;font-size:11px;background:#0F172A;border:1px solid #1E293B;border-radius:6px;overflow:hidden">
+        <!-- Background (list) -->
+        <div style="padding:10px;opacity:0.4">
+          <div style="color:#94A3B8;font-size:9px;margin-bottom:6px">REGRAS DE NEGÓCIO</div>
+          <div style="background:#1E293B;border-radius:3px;padding:6px 8px;margin-bottom:3px;display:flex;justify-content:space-between">
+            <span style="color:#94A3B8;font-size:9px">Entrada mínima</span><span style="color:#F8FAFC;font-size:9px">20%</span>
+          </div>
+          <div style="background:#1E293B;border-radius:3px;padding:6px 8px;margin-bottom:3px;display:flex;justify-content:space-between">
+            <span style="color:#94A3B8;font-size:9px">Prazo máximo</span><span style="color:#F8FAFC;font-size:9px">60 meses</span>
+          </div>
+        </div>
+        <!-- Modal overlay -->
+        <div style="position:absolute;inset:0;background:#02061780;display:flex;align-items:center;justify-content:center">
+          <div style="background:#0F172A;border:1px solid #22C55E30;border-radius:6px;padding:12px;width:180px">
+            <div style="color:#F8FAFC;font-size:10px;font-weight:600;margin-bottom:8px">Editar Todas as Regras</div>
+            <div style="margin-bottom:5px">
+              <div style="color:#64748B;font-size:8px">Entrada mínima (%)</div>
+              <input value="20" style="background:#1E293B;border:1px solid #334155;border-radius:3px;padding:2px 5px;color:#F8FAFC;font-size:9px;width:100%;box-sizing:border-box;margin-top:2px;outline:none">
+            </div>
+            <div style="margin-bottom:5px">
+              <div style="color:#64748B;font-size:8px">Prazo máximo (meses)</div>
+              <input value="60" style="background:#1E293B;border:1px solid #334155;border-radius:3px;padding:2px 5px;color:#F8FAFC;font-size:9px;width:100%;box-sizing:border-box;margin-top:2px;outline:none">
+            </div>
+            <div style="margin-bottom:8px">
+              <div style="color:#64748B;font-size:8px">Taxa mínima (%/mês)</div>
+              <input value="1.20" style="background:#1E293B;border:1px solid #334155;border-radius:3px;padding:2px 5px;color:#F8FAFC;font-size:9px;width:100%;box-sizing:border-box;margin-top:2px;outline:none">
+            </div>
+            <div style="display:flex;gap:4px">
+              <button style="flex:1;background:#22C55E;color:#020617;border:none;border-radius:3px;padding:4px;font-size:8px">Salvar Tudo</button>
+              <button style="flex:1;background:transparent;color:#64748B;border:1px solid #334155;border-radius:3px;padding:4px;font-size:8px">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Edit-all modal</h3>
+      <p>One "Editar" button opens a modal with all fields. Save fires multiple API calls. Simpler UX but loses per-field audit trail — can't record a different motivo per field.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Side panel / drawer -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="font-family:monospace;font-size:11px;background:#0F172A;border:1px solid #1E293B;border-radius:6px;overflow:hidden;display:flex;min-height:150px">
+        <!-- List (left, dimmed) -->
+        <div style="flex:1;padding:10px;opacity:0.5">
+          <div style="color:#94A3B8;font-size:9px;margin-bottom:6px">REGRAS</div>
+          <div style="background:#1E293B;border-radius:3px;padding:6px 8px;margin-bottom:3px;border-left:2px solid #22C55E">
+            <div style="color:#64748B;font-size:8px">Entrada mínima</div>
+            <div style="color:#F8FAFC;font-size:9px">20%</div>
+          </div>
+          <div style="background:#1E293B;border-radius:3px;padding:6px 8px;margin-bottom:3px">
+            <div style="color:#64748B;font-size:8px">Prazo máximo</div>
+            <div style="color:#F8FAFC;font-size:9px">60 meses</div>
+          </div>
+        </div>
+        <!-- Side panel (right) -->
+        <div style="width:130px;background:#0B1628;border-left:1px solid #22C55E30;padding:10px">
+          <div style="color:#22C55E;font-size:9px;font-weight:600;margin-bottom:8px">Entrada mínima</div>
+          <div style="color:#64748B;font-size:8px;margin-bottom:2px">Valor (%)</div>
+          <input value="20" style="background:#1E293B;border:1px solid #22C55E;border-radius:3px;padding:3px 5px;color:#F8FAFC;font-size:9px;width:100%;box-sizing:border-box;margin-bottom:6px;outline:none">
+          <div style="color:#64748B;font-size:8px;margin-bottom:2px">Motivo</div>
+          <input placeholder="motivo..." style="background:#1E293B;border:1px solid #334155;border-radius:3px;padding:3px 5px;color:#94A3B8;font-size:8px;width:100%;box-sizing:border-box;margin-bottom:8px;outline:none">
+          <button style="width:100%;background:#22C55E;color:#020617;border:none;border-radius:3px;padding:4px;font-size:8px">Salvar</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Side panel</h3>
+      <p>Click a rule row to open an edit panel on the right. More space for future extras (history, validation hints). More complex to build.</p>
+    </div>
+  </div>
+
+</div>
