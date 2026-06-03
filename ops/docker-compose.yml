@@ -51,6 +51,7 @@ services:
       GIT_SHA: local
       SMTP_HOST: mailpit
       SMTP_PORT: 1025
+      FRONTEND_BASE_URL: http://localhost
     depends_on:
       migrate:
         condition: service_completed_successfully
