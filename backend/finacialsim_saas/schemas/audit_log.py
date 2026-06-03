@@ -9,6 +9,7 @@ class AuditLogItem(BaseModel):
     tenant_id: uuid.UUID
     timestamp: datetime
     usuario_id: uuid.UUID | None
+    usuario_email: str | None = None
     acao: str
     entidade: str | None
     entidade_id: uuid.UUID | None

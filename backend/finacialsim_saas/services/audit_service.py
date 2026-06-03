@@ -10,7 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from finacialsim_saas.auth.deps import RequestContext
-from finacialsim_saas.data.models import AuditLog, Role
+from finacialsim_saas.data.models import AuditLog, Role, User
 
 UTC = timezone.utc
 PAGE_SIZE = 20
@@ -50,8 +50,12 @@ class AuditService:
         date_from: date | None = None,
         date_to: date | None = None,
         cursor: str | None = None,
-    ) -> tuple[list[AuditLog], str | None]:
-        q = select(AuditLog).where(AuditLog.tenant_id == tenant_id)
+    ) -> tuple[list, str | None]:
+        q = (
+            select(AuditLog, User.email.label("usuario_email"))
+            .outerjoin(User, AuditLog.usuario_id == User.id)
+            .where(AuditLog.tenant_id == tenant_id)
+        )
 
         if caller_role == Role.user:
             q = q.where(AuditLog.usuario_id == caller_user_id)
@@ -74,10 +78,15 @@ class AuditService:
             )
 
         q = q.order_by(AuditLog.timestamp.desc(), AuditLog.id.desc()).limit(PAGE_SIZE + 1)
-        rows = (await self._s.scalars(q)).all()
+        result = (await self._s.execute(q)).all()
 
-        has_more = len(rows) > PAGE_SIZE
-        items = list(rows[:PAGE_SIZE])
+        has_more = len(result) > PAGE_SIZE
+        rows = result[:PAGE_SIZE]
+        items = []
+        for row in rows:
+            audit = row[0]
+            audit.usuario_email = row[1]  # dynamic attr; Pydantic from_attributes picks it up
+            items.append(audit)
         next_cursor = (
             _encode_cursor(items[-1].timestamp, items[-1].id) if has_more else None
         )
