@@ -46,6 +46,13 @@ def engine(db_url: str) -> AsyncEngine:
     asyncio.run(eng.dispose())
 
 
+@pytest.fixture
+def session_factory(engine: AsyncEngine, redis_url: str):
+    """Returns a callable async session factory backed by the test engine.
+    Depends on redis_url to ensure REDIS_URL env var is set before any test runs."""
+    return build_session_factory(engine)
+
+
 @pytest_asyncio.fixture
 async def session(engine: AsyncEngine) -> AsyncSession:
     factory = build_session_factory(engine)
@@ -67,7 +74,19 @@ def redis_container():
 def redis_url(redis_container) -> str:
     host = redis_container.get_container_host_ip()
     port = redis_container.get_exposed_port(6379)
-    return f"redis://{host}:{port}"
+    url = f"redis://{host}:{port}"
+    os.environ["REDIS_URL"] = url
+    return url
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def _clear_drain_lock(redis_url: str) -> None:
+    """Delete the drain-outbox Redis lock before each test so tests don't skip each other."""
+    import redis.asyncio as aioredis
+
+    r = aioredis.from_url(redis_url, decode_responses=True)
+    await r.delete("lock:drain_notifications_outbox")
+    await r.aclose()
 
 
 @pytest_asyncio.fixture

@@ -11,7 +11,7 @@ from finacialsim_saas.data.models import (
 )
 from finacialsim_saas.notifications.channel import EmailChannel
 from finacialsim_saas.notifications.service import NotificationService, render_template
-from finacialsim_saas.settings import get_settings
+from finacialsim_saas.services.settings_service import SettingsService
 
 UTC = timezone.utc
 _LOCK_TTL = 25  # seconds — less than the 30s cron interval
@@ -26,9 +26,20 @@ async def drain_notifications_outbox(ctx: dict) -> None:
         logger.debug("drain_notifications_outbox: already running, skipping")
         return
 
-    settings = get_settings()
-    channel = EmailChannel(settings)
     session_factory = ctx["session_factory"]
+
+    # Read SMTP config from DB (falls back to env for any missing key)
+    async with session_factory() as cfg_session:
+        smtp = await SettingsService(cfg_session).get_all()
+
+    channel = EmailChannel(
+        smtp_host=smtp["smtp_host"][0],
+        smtp_port=int(smtp["smtp_port"][0]),
+        smtp_user=smtp["smtp_user"][0],
+        smtp_password=smtp["smtp_password"][0],
+        smtp_tls=smtp["smtp_tls"][0].lower() == "true",
+        smtp_from=smtp["smtp_from"][0],
+    )
 
     async with session_factory() as session:
         now = datetime.now(UTC)
