@@ -87,3 +87,12 @@ else
 
     ok "API container is healthy"
 fi
+
+# ── Step 3: Migrations ────────────────────────────────────────────────────────
+section "Step 3/4: Database migrations"
+
+info "Running Alembic migrations..."
+if ! docker compose exec -T api python -m finacialsim_saas.cli.main db migrate 2>&1; then
+    die "Migration failed. Check the output above."
+fi
+ok "Database is up to date"
