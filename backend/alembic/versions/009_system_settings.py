@@ -4,9 +4,10 @@ Revision ID: 009_system_settings
 Revises: 008
 Create Date: 2026-06-03
 """
+from __future__ import annotations
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 revision = "009_system_settings"
 down_revision = "008"
