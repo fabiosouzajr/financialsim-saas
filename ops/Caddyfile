@@ -1,6 +1,5 @@
 :80 {
     handle /api/* {
-        uri strip_prefix /api
         reverse_proxy api:8000
     }
     handle {
