@@ -1,8 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
 
 interface IndicatorOut {
   codigo: string;
