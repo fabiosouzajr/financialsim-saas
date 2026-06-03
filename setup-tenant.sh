@@ -175,3 +175,17 @@ while true; do
         die "Tenant creation failed. See output above."
     fi
 done
+
+# ── Success ────────────────────────────────────────────────────────────────────
+FRONTEND_URL="${FRONTEND_BASE_URL:-http://localhost}"
+
+echo -e "\n${GREEN}${BOLD}"
+printf "╔══════════════════════════════════════════════════════╗\n"
+printf "║  Tenant created successfully!                        ║\n"
+printf "║                                                      ║\n"
+printf "║  Name:   %-44s║\n" "$TENANT_NAME "
+printf "║  Slug:   %-44s║\n" "$TENANT_SLUG "
+printf "║  Admin:  %-44s║\n" "$ADMIN_EMAIL "
+printf "║  URL:    %-44s║\n" "$FRONTEND_URL "
+printf "╚══════════════════════════════════════════════════════╝\n"
+echo -e "${RESET}"
