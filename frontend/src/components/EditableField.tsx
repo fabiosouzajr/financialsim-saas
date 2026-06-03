@@ -41,23 +41,27 @@ export default function EditableField({
 
   if (type === "toggle") {
     return (
-      <div className="flex items-center justify-between py-3 border-b border-[#1E293B] last:border-0">
-        <span className="text-sm text-[#94A3B8]">{label}</span>
-        <Switch
-          checked={value === "true"}
-          disabled={saving}
-          onCheckedChange={async (checked) => {
-            setSaving(true);
-            try {
-              await onSave(String(checked));
-            } catch (e: unknown) {
-              const msg = e instanceof Error ? e.message : "Erro ao salvar";
-              setError(msg);
-            } finally {
-              setSaving(false);
-            }
-          }}
-        />
+      <div className="py-3 border-b border-[#1E293B] last:border-0">
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-[#94A3B8]">{label}</span>
+          <Switch
+            checked={value === "true"}
+            disabled={saving}
+            onCheckedChange={async (checked) => {
+              setSaving(true);
+              setError(null);
+              try {
+                await onSave(String(checked));
+              } catch (e: unknown) {
+                const msg = e instanceof Error ? e.message : "Erro ao salvar";
+                setError(msg);
+              } finally {
+                setSaving(false);
+              }
+            }}
+          />
+        </div>
+        {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
       </div>
     );
   }
