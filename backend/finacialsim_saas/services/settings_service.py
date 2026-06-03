@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from finacialsim_saas.data.models import SystemSetting
@@ -62,3 +62,4 @@ class SettingsService:
         else:
             row.value = value
             row.updated_by = updated_by
+            row.updated_at = func.now()

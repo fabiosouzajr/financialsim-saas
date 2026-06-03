@@ -1,7 +1,19 @@
 import pytest
+import pytest_asyncio
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 from finacialsim_saas.data.database import build_session_factory
 from finacialsim_saas.services.settings_service import SettingsService
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def clean_settings(engine: AsyncEngine):
+    """Truncate system_settings before each test to ensure isolation."""
+    factory = build_session_factory(engine)
+    async with factory() as session:
+        await session.execute(text("DELETE FROM system_settings"))
+        await session.commit()
+    yield
 
 
 @pytest.mark.asyncio
@@ -11,13 +23,10 @@ async def test_get_all_returns_env_defaults_when_table_empty(engine: AsyncEngine
     async with factory() as session:
         svc = SettingsService(session)
         result = await svc.get_all()
-    # All managed keys present
     assert "smtp_host" in result
     assert "smtp_port" in result
     assert "pix_provider" in result
-    # Pix is always env
     assert result["pix_provider"][1] == "env"
-    # SMTP with empty DB is also env
     assert result["smtp_host"][1] == "env"
 
 
