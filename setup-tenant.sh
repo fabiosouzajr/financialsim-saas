@@ -158,10 +158,11 @@ while true; do
         die "Too many failed attempts.\n\n  Run manually:\n    docker compose exec api python -m finacialsim_saas.cli.main tenant create \\\n      --name \"$TENANT_NAME\" --slug <slug> --admin-email \"$ADMIN_EMAIL\""
     fi
 
-    _output=$(printf '%s\n' "$ADMIN_PASSWORD" | docker compose exec -T api python -m finacialsim_saas.cli.main tenant create \
+    _output=$(docker compose exec -T api python -m finacialsim_saas.cli.main tenant create \
         --name "$TENANT_NAME" \
         --slug "$TENANT_SLUG" \
-        --admin-email "$ADMIN_EMAIL" 2>&1) && _exit=0 || _exit=$?
+        --admin-email "$ADMIN_EMAIL" \
+        --admin-password "$ADMIN_PASSWORD" 2>&1) && _exit=0 || _exit=$?
 
     if [[ $_exit -eq 0 ]]; then
         break
