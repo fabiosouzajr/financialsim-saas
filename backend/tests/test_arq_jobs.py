@@ -20,22 +20,31 @@ def _make_sgs_response(valor: str = "10.75") -> list[dict]:
 
 @respx.mock
 async def test_update_bacen_indicators_populates_db(engine: AsyncEngine, redis_url: str):
-    respx.get("https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados").mock(
+    import re
+    from sqlalchemy import delete
+
+    respx.get(re.compile(r"https://api\.bcb\.gov\.br/dados/serie/bcdata\.sgs\.432/dados.*")).mock(
         return_value=httpx.Response(200, json=_make_sgs_response("10.75"))
     )
-    respx.get("https://api.bcb.gov.br/dados/serie/bcdata.sgs.12/dados").mock(
+    respx.get(re.compile(r"https://api\.bcb\.gov\.br/dados/serie/bcdata\.sgs\.12/dados.*")).mock(
         return_value=httpx.Response(200, json=_make_sgs_response("10.65"))
     )
-    respx.get("https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados").mock(
+    respx.get(re.compile(r"https://api\.bcb\.gov\.br/dados/serie/bcdata\.sgs\.13522/dados.*")).mock(
         return_value=httpx.Response(200, json=_make_sgs_response("4.50"))
     )
-    respx.get("https://api.bcb.gov.br/dados/serie/bcdata.sgs.20714/dados").mock(
+    respx.get(re.compile(r"https://api\.bcb\.gov\.br/dados/serie/bcdata\.sgs\.20714/dados.*")).mock(
         return_value=httpx.Response(200, json=_make_sgs_response("1.85"))
     )
 
     session_factory = build_session_factory(engine)
     redis_pool = await create_pool(RedisSettings.from_dsn(redis_url))
     http_client = httpx.AsyncClient()
+
+    # Clean up any prior indicator history
+    async with session_factory() as s:
+        await s.execute(delete(IndicatorHistory))
+        await s.commit()
+
     ctx = {
         "redis": redis_pool,
         "session_factory": session_factory,
