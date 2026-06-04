@@ -11,7 +11,7 @@ import { useSimulationPreview } from "@/hooks/useSimulationPreview";
 import { listClients } from "@/lib/clients";
 import { listVehicles } from "@/lib/vehicles";
 import { fmtBRL, parseBRL } from "@/lib/decimal";
-import type { SimulationFormValues, PreviewPayload } from "./types";
+import type { SimulationFormValues, PreviewPayload, BusinessRules } from "./types";
 
 const schema = z.object({
   client_id: z.string().optional().default(""),
@@ -160,7 +160,7 @@ function ClientPicker({ value, onChange, error }: {
 }
 
 function VehiclePicker({ value, onChange, error }: {
-  value: string; onChange: (id: string, fipeValue: string | null) => void; error?: string;
+  value: string; onChange: (id: string, fipeValue: string | null, tipo: string | null) => void; error?: string;
 }) {
   const [q, setQ] = useState("");
   const { data } = useQuery({
@@ -184,7 +184,7 @@ function VehiclePicker({ value, onChange, error }: {
               key={v.id}
               type="button"
               onClick={() => {
-                onChange(v.id, v.valor_fipe ?? v.valor_referencia ?? null);
+                onChange(v.id, v.valor_fipe ?? v.valor_referencia ?? null, v.tipo ?? null);
                 setQ(`${v.marca} ${v.modelo} ${v.ano_modelo}`);
               }}
               className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${value === v.id ? "bg-zinc-100 font-medium" : ""}`}
@@ -252,6 +252,11 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
     name: "extras",
   });
 
+  const [selectedVehicle, setSelectedVehicle] = useState<{
+    fipeValue: string | null;
+    tipo: string | null;
+  }>({ fipeValue: null, tipo: null });
+
   const watchAll = watch();
   const valorVeiculo = watch("valor_veiculo");
   const valorEntradaBrl = watch("valor_entrada_brl");
@@ -306,9 +311,10 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
       />
       <VehiclePicker
         value={watch("vehicle_id") ?? ""}
-        onChange={(id, fipeValue) => {
+        onChange={(id, fipeValue, tipo) => {
           setValue("vehicle_id", id);
           if (fipeValue) setValue("valor_veiculo", fipeValue);
+          setSelectedVehicle({ fipeValue: fipeValue ?? null, tipo: tipo ?? null });
         }}
       />
 
@@ -487,22 +493,39 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
             <button
               type="button"
               className="text-xs border rounded-full px-3 py-1 hover:bg-zinc-50"
-              onClick={() => appendExtra({
-                tipo: "ipva", nome: "IPVA",
-                valor_total: "0.00", modalidade: "rateio_meses",
-                duracao_meses: rules?.rateio_ipva_meses_default ?? 12,
-                ordem: extraFields.length,
-              })}
+              onClick={() => {
+                const tipoKey = `ipva_pct_${selectedVehicle.tipo}` as keyof BusinessRules;
+                const ipvaPct = rules?.[tipoKey] as string | undefined;
+                const fipe = selectedVehicle.fipeValue;
+                const valorTotal =
+                  ipvaPct && fipe
+                    ? (parseFloat(fipe) * parseFloat(ipvaPct)).toFixed(2)
+                    : "0.00";
+                appendExtra({
+                  tipo: "ipva",
+                  nome: "IPVA",
+                  valor_total: valorTotal,
+                  modalidade: "rateio_meses",
+                  duracao_meses: rules?.rateio_ipva_meses_default ?? 12,
+                  ordem: extraFields.length,
+                });
+              }}
             >+ IPVA</button>
             <button
               type="button"
               className="text-xs border rounded-full px-3 py-1 hover:bg-zinc-50"
-              onClick={() => appendExtra({
-                tipo: "emplacamento", nome: "Emplacamento",
-                valor_total: "0.00", modalidade: "rateio_meses",
-                duracao_meses: rules?.rateio_emplacamento_meses_default ?? 3,
-                ordem: extraFields.length,
-              })}
+              onClick={() => {
+                const tipoKey = `emplacamento_valor_${selectedVehicle.tipo}` as keyof BusinessRules;
+                const valorTotal = (rules?.[tipoKey] as string | undefined) ?? "0.00";
+                appendExtra({
+                  tipo: "emplacamento",
+                  nome: "Emplacamento",
+                  valor_total: valorTotal,
+                  modalidade: "rateio_meses",
+                  duracao_meses: rules?.rateio_emplacamento_meses_default ?? 3,
+                  ordem: extraFields.length,
+                });
+              }}
             >+ Emplacamento</button>
           </div>
           {extraFields.map((field, i) => (
