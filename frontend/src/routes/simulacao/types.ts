@@ -18,6 +18,12 @@ export interface BusinessRules {
   rateio_ipva_meses_default: number;
   rateio_emplacamento_meses_default: number;
   taxa_por_prazo_curva: RateCurvePoint[];
+  ipva_pct_carro: string;
+  ipva_pct_moto: string;
+  ipva_pct_caminhao: string;
+  emplacamento_valor_carro: string;
+  emplacamento_valor_moto: string;
+  emplacamento_valor_caminhao: string;
 }
 
 export interface FeeInput {
