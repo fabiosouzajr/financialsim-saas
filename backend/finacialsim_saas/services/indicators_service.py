@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime, timedelta, timezone
+from decimal import Decimal
 
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
@@ -23,6 +24,31 @@ MAX_AGE_HOURS: dict[str, int] = {
 VALID_RANGES: dict[str, int] = {"3m": 3, "6m": 6, "12m": 12, "24m": 24}
 
 CANONICAL_CODIGOS = ["SELIC", "CDI", "IPCA", "TX_BACEN_VEIC"]
+
+
+def _yearly_to_monthly(r: Decimal) -> Decimal:
+    r_f = float(r)
+    monthly = ((1 + r_f / 100) ** (1 / 12) - 1) * 100
+    return Decimal(str(round(monthly, 6)))
+
+
+def _daily_to_30d(r: Decimal) -> Decimal:
+    r_f = float(r)
+    accum = ((1 + r_f / 100) ** 30 - 1) * 100
+    return Decimal(str(round(accum, 6)))
+
+
+def _compute_derived(
+    codigo: str, r: Decimal
+) -> tuple[Decimal | None, str | None, str | None]:
+    try:
+        if codigo in ("SELIC", "TX_BACEN_VEIC"):
+            return _yearly_to_monthly(r), "pct_am", "% a.m."
+        if codigo == "CDI":
+            return _daily_to_30d(r), "pct_30d", "% (30d)"
+    except (ValueError, ArithmeticError, OverflowError):
+        pass
+    return None, None, None
 
 
 class IndicatorsService:
@@ -68,14 +94,24 @@ class IndicatorsService:
             coletado_em = coletado_em.replace(tzinfo=UTC)
         age_h = (datetime.now(UTC) - coletado_em).total_seconds() / 3600
         stale = age_h > MAX_AGE_HOURS.get(codigo, 26)
+
+        unidade = row.unidade
+        if codigo == "TX_BACEN_VEIC":
+            unidade = "pct_aa"
+
+        valor_d, unidade_d, label_d = _compute_derived(codigo, Decimal(str(row.valor)))
+
         return IndicatorOut(
             codigo=row.codigo,
             valor=row.valor,
-            unidade=row.unidade,
+            unidade=unidade,
             fonte=row.fonte,
             data_referencia=row.data_referencia,
             coletado_em=coletado_em,
             stale=stale,
+            valor_derivado=valor_d,
+            unidade_derivada=unidade_d,
+            label_derivada=label_d,
         )
 
     async def latest_all(self) -> list[IndicatorOut]:
