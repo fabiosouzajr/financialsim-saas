@@ -94,3 +94,21 @@ async def test_tx_bacen_veic_no_brasilapi_fallback():
         "data_final": date(2026, 6, 1),
     })
     assert result.is_err
+
+
+def test_sgs_codigos_tx_bacen_veic_unit_is_pct_aa():
+    from finacialsim_saas.integrations.bacen.sgs import CODIGOS
+    _, unidade = CODIGOS["TX_BACEN_VEIC"]
+    assert unidade == "pct_aa"
+
+
+def test_sgs_codigos_ipca_uses_series_13522():
+    from finacialsim_saas.integrations.bacen.sgs import CODIGOS
+    sgs_code, unidade = CODIGOS["IPCA"]
+    assert sgs_code == 13522
+    assert unidade == "pct_12m"
+
+
+def test_brasilapi_alias_does_not_contain_ipca():
+    from finacialsim_saas.integrations.bacen.brasilapi import ALIAS
+    assert "IPCA" not in ALIAS

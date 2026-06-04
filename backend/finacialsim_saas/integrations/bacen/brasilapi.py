@@ -13,11 +13,11 @@ from finacialsim_saas.integrations.bacen.schema import IndicatorPoint
 
 BASE_URL = "https://brasilapi.com.br/api/taxas/v1"
 
-# TX_BACEN_VEIC not supported by BrasilAPI — omit intentionally
+# TX_BACEN_VEIC and IPCA not supported by BrasilAPI — omit intentionally
+# (IPCA: BrasilAPI only has monthly variation, not 12m accumulated)
 ALIAS: dict[str, tuple[str, str]] = {
     "SELIC": ("Selic", "pct_aa"),
     "CDI": ("CDI", "pct_ad"),
-    "IPCA": ("IPCA", "pct_am"),
 }
 
 

@@ -17,8 +17,8 @@ BASE_URL = "https://api.bcb.gov.br/dados/serie"
 CODIGOS: dict[str, tuple[int, Unidade]] = {
     "SELIC": (432, "pct_aa"),
     "CDI": (12, "pct_ad"),
-    "IPCA": (433, "pct_am"),
-    "TX_BACEN_VEIC": (20714, "pct_am"),
+    "IPCA": (13522, "pct_12m"),
+    "TX_BACEN_VEIC": (20714, "pct_aa"),
 }
 
 
