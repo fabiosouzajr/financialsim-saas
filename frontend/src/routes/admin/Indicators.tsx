@@ -8,10 +8,29 @@ interface IndicatorOut {
   codigo: string;
   valor: string;
   unidade: string;
-  data: string;
+  fonte: string;
+  data_referencia: string;
+  coletado_em: string;
+  stale: boolean;
+  valor_derivado: string | null;
+  unidade_derivada: string | null;
+  label_derivada: string | null;
 }
 
-const LABELS: Record<string, string> = { SELIC: "SELIC", CDI: "CDI", IPCA: "IPCA" };
+const LABELS: Record<string, string> = {
+  SELIC: "SELIC",
+  CDI: "CDI",
+  IPCA: "IPCA",
+  TX_BACEN_VEIC: "Taxa BACEN Veíc.",
+};
+
+const UNIT_LABELS: Record<string, string> = {
+  pct_aa:  "% a.a.",
+  pct_am:  "% a.m.",
+  pct_ad:  "% a.d.",
+  pct_12m: "% (12m)",
+  pct_30d: "% (30d)",
+};
 
 export default function Indicators() {
   const [refreshing, setRefreshing] = useState(false);
@@ -86,9 +105,17 @@ export default function Indicators() {
               </p>
               <p className="text-2xl font-semibold text-[#F8FAFC] mt-1">
                 {ind.valor}
-                <span className="text-sm text-[#64748B] ml-1">{ind.unidade}</span>
+                <span className="text-sm text-[#64748B] ml-1">
+                  {UNIT_LABELS[ind.unidade] ?? ind.unidade}
+                </span>
               </p>
-              <p className="text-xs text-[#475569] mt-2">{ind.data}</p>
+              {ind.valor_derivado && (
+                <p className="text-sm text-[#64748B] mt-0.5">
+                  {ind.valor_derivado}
+                  <span className="ml-1">{ind.label_derivada}</span>
+                </p>
+              )}
+              <p className="text-xs text-[#475569] mt-2">{ind.data_referencia}</p>
             </div>
           ))}
         </div>
