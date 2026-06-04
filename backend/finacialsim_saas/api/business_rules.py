@@ -36,6 +36,12 @@ async def get_business_rules(
             RateCurvePointOut(ate_meses=p["ate_meses"], taxa_mensal=p["taxa_mensal"])
             for p in curva_raw
         ],
+        ipva_pct_carro=rules["ipva_pct_carro"],
+        ipva_pct_moto=rules["ipva_pct_moto"],
+        ipva_pct_caminhao=rules["ipva_pct_caminhao"],
+        emplacamento_valor_carro=rules["emplacamento_valor_carro"],
+        emplacamento_valor_moto=rules["emplacamento_valor_moto"],
+        emplacamento_valor_caminhao=rules["emplacamento_valor_caminhao"],
     )
 
 

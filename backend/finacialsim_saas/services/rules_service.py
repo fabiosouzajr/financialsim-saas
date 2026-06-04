@@ -19,6 +19,8 @@ _REQUIRED_RULES = frozenset([
     "iof_diario_max_dias", "incluir_iof_default",
     "rateio_ipva_meses_default", "rateio_emplacamento_meses_default",
     "taxa_por_prazo_curva",
+    "ipva_pct_carro", "ipva_pct_moto", "ipva_pct_caminhao",
+    "emplacamento_valor_carro", "emplacamento_valor_moto", "emplacamento_valor_caminhao",
 ])
 
 

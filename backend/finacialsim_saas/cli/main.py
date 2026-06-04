@@ -31,6 +31,12 @@ _DEFAULT_BUSINESS_RULES: list[tuple[str, object, str]] = [
         {"ate_meses": 60, "taxa_mensal": "0.0219"},
         {"ate_meses": 72, "taxa_mensal": "0.0239"},
     ], "Curva de taxa sugerida por prazo"),
+    ("ipva_pct_carro",            "0.035",  "IPVA — alíquota carro (% a.a.)"),
+    ("ipva_pct_moto",             "0.030",  "IPVA — alíquota moto (% a.a.)"),
+    ("ipva_pct_caminhao",         "0.010",  "IPVA — alíquota caminhão (% a.a.)"),
+    ("emplacamento_valor_carro",   "220.46", "Emplacamento — carro (R$)"),
+    ("emplacamento_valor_moto",    "188.96", "Emplacamento — moto (R$)"),
+    ("emplacamento_valor_caminhao","220.46", "Emplacamento — caminhão (R$)"),
 ]
 
 

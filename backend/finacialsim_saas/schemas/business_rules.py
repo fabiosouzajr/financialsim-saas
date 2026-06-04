@@ -27,6 +27,12 @@ class BusinessRulesOut(BaseModel):
     rateio_ipva_meses_default: int
     rateio_emplacamento_meses_default: int
     taxa_por_prazo_curva: list[RateCurvePointOut]
+    ipva_pct_carro: DecimalStr
+    ipva_pct_moto: DecimalStr
+    ipva_pct_caminhao: DecimalStr
+    emplacamento_valor_carro: DecimalStr
+    emplacamento_valor_moto: DecimalStr
+    emplacamento_valor_caminhao: DecimalStr
 
 
 class BusinessRuleUpdateIn(BaseModel):
