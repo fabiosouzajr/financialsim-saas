@@ -34,6 +34,9 @@ class IndicatorOut(BaseModel):
     data_referencia: date
     coletado_em: datetime
     stale: bool
+    valor_derivado: _DecimalAsStr | None = None
+    unidade_derivada: str | None = None
+    label_derivada: str | None = None
 
 
 class SeriesPoint(BaseModel):

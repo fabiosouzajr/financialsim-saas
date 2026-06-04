@@ -5,7 +5,7 @@ from datetime import date
 from decimal import Decimal
 from typing import Literal
 
-Unidade = Literal["pct_aa", "pct_am", "pct_ad"]
+Unidade = Literal["pct_aa", "pct_am", "pct_ad", "pct_12m"]
 
 
 @dataclass(frozen=True)
