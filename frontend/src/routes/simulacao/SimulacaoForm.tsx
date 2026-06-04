@@ -11,7 +11,7 @@ import { useSimulationPreview } from "@/hooks/useSimulationPreview";
 import { listClients } from "@/lib/clients";
 import { listVehicles } from "@/lib/vehicles";
 import { fmtBRL, parseBRL } from "@/lib/decimal";
-import type { SimulationFormValues, PreviewPayload, BusinessRules } from "./types";
+import type { SimulationFormValues, PreviewPayload } from "./types";
 
 const schema = z.object({
   client_id: z.string().optional().default(""),
@@ -184,7 +184,7 @@ function VehiclePicker({ value, onChange, error }: {
               key={v.id}
               type="button"
               onClick={() => {
-                onChange(v.id, v.valor_fipe ?? v.valor_referencia ?? null, v.tipo ?? null);
+                onChange(v.id, v.valor_fipe ?? v.valor_referencia ?? null, v.tipo);
                 setQ(`${v.marca} ${v.modelo} ${v.ano_modelo}`);
               }}
               className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${value === v.id ? "bg-zinc-100 font-medium" : ""}`}
@@ -203,6 +203,13 @@ function VehiclePicker({ value, onChange, error }: {
       {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
+}
+
+const VALID_TIPOS = ["carro", "moto", "caminhao"] as const;
+type VehicleTipo = (typeof VALID_TIPOS)[number];
+
+function isValidTipo(t: string | null): t is VehicleTipo {
+  return t !== null && (VALID_TIPOS as readonly string[]).includes(t);
 }
 
 interface Props {
@@ -494,13 +501,14 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
               type="button"
               className="text-xs border rounded-full px-3 py-1 hover:bg-zinc-50"
               onClick={() => {
-                const tipoKey = `ipva_pct_${selectedVehicle.tipo}` as keyof BusinessRules;
-                const ipvaPct = rules?.[tipoKey] as string | undefined;
+                const tipo = selectedVehicle.tipo;
                 const fipe = selectedVehicle.fipeValue;
-                const valorTotal =
-                  ipvaPct && fipe
-                    ? (parseFloat(fipe) * parseFloat(ipvaPct)).toFixed(2)
-                    : "0.00";
+                let valorTotal = "0.00";
+                if (isValidTipo(tipo) && fipe && rules) {
+                  const ipvaPct = rules[`ipva_pct_${tipo}`];
+                  const computed = parseFloat(fipe) * parseFloat(ipvaPct);
+                  if (!isNaN(computed)) valorTotal = computed.toFixed(2);
+                }
                 appendExtra({
                   tipo: "ipva",
                   nome: "IPVA",
@@ -515,8 +523,10 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
               type="button"
               className="text-xs border rounded-full px-3 py-1 hover:bg-zinc-50"
               onClick={() => {
-                const tipoKey = `emplacamento_valor_${selectedVehicle.tipo}` as keyof BusinessRules;
-                const valorTotal = (rules?.[tipoKey] as string | undefined) ?? "0.00";
+                const tipo = selectedVehicle.tipo;
+                const valorTotal = isValidTipo(tipo) && rules
+                  ? rules[`emplacamento_valor_${tipo}`]
+                  : "0.00";
                 appendExtra({
                   tipo: "emplacamento",
                   nome: "Emplacamento",
