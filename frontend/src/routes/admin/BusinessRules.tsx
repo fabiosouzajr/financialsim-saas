@@ -26,6 +26,12 @@ interface BusinessRulesData {
   dias_max_carencia: number;
   rateio_ipva_meses_default: number;
   rateio_emplacamento_meses_default: number;
+  ipva_pct_carro: string;
+  ipva_pct_moto: string;
+  ipva_pct_caminhao: string;
+  emplacamento_valor_carro: string;
+  emplacamento_valor_moto: string;
+  emplacamento_valor_caminhao: string;
 }
 
 async function fetchRules(): Promise<BusinessRulesData> {
@@ -281,6 +287,18 @@ export default function BusinessRules() {
           <EditableField label="IOF diário (%)" value={toDisplayPct(data.iof_diario_pct, 6)} type="number" onSave={makePct("iof_diario_pct")} motivo />
           <EditableField label="IOF diário máx. dias" value={String(data.iof_diario_max_dias)} type="number" onSave={makeSave("iof_diario_max_dias")} motivo />
           <EditableField label="Incluir IOF por padrão" value={String(data.incluir_iof_default)} type="toggle" onSave={makeSave("incluir_iof_default")} />
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-3">Extra / Rateio</h2>
+        <div className="bg-[#0F172A] border border-[#1E293B] rounded-lg px-4">
+          <EditableField label="IPVA — Carro (%)" value={toDisplayPct(data.ipva_pct_carro, 2)} type="number" onSave={makePct("ipva_pct_carro")} motivo />
+          <EditableField label="IPVA — Moto (%)" value={toDisplayPct(data.ipva_pct_moto, 2)} type="number" onSave={makePct("ipva_pct_moto")} motivo />
+          <EditableField label="IPVA — Caminhão (%)" value={toDisplayPct(data.ipva_pct_caminhao, 2)} type="number" onSave={makePct("ipva_pct_caminhao")} motivo />
+          <EditableField label="Emplacamento — Carro (R$)" value={String(data.emplacamento_valor_carro)} type="number" onSave={makeSave("emplacamento_valor_carro")} motivo />
+          <EditableField label="Emplacamento — Moto (R$)" value={String(data.emplacamento_valor_moto)} type="number" onSave={makeSave("emplacamento_valor_moto")} motivo />
+          <EditableField label="Emplacamento — Caminhão (R$)" value={String(data.emplacamento_valor_caminhao)} type="number" onSave={makeSave("emplacamento_valor_caminhao")} motivo />
         </div>
       </section>
 
