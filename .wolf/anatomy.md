@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-03T16:27:12.076Z
-> Files: 354 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-04T21:28:49.790Z
+> Files: 359 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -61,6 +61,7 @@
 - `007_phase6_pix.py` — phase6 — pix_charges, pix_webhook_events, parcela_payments updates (~1226 tok)
 - `008_phase7_notifications.py` — phase7 — finalize notifications_outbox schema; add email_log stub (~998 tok)
 - `009_system_settings.py` — system_settings global config table (~227 tok)
+- `010_seed_ipva_emplacamento_rules.py` — seed IPVA and emplacamento business rules for all tenants (~434 tok)
 
 ## backend/finacialsim_saas/
 
@@ -75,7 +76,7 @@
 - `admin_settings.py` — API: 2 endpoints (~457 tok)
 - `audit_log.py` — API: 1 endpoints (~659 tok)
 - `auth.py` — API: 5 endpoints (~820 tok)
-- `business_rules.py` — API: 2 endpoints (~672 tok)
+- `business_rules.py` — API: 2 endpoints (~773 tok)
 - `cep.py` — API: 1 endpoints (~70 tok)
 - `clients.py` — API: 6 endpoints (~964 tok)
 - `fipe.py` — API: 5 endpoints (~727 tok)
@@ -102,7 +103,7 @@
 
 - `__init__.py` (~0 tok)
 - `db.py` — db_migrate, db_reset (~540 tok)
-- `main.py` — tenant_create, user_create, user_reset_password (~1646 tok)
+- `main.py` — tenant_create, user_create, user_reset_password (~1780 tok)
 - `notifications_cli.py` — notifications_drain, notifications_retry (~873 tok)
 
 ## backend/finacialsim_saas/data/
@@ -119,11 +120,11 @@
 
 - `__init__.py` (~0 tok)
 - `__init__.py` (~0 tok)
-- `brasilapi.py` — BrasilApiBacenProvider: fetch — SELIC/CDI/IPCA fallback via BrasilAPI taxas/v1 (~555 tok)
+- `brasilapi.py` — BrasilApiBacenProvider: fetch (~568 tok)
 - `brasilapi.py` — BrasilApiBacenProvider: fetch (~555 tok)
-- `schema.py` — Declares IndicatorPoint dataclass with valor (Decimal pct), unidade, codigo, fonte (~111 tok)
+- `schema.py` — Declares from (~114 tok)
 - `schema.py` — Declares from (~111 tok)
-- `sgs.py` — BcbSgsProvider: fetch — SELIC/CDI/IPCA/TX_BACEN_VEIC via BCB SGS API (~748 tok)
+- `sgs.py` — BcbSgsProvider: fetch (~748 tok)
 - `sgs.py` — BcbSgsProvider: fetch (~748 tok)
 
 ## backend/finacialsim_saas/middleware/
@@ -204,10 +205,10 @@
 - `__init__.py` (~0 tok)
 - `admin_settings.py` — Declares SettingItem (~54 tok)
 - `audit_log.py` — Declares AuditLogItem (~138 tok)
-- `business_rules.py` — Declares RateCurvePointOut (~236 tok)
+- `business_rules.py` — Declares RateCurvePointOut (~298 tok)
 - `clients.py` — Declares ClientIn (~381 tok)
 - `fipe.py` — Declares FipeBrandItem (~154 tok)
-- `indicators.py` — Declares IndicatorOut (~372 tok)
+- `indicators.py` — Declares IndicatorOut (~408 tok)
 - `proposals.py` — Proposal schemas: PropostaSnapshot (sealed) + API request/response models. (~1772 tok)
 - `simulations.py` — Declares FeeIn (~1052 tok)
 - `types.py` (~84 tok)
@@ -221,10 +222,10 @@
 - `client_service.py` — ClientService: create, get, list, update + 1 more (~2079 tok)
 - `fipe_cache.py` — PostgresFipeCache: name, fetch (~1427 tok)
 - `fipe_service.py` — FipeService: build_fipe_chain, get_brands, get_models, get_years + 1 more (~745 tok)
-- `indicators_service.py` — IndicatorsService: upsert, latest, latest_all, series (~1008 tok)
+- `indicators_service.py` — IndicatorsService: upsert, latest, latest_all, series (~1300 tok)
 - `parcela_service.py` — ParcelaService: list_for_customer, get_schedule, get_parcela, mark_overdue (~2470 tok)
 - `proposal_service.py` — ProposalService — manages the full proposal lifecycle. (~3092 tok)
-- `rules_service.py` — RulesService: get_rules, snapshot, update (~724 tok)
+- `rules_service.py` — RulesService: get_rules, snapshot, update (~767 tok)
 - `settings_service.py` — SettingsService: get_all, update (~684 tok)
 - `simulation_service.py` — from: preview, create (~8192 tok)
 - `vehicle_service.py` — VehicleService: create, get, list, update + 2 more (~2393 tok)
@@ -252,19 +253,19 @@
 - `conftest.py` — ── Postgres ────────────────────────────────────────────────────────────────── (~1005 tok)
 - `test_admin_health.py` — test_admin_health_returns_expected_shape, test_admin_health_non_admin_returns_403 (~653 tok)
 - `test_admin_settings.py` — clean_settings, test_get_settings_returns_env_defaults, test_put_get_round_trip, test_put_non_admin_ (~1055 tok)
-- `test_arq_jobs.py` — test_update_bacen_indicators_populates_db, test_verify_provider_health_prunes_to_50 (~989 tok)
+- `test_arq_jobs.py` — test_update_bacen_indicators_populates_db, test_verify_provider_health_prunes_to_50 (~1068 tok)
 - `test_audit_backfill.py` — Integration tests: every CUD operation produces a correct audit_log entry. (~1904 tok)
 - `test_audit_email_enrichment.py` — test_audit_log_includes_usuario_email (~476 tok)
 - `test_audit_log_endpoints.py` — test_audit_log_returns_entries, test_audit_log_filter_by_acao, test_audit_log_user_role_sees_only_ow (~1204 tok)
 - `test_audit_service.py` — test_log_and_list, test_list_user_sees_only_own, test_cursor_pagination, test_cross_tenant_isolation (~1019 tok)
 - `test_auth_endpoints.py` — seed, test_login_returns_tokens, test_login_wrong_password_returns_401, test_refresh_returns_new_tok (~850 tok)
-- `test_auth_invite.py` — tenant, admin_user, client_record, test_invite_customer_creates_user_and_token (~1304 tok)
+- `test_auth_invite.py` — tenant, admin_user, client_record, test_invite_customer_creates_user_and_token (~1306 tok)
 - `test_auth_service.py` — tenant, test_register_and_authenticate, test_authenticate_wrong_password_raises, test_issue_tokens_r (~1184 tok)
-- `test_bacen_providers.py` — test_sgs_primary_ok, test_sgs_http_error_returns_err, test_chain_primary_fail_brasilapi_fallback, te (~903 tok)
+- `test_bacen_providers.py` — test_sgs_primary_ok, test_sgs_http_error_returns_err, test_chain_primary_fail_brasilapi_fallback, te (~1058 tok)
 - `test_br_format.py` — test_format_brl_basic, test_format_brl_negative, test_format_brl_large, test_format_pct_default (~289 tok)
 - `test_business_rules_update.py` — test_put_business_rule_updates_value, test_put_business_rule_non_admin_forbidden, test_put_business_ (~832 tok)
 - `test_cep_service.py` — test_cep_lookup_returns_brasilapi_response, test_cep_lookup_fails_open_on_error, test_cep_invalid_le (~317 tok)
-- `test_cli.py` — runner, test_tenant_create_and_user_create, test_db_migrate_runs_without_error, test_db_reset_requir (~567 tok)
+- `test_cli.py` — runner, test_tenant_create_and_user_create, test_db_migrate_runs_without_error, test_db_reset_requir (~658 tok)
 - `test_client_endpoints.py` — test_create_and_get_client, test_create_client_invalid_cpf_returns_422, test_deactivate_client, test (~802 tok)
 - `test_client_service.py` — ctx_and_session, test_create_pf_client_valid_cpf, test_create_pf_client_invalid_cpf_raises, test_cre (~976 tok)
 - `test_database.py` — test_db_ping, test_session_can_execute_query (~124 tok)
@@ -275,7 +276,7 @@
 - `test_fipe_chain.py` — test_primary_ok_returns_value, test_primary_fail_fallback_ok, test_cache_hit_skips_provider, test_bo (~1132 tok)
 - `test_health.py` — client, test_healthz_returns_ok, test_version_has_expected_keys, test_healthz_returns_postgres_and_r (~526 tok)
 - `test_indicators_endpoints.py` — test_list_indicators_returns_array, test_indicator_series, test_refresh_indicators_requires_admin, t (~993 tok)
-- `test_indicators_service.py` — test_upsert_and_latest, test_upsert_idempotent, test_series_returns_ordered_points, test_series_inva (~698 tok)
+- `test_indicators_service.py` — test_upsert_and_latest, test_upsert_idempotent, test_series_returns_ordered_points, test_series_inva (~1499 tok)
 - `test_maildir.py` — test_deliver_writes_eml_file (~122 tok)
 - `test_models.py` — test_all_phase1_models_importable_and_tables_exist, test_all_phase2_models_importable_and_tables_exi (~834 tok)
 - `test_notification_service.py` — Integration tests for NotificationService.enqueue() — DB only, no SMTP. (~846 tok)
@@ -294,7 +295,7 @@
 - `test_settings_service.py` — clean_settings, test_get_all_returns_env_defaults_when_table_empty, test_update_and_get_round_trip, (~596 tok)
 - `test_settings.py` — test_settings_loads_with_valid_env, test_settings_missing_database_url_raises, test_settings_has_jwt (~313 tok)
 - `test_simulation_endpoints.py` — test_get_business_rules, test_preview_returns_schedule, test_create_simulation_returns_201, test_lis (~2167 tok)
-- `test_simulation_service.py` — tenant, user, rules_seeded, client_and_vehicle (~3287 tok)
+- `test_simulation_service.py` — tenant, user, rules_seeded, client_and_vehicle (~3296 tok)
 - `test_storage_contract.py` — Storage backend contract test — same assertions pass both Local and S3 (MinIO). (~590 tok)
 - `test_storage_local.py` — storage, test_put_and_get, test_signed_url_structure, test_signed_url_valid_hmac (~588 tok)
 - `test_tenant_isolation.py` — two_tenants, test_get_users_returns_only_own_tenant, test_get_me_returns_own_tenant, test_patch_user (~1047 tok)
@@ -375,6 +376,8 @@
 - `2026-06-02-saas-phase-7g-docs.md` — Phase 7G — Documentation Implementation Plan (~2818 tok)
 - `2026-06-03-admin-dashboard.md` — Admin Dashboard Implementation Plan (~16492 tok)
 - `2026-06-03-setup-tenant-script.md` — Setup Tenant Script Implementation Plan (~3471 tok)
+- `2026-06-04-indicators-bacen-fixes.md` — Indicadores BACEN — Label Fixes + Derived Values Implementation Plan (~4444 tok)
+- `2026-06-04-ipva-emplacamento-business-rules.md` — IPVA & Emplacamento — Configurable Business Rules Implementation Plan (~5075 tok)
 
 ## docs/superpowers/plans/done/
 
@@ -403,6 +406,8 @@
 - `2026-05-28-saas-roadmap.md` — FinacialSim SaaS — Master Roadmap (~4042 tok)
 - `2026-06-03-admin-dashboard-design.md` — Admin Dashboard — Design Spec (~2194 tok)
 - `2026-06-03-setup-tenant-script.md` — Setup Tenant Script — Design Spec (~1039 tok)
+- `2026-06-04-indicators-bacen-fixes.md` — Indicadores BACEN — Label Fixes + Derived Values — Design Spec (~1334 tok)
+- `2026-06-04-ipva-emplacamento-business-rules.md` — IPVA & Emplacamento — Configurable Business Rules (~1918 tok)
 
 ## docs/superpowers/specs/done/
 
@@ -482,8 +487,8 @@
 
 - `AdminLayout.tsx` — NAV_ITEMS (~634 tok)
 - `AuditLog.tsx` — ACAO_OPTIONS — renders table (~1546 tok)
-- `BusinessRules.tsx` — BusinessRules admin panel with EditableField UI; 4 sections (Financiamento, Taxas w/ curve table, IOF, Padrões); fetchRules useQuery, updateRule PUT, makeSave with qc.invalidateQueries (~2500 tok)
-- `Indicators.tsx` — LABELS (~589 tok)
+- `BusinessRules.tsx` — fetchRules — renders table (~3669 tok)
+- `Indicators.tsx` — LABELS (~1155 tok)
 - `PixSettings.tsx` — Query getAdminSettings, display pix_provider + pix_webhook_secret (env-only, read-only) (~270 tok)
 - `SmtpSettings.tsx` — EMAIL_PROVIDERS (~670 tok)
 - `SystemHealth.tsx` — Query /v1/admin/health (refetch 30s), StatusPill component, display postgres/redis + providers with latency/error (~420 tok)
@@ -491,7 +496,7 @@
 
 ## frontend/src/routes/clientes/
 
-- `ClientesPage.tsx` — isValidCpf — renders form, modal (~4178 tok)
+- `ClientesPage.tsx` — isValidCpf — renders form (~4703 tok)
 
 ## frontend/src/routes/propostas/
 
@@ -502,8 +507,8 @@
 - `ResultCards.tsx` — Card (~516 tok)
 - `ScheduleTable.tsx` — CSV_HEADERS — renders table (~742 tok)
 - `SimulacaoCharts.tsx` — SimulacaoCharts (~970 tok)
-- `SimulacaoForm.tsx` — schema — renders form (~5951 tok)
-- `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~862 tok)
+- `SimulacaoForm.tsx` — schema — renders form (~6327 tok)
+- `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~917 tok)
 
 ## frontend/src/routes/veiculos/
 

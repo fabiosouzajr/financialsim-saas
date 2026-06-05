@@ -161,13 +161,17 @@ function ClientModal({
 
   return (
     <form onSubmit={handleSubmit(d => mutation.mutate(d))} className="space-y-4">
-      <div className="flex gap-2">
+      <div className="flex gap-1 p-1 bg-gray-100 rounded-lg w-fit">
         {(["pf", "pj"] as const).map(t => (
           <button
             key={t}
             type="button"
             onClick={() => { setTipo(t); setValue("tipo", t); }}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium border ${tipo === t ? "bg-primary text-white border-primary" : "border-input"}`}
+            className={`px-6 py-1.5 rounded-md text-sm font-medium transition-all duration-150 cursor-pointer ${
+              tipo === t
+                ? "bg-white text-gray-900 shadow-sm border border-gray-200"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
           >
             {t.toUpperCase()}
           </button>
@@ -177,97 +181,103 @@ function ClientModal({
       <input type="hidden" {...register("tipo")} value={tipo} />
 
       <div className="grid gap-2">
-        <Label>Nome</Label>
-        <Input {...register("nome")} placeholder="Nome completo" />
+        <Label className="text-gray-700 font-medium">Nome</Label>
+        <Input {...register("nome")} placeholder="Nome completo" className="bg-white border-gray-300 text-gray-900" />
         {errors.nome && <p className="text-xs text-red-500">{errors.nome.message}</p>}
       </div>
 
       <div className="grid gap-2">
-        <Label>{tipo === "pf" ? "CPF" : "CNPJ"}</Label>
-        <Input {...register("cpf_cnpj")} placeholder={tipo === "pf" ? "000.000.000-00" : "00.000.000/0001-00"} />
+        <Label className="text-gray-700 font-medium">{tipo === "pf" ? "CPF" : "CNPJ"}</Label>
+        <Input {...register("cpf_cnpj")} placeholder={tipo === "pf" ? "000.000.000-00" : "00.000.000/0001-00"} className="bg-white border-gray-300 text-gray-900" />
         {errors.cpf_cnpj && <p className="text-xs text-red-500">{errors.cpf_cnpj.message}</p>}
       </div>
 
       {tipo === "pf" && (
         <>
-          <div className="grid gap-2">
-            <Label>RG</Label>
-            <Input {...register("rg" as keyof ClientForm)} placeholder="RG" />
+          <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-2">
+              <Label className="text-gray-700 font-medium">RG</Label>
+              <Input {...register("rg" as keyof ClientForm)} placeholder="RG" className="bg-white border-gray-300 text-gray-900" />
+            </div>
+            <div className="grid gap-2">
+              <Label className="text-gray-700 font-medium">Data de Nascimento</Label>
+              <Input type="date" {...register("data_nasc" as keyof ClientForm)} className="bg-white border-gray-300 text-gray-900" />
+            </div>
           </div>
           <div className="grid gap-2">
-            <Label>Data de Nascimento</Label>
-            <Input type="date" {...register("data_nasc" as keyof ClientForm)} />
-          </div>
-          <div className="grid gap-2">
-            <Label>Profissão</Label>
-            <Input {...register("profissao" as keyof ClientForm)} placeholder="Profissão" />
+            <Label className="text-gray-700 font-medium">Profissão</Label>
+            <Input {...register("profissao" as keyof ClientForm)} placeholder="Profissão" className="bg-white border-gray-300 text-gray-900" />
           </div>
         </>
       )}
 
       <div className="grid grid-cols-2 gap-4">
         <div className="grid gap-2">
-          <Label>Renda / Faturamento</Label>
-          <Input {...register("renda")} placeholder="0.00" />
+          <Label className="text-gray-700 font-medium">Renda / Faturamento</Label>
+          <Input {...register("renda")} placeholder="0,00" className="bg-white border-gray-300 text-gray-900" />
         </div>
         <div className="grid gap-2">
-          <Label>Telefone</Label>
-          <Input {...register("telefone")} placeholder="(11) 99999-9999" />
+          <Label className="text-gray-700 font-medium">Telefone</Label>
+          <Input {...register("telefone")} placeholder="(11) 99999-9999" className="bg-white border-gray-300 text-gray-900" />
         </div>
       </div>
 
       <div className="grid gap-2">
-        <Label>Email</Label>
-        <Input type="email" {...register("email")} placeholder="email@exemplo.com" />
+        <Label className="text-gray-700 font-medium">Email</Label>
+        <Input type="email" {...register("email")} placeholder="email@exemplo.com" className="bg-white border-gray-300 text-gray-900" />
         {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
       </div>
 
+      <div className="border-t border-gray-100" />
+
       <div className="grid gap-2">
-        <Label>
-          CEP {cepLoading && <span className="text-xs text-muted-foreground">(buscando...)</span>}
+        <Label className="text-gray-700 font-medium">
+          CEP {cepLoading && <span className="text-xs text-gray-400 font-normal">(buscando...)</span>}
         </Label>
-        <Input {...register("cep")} placeholder="00000-000" onBlur={handleCepBlur} />
+        <Input {...register("cep")} placeholder="00000-000" onBlur={handleCepBlur} className="bg-white border-gray-300 text-gray-900" />
       </div>
       <div className="grid grid-cols-3 gap-2">
         <div className="col-span-2 grid gap-2">
-          <Label>Logradouro</Label>
-          <Input {...register("logradouro" as keyof ClientForm)} />
+          <Label className="text-gray-700 font-medium">Logradouro</Label>
+          <Input {...register("logradouro" as keyof ClientForm)} className="bg-white border-gray-300 text-gray-900" />
         </div>
         <div className="grid gap-2">
-          <Label>UF</Label>
-          <Input {...register("uf" as keyof ClientForm)} maxLength={2} />
+          <Label className="text-gray-700 font-medium">UF</Label>
+          <Input {...register("uf" as keyof ClientForm)} maxLength={2} className="bg-white border-gray-300 text-gray-900" />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div className="grid gap-2">
-          <Label>Bairro</Label>
-          <Input {...register("bairro" as keyof ClientForm)} />
+          <Label className="text-gray-700 font-medium">Bairro</Label>
+          <Input {...register("bairro" as keyof ClientForm)} className="bg-white border-gray-300 text-gray-900" />
         </div>
         <div className="grid gap-2">
-          <Label>Cidade</Label>
-          <Input {...register("localidade" as keyof ClientForm)} />
+          <Label className="text-gray-700 font-medium">Cidade</Label>
+          <Input {...register("localidade" as keyof ClientForm)} className="bg-white border-gray-300 text-gray-900" />
         </div>
       </div>
 
       <div className="grid gap-2">
-        <Label>Observações</Label>
+        <Label className="text-gray-700 font-medium">Observações</Label>
         <textarea
           {...register("observacoes")}
-          className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          className="flex min-h-[60px] w-full rounded-md border border-gray-300 bg-white text-gray-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-700"
           placeholder="Observações"
         />
       </div>
 
       {mutation.error && (
-        <p className="text-sm text-red-500">
-          {(mutation.error as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Erro ao salvar"}
-        </p>
+        <div className="rounded-md bg-red-50 border border-red-200 p-3">
+          <p className="text-sm text-red-700">
+            {(mutation.error as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Erro ao salvar"}
+          </p>
+        </div>
       )}
 
-      <div className="flex justify-end gap-2 pt-2">
-        <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
-        <Button type="submit" disabled={mutation.isPending}>
-          {mutation.isPending ? "Salvando..." : editing ? "Salvar" : "Criar"}
+      <div className="flex justify-end gap-2 pt-1">
+        <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer">Cancelar</Button>
+        <Button type="submit" disabled={mutation.isPending} className="bg-slate-800 hover:bg-slate-700 text-white cursor-pointer">
+          {mutation.isPending ? "Salvando..." : editing ? "Salvar" : "Criar Cliente"}
         </Button>
       </div>
     </form>
@@ -312,9 +322,9 @@ export default function ClientesPage() {
           <DialogTrigger asChild>
             <Button onClick={openCreate}>+ Novo Cliente</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-white text-gray-900">
             <DialogHeader>
-              <DialogTitle>{editing ? "Editar Cliente" : "Novo Cliente"}</DialogTitle>
+              <DialogTitle className="text-gray-900 text-lg font-semibold">{editing ? "Editar Cliente" : "Novo Cliente"}</DialogTitle>
             </DialogHeader>
             <ClientModal editing={editing} onClose={handleClose} />
           </DialogContent>

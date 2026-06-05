@@ -3,6 +3,10 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 18:29 | refactor: type-safe IPVA/emplacamento lookup using isValidTipo guard + remove unused BusinessRules import | frontend/src/routes/simulacao/SimulacaoForm.tsx | committed fb626da | ~1200 |
+
+| 20:50 | Task 3: added derived-value helpers (_yearly_to_monthly, _daily_to_30d, _compute_derived) + TX_BACEN_VEIC unit normalization to latest() | indicators_service.py, test_indicators_service.py | 4 new tests pass, 13 total pass, commit 08f65f6 | ~2000 |
+
 | 2026-06-03 | Task 10: BusinessRules admin panel | frontend/src/routes/admin/BusinessRules.tsx | Replaced stub with full component: useQuery fetchRules, 4 sections (Financing, Rates w/ read-only curve table, IOF, Defaults), EditableField for 13 rules + 1 toggle, queryClient invalidation on save | ~500 tok |
 | 2026-06-03 | Task 9: AdminLayout + routing wiring | frontend/src/routes/admin/AdminLayout.tsx, frontend/src/App.tsx, frontend/src/routes/Index.tsx + 6 stubs | Created AdminLayout sidebar, nested /admin/* routes, updated Index dashboard card | ~800 tok |
 
@@ -1149,3 +1153,151 @@
 | 13:21 | Edited frontend/src/routes/admin/Indicators.tsx | 5→4 lines | ~55 |
 | 13:23 | Edited frontend/vite.config.ts | "http://localhost:8000" → "http://localhost:80" | ~11 |
 | 13:27 | Edited frontend/vite.config.ts | "http://localhost:80" → "http://localhost:8000" | ~12 |
+
+## Session: 2026-06-04 16:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-04 16:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-04 16:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-04 16:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-04 16:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-04 16:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-04 16:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-04 16:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:19 | Edited frontend/src/routes/clientes/ClientesPage.tsx | 4→4 lines | ~83 |
+| 16:20 | Edited frontend/src/routes/clientes/ClientesPage.tsx | CSS: hover | ~198 |
+| 16:20 | Edited frontend/src/routes/clientes/ClientesPage.tsx | expanded (+6 lines) | ~1487 |
+
+## Session: 2026-06-04 16:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:40 | Created docs/superpowers/specs/2026-06-04-indicators-bacen-fixes.md | — | ~1085 |
+
+## Session: 2026-06-04 17:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-04 17:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-04 17:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:22 | Created docs/superpowers/specs/2026-06-04-ipva-emplacamento-business-rules.md | — | ~1698 |
+
+## Session: 2026-06-04 17:22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-04 17:22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-04 17:23
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:34 | Created docs/superpowers/specs/2026-06-04-indicators-bacen-fixes.md | — | ~1423 |
+| 17:38 | Created docs/superpowers/plans/2026-06-04-indicators-bacen-fixes.md | — | ~4759 |
+
+## Session: 2026-06-04 17:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:38 | Edited docs/superpowers/plans/2026-06-04-indicators-bacen-fixes.md | 6→6 lines | ~47 |
+| 17:43 | Edited backend/finacialsim_saas/integrations/bacen/schema.py | inline fix | ~17 |
+| 17:43 | Edited backend/finacialsim_saas/schemas/indicators.py | modified IndicatorOut() | ~85 |
+| 2026-06-04 17:43 | Task 1: Schema changes — extend Unidade type with pct_12m, add 3 nullable fields to IndicatorOut | backend/finacialsim_saas/integrations/bacen/schema.py, backend/finacialsim_saas/schemas/indicators.py | committed 3013e3a; import check passed | ~200 |
+| 17:46 | Edited backend/tests/test_bacen_providers.py | modified test_tx_bacen_veic_no_brasilapi_fallback() | ~320 |
+| 17:46 | Edited backend/finacialsim_saas/integrations/bacen/sgs.py | 7→7 lines | ~64 |
+| 17:46 | Edited backend/finacialsim_saas/integrations/bacen/brasilapi.py | 6→6 lines | ~70 |
+| 17:46 | Edited docs/superpowers/specs/2026-06-04-ipva-emplacamento-business-rules.md | added nullish coalescing | ~418 |
+
+| 2026-06-04 | Task 2: Fix BACEN provider sources (TDD) | backend/finacialsim_saas/integrations/bacen/sgs.py, brasilapi.py, tests/test_bacen_providers.py | IPCA: SGS 433→13522 (12m accum), TX_BACEN_VEIC unit: pct_am→pct_aa, removed IPCA from BrasilAPI fallback; 3 new tests + 5 existing tests PASS; commit 1c15ae8 | ~300 |
+| 17:49 | Edited backend/tests/test_indicators_service.py | modified test_latest_missing_returns_none() | ~854 |
+| 17:49 | Created docs/superpowers/plans/2026-06-04-ipva-emplacamento-business-rules.md | — | ~5351 |
+| 17:49 | Edited backend/finacialsim_saas/services/indicators_service.py | added 1 import(s) | ~44 |
+| 17:49 | Edited backend/finacialsim_saas/services/indicators_service.py | modified _yearly_to_monthly() | ~232 |
+| 17:50 | Edited backend/finacialsim_saas/services/indicators_service.py | modified latest() | ~333 |
+| 17:50 | Edited docs/superpowers/plans/2026-06-04-ipva-emplacamento-business-rules.md | expanded (+14 lines) | ~97 |
+| 17:50 | Edited docs/superpowers/plans/2026-06-04-ipva-emplacamento-business-rules.md | 2 → 3 | ~20 |
+| 17:50 | Edited docs/superpowers/plans/2026-06-04-ipva-emplacamento-business-rules.md | inline fix | ~21 |
+| 17:50 | Edited docs/superpowers/plans/2026-06-04-ipva-emplacamento-business-rules.md | inline fix | ~24 |
+| 17:51 | Edited docs/superpowers/plans/2026-06-04-ipva-emplacamento-business-rules.md | 12→12 lines | ~103 |
+| 17:51 | Edited docs/superpowers/plans/2026-06-04-ipva-emplacamento-business-rules.md | 4 → 6 | ~19 |
+| 17:51 | Edited docs/superpowers/plans/2026-06-04-ipva-emplacamento-business-rules.md | 5 → 7 | ~21 |
+| 17:51 | Edited docs/superpowers/plans/2026-06-04-ipva-emplacamento-business-rules.md | 28→28 lines | ~257 |
+| 17:54 | Edited frontend/src/routes/admin/Indicators.tsx | expanded (+6 lines) | ~76 |
+| 17:54 | Edited frontend/src/routes/admin/Indicators.tsx | expanded (+13 lines) | ~82 |
+| 17:54 | Edited frontend/src/routes/admin/Indicators.tsx | expanded (+8 lines) | ~284 |
+| 17:56 | Edited backend/tests/test_arq_jobs.py | modified test_update_bacen_indicators_populates_db() | ~227 |
+| 17:56 | Edited backend/tests/test_arq_jobs.py | added 1 import(s) | ~239 |
+| 17:58 | Edited backend/tests/test_arq_jobs.py | modified test_update_bacen_indicators_populates_db() | ~446 |
+| 17:59 | Edited backend/tests/test_auth_invite.py | 11→11 lines | ~126 |
+| 18:00 | Edited backend/tests/test_cli.py | modified test_db_migrate_runs_without_error() | ~101 |
+| 18:00 | Edited backend/tests/test_cli.py | modified test_db_reset_requires_confirm_flag() | ~285 |
+| 18:00 | Created backend/alembic/versions/010_seed_ipva_emplacamento_rules.py | — | ~419 |
+| 18:01 | Edited backend/alembic/versions/010_seed_ipva_emplacamento_rules.py | 2→2 lines | ~16 |
+
+| 2026-06-04 | Task 1: Alembic migration 010 — seed 6 IPVA + emplacamento business rules for all tenants | backend/alembic/versions/010_seed_ipva_emplacamento_rules.py | Created migration (revision 010, down_revision 009_system_settings), verified SQL logic, committed 59226e1 | ~500 |
+| 18:04 | Edited backend/alembic/versions/010_seed_ipva_emplacamento_rules.py | added 1 import(s) | ~24 |
+| 18:05 | Edited backend/tests/test_simulation_service.py | test_get_rules_returns_all_14_keys() → test_get_rules_returns_all_20_keys() | ~125 |
+| 18:05 | Edited backend/finacialsim_saas/cli/main.py | expanded (+6 lines) | ~230 |
+| 18:05 | Edited backend/finacialsim_saas/services/rules_service.py | 8→10 lines | ~151 |
+| 18:05 | Edited backend/finacialsim_saas/schemas/business_rules.py | modified BusinessRuleUpdateIn() | ~89 |
+| 18:08 | Edited backend/finacialsim_saas/api/business_rules.py | expanded (+6 lines) | ~149 |
+| 18:19 | Edited frontend/src/routes/simulacao/types.ts | expanded (+6 lines) | ~192 |
+
+| 2026-06-04 | Task 3: frontend types — added 6 IPVA/emplacamento fields to BusinessRules interface | frontend/src/routes/simulacao/types.ts | build succeeds, commit 9adaaa1 | ~500 |
+| 18:21 | Edited frontend/src/routes/admin/BusinessRules.tsx | expanded (+6 lines) | ~87 |
+| 18:22 | Edited frontend/src/routes/admin/BusinessRules.tsx | expanded (+12 lines) | ~642 |
+| 2026-06-04 | Task 4: Added Extra/Rateio section to BusinessRules admin panel | frontend/src/routes/admin/BusinessRules.tsx | Added 6 new fields (ipva_pct_carro/moto/caminhao, emplacamento_valor_*) to interface, inserted new section between IOF + Padrões, IPVA fields use makePct + toDisplayPct(2), Emplacamento use makeSave + String; build clean, committed 856be38 | ~800 tok |
+| 18:24 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~24 |
+| 18:24 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 10→15 lines | ~125 |
+| 18:24 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: tipo | ~49 |
+| 18:24 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 4→4 lines | ~58 |
+| 18:24 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: fipeValue, tipo | ~90 |
+| 18:25 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | modified toFixed() | ~263 |
+| 18:25 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | expanded (+6 lines) | ~213 |
+| 18:25 | Task 5: SimulacaoForm — VehiclePicker tipo, selectedVehicle state, smart IPVA/emplacamento buttons | frontend/src/routes/simulacao/SimulacaoForm.tsx | committed 5b720fd | ~600 |
+| 18:28 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: t | ~104 |
+| 18:28 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | added 2 condition(s) | ~230 |
+| 18:28 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 12→14 lines | ~168 |
+| 18:28 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~24 |
+| 18:28 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~20 |
