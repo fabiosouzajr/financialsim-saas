@@ -1,5 +1,7 @@
 # TODO List
 
+## Contexto
+
 Voce esta trabalhando no desenvolvimento do FinacialSim, que é um aplicativo desktop multi-perfil para uma loja brasileira, com cálculo financeiro fiel ao praticado por bancos e financeiras brasileiras para CCB de veículos. Os objetivos primários são:
 
 1. Permitir a vendedores leigos simular financiamentos com precisão bancária, em poucos cliques.
@@ -7,9 +9,31 @@ Voce esta trabalhando no desenvolvimento do FinacialSim, que é um aplicativo de
 3. Manter taxas e indicadores econômicos sempre atualizados, com fallback robusto a falhas de rede.
 4. Comparar cenários e simular amortizações extraordinárias (parcial, total, reduzir prazo, reduzir parcela).
 5. Manter histórico auditável e reproduzível (uma proposta de 2026 deve poder ser regerada em 2027, idêntica).
-6. Servir de base modular para futuras integrações (CRM, WhatsApp, geração de carnê, APIs bancárias).
+6. Servir de base modular para futuras integrações (CRM, WhatsApp, sistema pagamento PIX, geração de carnês, APIs bancárias).
 
-Cada simulacao pode referenciar um veiculo e um cliente. Atualmente a implementacao do fipe serve apenas como base para obter dados do veiculo. para manter um registro de propostas devemos implementar uma pagina "veiculos" que use os dados do fipe como base para criar e atualizar veiculos. implementar a diferenciacao de veiculos do mesmo modelo/ano definindo campos como "cor", "placa" e "odometro".
+Capacidades atuais resumidas:
+
+[] Cadastro de clientes (PF/PJ) com validação de CPF/CNPJ.
+[] Consulta FIPE com filtros encadeados (tipo → marca → modelo → ano).
+[] Atualização automática de SELIC, CDI, IPCA, taxa BACEN de veículos, IOF.
+[] Simulação Tabela Price com dias corridos e primeiro vencimento variável.
+[] **IOF opcional por simulação** (default ligado): quando ativo, 0,38% fixo + 0,0082%/dia (teto 365 dias) iterado para convergência ao ser incorporado ao principal.
+[] **Custos adicionais mensais acrescidos à parcela**: plano de proteção veicular (mensal contínuo), IPVA anual com rateio em N meses (default 12), emplacamento + licenciamento com rateio em N meses (default 12), e itens personalizados (rastreador, garantia, etc.).
+[] CET via TIR exata (Brent) — calculado apenas sobre o fluxo do financiamento (convenção BCB; extras não compõem o CET).
+[] Cronograma de amortização completo (com colunas de extras e parcela total), com gráficos interativos.
+[] Comparação lado-a-lado de dois cenários.
+[] Amortização extraordinária com escolha de modo (parcela ou prazo).
+[] Geração de PDF de proposta com snapshot reproduzível.
+[] Geracao de Carnê para impressao
+[] integracao com sistema pix
+[] Backup automático e restauração do banco.
+[] Logs de execução (técnico) e audit log (negócio).
+[] Três perfis: vendedor / gerente / administrador.
+
+
+## PIX
+Diante da necessidade de pagamentos recorrentes, a integração com o sistema de pagamentos pix é essencial para o sucesso do aplicativo. Os pagamentos pix devem ser automatizados 
+
 
 ## implement a "veiculos" page
 
