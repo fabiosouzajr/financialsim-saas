@@ -1301,3 +1301,21 @@
 | 18:28 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 12→14 lines | ~168 |
 | 18:28 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~24 |
 | 18:28 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~20 |
+
+## Session: 2026-06-06 10:16
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:29 | Created frontend/src/tests/App.test.tsx | — | ~278 |
+| 13:29 | investigated login→dashboard issue; current code correct; stale Docker image identified as cause; updated App.test.tsx to match current Index.tsx | frontend/src/tests/App.test.tsx | fixed broken test | ~3000 |
+
+## Session: 2026-06-06 10:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:51 | Edited backend/finacialsim_saas/services/rules_service.py | expanded (+20 lines) | ~690 |
+| 10:52 | Edited backend/finacialsim_saas/services/rules_service.py | modified get_rules() | ~114 |
+| 10:52 | Edited backend/finacialsim_saas/services/rules_service.py | expanded (+10 lines) | ~388 |
+| 10:52 | Edited backend/finacialsim_saas/cli/main.py | modified _seed_business_rules() | ~224 |
+| 10:53 | Edited backend/finacialsim_saas/services/rules_service.py | get() → AppError() | ~82 |
+| 10:53 | Edited backend/tests/test_simulation_service.py | modified test_get_rules_returns_defaults_when_unseeded() | ~111 |

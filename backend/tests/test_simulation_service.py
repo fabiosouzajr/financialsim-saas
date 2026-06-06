@@ -65,12 +65,12 @@ async def test_get_rules_returns_all_20_keys(session, tenant, rules_seeded):
 
 
 @pytest.mark.asyncio
-async def test_get_rules_raises_on_missing_rule(session, tenant):
-    from finacialsim_saas.services.rules_service import RulesService
-    from finacialsim_saas.errors import AppError
+async def test_get_rules_returns_defaults_when_unseeded(session, tenant):
+    from finacialsim_saas.services.rules_service import RulesService, _RULE_DEFAULTS
     svc = RulesService(session)
-    with pytest.raises(AppError, match="business rule"):
-        await svc.get_rules(tenant.id)
+    rules = await svc.get_rules(tenant.id)
+    assert set(rules.keys()) == set(_RULE_DEFAULTS.keys())
+    assert rules["ipva_pct_carro"] == _RULE_DEFAULTS["ipva_pct_carro"][0]
 
 
 def _make_preview_payload():

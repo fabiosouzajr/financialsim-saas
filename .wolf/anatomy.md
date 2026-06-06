@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-04T21:28:49.790Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-06T13:53:16.532Z
 > Files: 359 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
@@ -103,7 +103,7 @@
 
 - `__init__.py` (~0 tok)
 - `db.py` — db_migrate, db_reset (~540 tok)
-- `main.py` — tenant_create, user_create, user_reset_password (~1780 tok)
+- `main.py` — tenant_create, user_create, user_reset_password (~1318 tok)
 - `notifications_cli.py` — notifications_drain, notifications_retry (~873 tok)
 
 ## backend/finacialsim_saas/data/
@@ -225,7 +225,7 @@
 - `indicators_service.py` — IndicatorsService: upsert, latest, latest_all, series (~1300 tok)
 - `parcela_service.py` — ParcelaService: list_for_customer, get_schedule, get_parcela, mark_overdue (~2470 tok)
 - `proposal_service.py` — ProposalService — manages the full proposal lifecycle. (~3092 tok)
-- `rules_service.py` — RulesService: get_rules, snapshot, update (~767 tok)
+- `rules_service.py` — Single source of truth for all business rule defaults: key → (value, description) (~1351 tok)
 - `settings_service.py` — SettingsService: get_all, update (~684 tok)
 - `simulation_service.py` — from: preview, create (~8192 tok)
 - `vehicle_service.py` — VehicleService: create, get, list, update + 2 more (~2393 tok)
@@ -295,7 +295,7 @@
 - `test_settings_service.py` — clean_settings, test_get_all_returns_env_defaults_when_table_empty, test_update_and_get_round_trip, (~596 tok)
 - `test_settings.py` — test_settings_loads_with_valid_env, test_settings_missing_database_url_raises, test_settings_has_jwt (~313 tok)
 - `test_simulation_endpoints.py` — test_get_business_rules, test_preview_returns_schedule, test_create_simulation_returns_201, test_lis (~2167 tok)
-- `test_simulation_service.py` — tenant, user, rules_seeded, client_and_vehicle (~3296 tok)
+- `test_simulation_service.py` — tenant, user, rules_seeded, client_and_vehicle (~3312 tok)
 - `test_storage_contract.py` — Storage backend contract test — same assertions pass both Local and S3 (MinIO). (~590 tok)
 - `test_storage_local.py` — storage, test_put_and_get, test_signed_url_structure, test_signed_url_valid_hmac (~588 tok)
 - `test_tenant_isolation.py` — two_tenants, test_get_users_returns_only_own_tenant, test_get_me_returns_own_tenant, test_patch_user (~1047 tok)
@@ -517,7 +517,7 @@
 
 ## frontend/src/tests/
 
-- `App.test.tsx` — Wrapper (~202 tok)
+- `App.test.tsx` — Wrapper (~278 tok)
 - `setup.ts` — jsdom doesn't implement ResizeObserver (used by Recharts/Radix) (~71 tok)
 - `simulacao-preview.test.ts` — Declares payload (~354 tok)
 - `simulacao.test.tsx` — Wrapper (~794 tok)

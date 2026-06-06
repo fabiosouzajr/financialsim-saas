@@ -8,41 +8,13 @@ from sqlalchemy import select
 from finacialsim_saas.auth.service import AuthService
 from finacialsim_saas.data.database import build_engine, build_session_factory
 from finacialsim_saas.data.models import Role, Tenant
+from finacialsim_saas.services.rules_service import _RULE_DEFAULTS
 from finacialsim_saas.settings import get_settings
-
-_DEFAULT_BUSINESS_RULES: list[tuple[str, object, str]] = [
-    ("entrada_minima_pct", "0.10", "Percentual mínimo de entrada"),
-    ("prazo_minimo_meses", 12, "Prazo mínimo em meses"),
-    ("prazo_maximo_meses", 72, "Prazo máximo em meses"),
-    ("taxa_minima_mes", "0.005", "Taxa mensal mínima"),
-    ("taxa_maxima_mes", "0.05", "Taxa mensal máxima"),
-    ("dias_max_carencia", 90, "Dias máximos de carência"),
-    ("valor_minimo_financiado", "5000.00", "Valor mínimo financiado"),
-    ("iof_fixo_pct", "0.0038", "IOF fixo percentual"),
-    ("iof_diario_pct", "0.000082", "IOF diário percentual"),
-    ("iof_diario_max_dias", 365, "IOF diário — máximo de dias"),
-    ("incluir_iof_default", True, "Incluir IOF por padrão"),
-    ("rateio_ipva_meses_default", 12, "Meses de rateio IPVA padrão"),
-    ("rateio_emplacamento_meses_default", 3, "Meses de rateio emplacamento padrão"),
-    ("taxa_por_prazo_curva", [
-        {"ate_meses": 24, "taxa_mensal": "0.0159"},
-        {"ate_meses": 36, "taxa_mensal": "0.0179"},
-        {"ate_meses": 48, "taxa_mensal": "0.0199"},
-        {"ate_meses": 60, "taxa_mensal": "0.0219"},
-        {"ate_meses": 72, "taxa_mensal": "0.0239"},
-    ], "Curva de taxa sugerida por prazo"),
-    ("ipva_pct_carro",            "0.035",  "IPVA — alíquota carro (% a.a.)"),
-    ("ipva_pct_moto",             "0.030",  "IPVA — alíquota moto (% a.a.)"),
-    ("ipva_pct_caminhao",         "0.010",  "IPVA — alíquota caminhão (% a.a.)"),
-    ("emplacamento_valor_carro",   "220.46", "Emplacamento — carro (R$)"),
-    ("emplacamento_valor_moto",    "188.96", "Emplacamento — moto (R$)"),
-    ("emplacamento_valor_caminhao","220.46", "Emplacamento — caminhão (R$)"),
-]
 
 
 async def _seed_business_rules(session, tenant_id: uuid.UUID) -> None:
     from finacialsim_saas.data.models import BusinessRule
-    for chave, valor, descricao in _DEFAULT_BUSINESS_RULES:
+    for chave, (valor, descricao) in _RULE_DEFAULTS.items():
         rule = BusinessRule(
             tenant_id=tenant_id,
             chave=chave,

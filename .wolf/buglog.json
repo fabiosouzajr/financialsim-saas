@@ -48,6 +48,38 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-04T21:28:11.847Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-06-06T13:51:52.730Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/finacialsim_saas/services/rules_service.py",
+      "root_cause": "11 lines replaced/restructured",
+      "fix": "Rewrote 24→44 lines (11 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-06T13:51:52.730Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-06-06T13:52:25.851Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/finacialsim_saas/cli/main.py",
+      "root_cause": "29 lines replaced/restructured",
+      "fix": "Rewrote 52→24 lines (29 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-06T13:52:25.851Z"
     }
   ]
 }
