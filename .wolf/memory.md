@@ -1319,3 +1319,20 @@
 | 10:52 | Edited backend/finacialsim_saas/cli/main.py | modified _seed_business_rules() | ~224 |
 | 10:53 | Edited backend/finacialsim_saas/services/rules_service.py | get() → AppError() | ~82 |
 | 10:53 | Edited backend/tests/test_simulation_service.py | modified test_get_rules_returns_defaults_when_unseeded() | ~111 |
+| 10:55 | Edited backend/alembic/env.py | added 1 import(s) | ~35 |
+| 10:55 | Edited backend/alembic/env.py | 3→2 lines | ~15 |
+| 10:57 | Edited backend/finacialsim_saas/settings.py | modified Settings() | ~130 |
+| 10:59 | Edited ops/docker-compose.yml | 12→14 lines | ~99 |
+
+## Session: 2026-06-06 11:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:13 | Edited frontend/src/routes/clientes/ClientesPage.tsx | modified ClientModal() | ~32 |
+| 11:13 | Edited frontend/src/routes/veiculos/VeiculosPage.tsx | inline fix | ~19 |
+| 11:13 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | added 3 import(s) | ~286 |
+| 11:13 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: hover | ~198 |
+| 11:13 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: hover | ~230 |
+| 11:13 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | modified SimulacaoForm() | ~97 |
+| 11:13 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 13→15 lines | ~162 |
+| 11:14 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | expanded (+18 lines) | ~316 |

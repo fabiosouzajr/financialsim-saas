@@ -98,7 +98,7 @@ function formToClientIn(data: ClientForm): ClientIn {
   };
 }
 
-function ClientModal({
+export function ClientModal({
   editing,
   onClose,
 }: {

@@ -1,5 +1,4 @@
 import asyncio
-import os
 from logging.config import fileConfig
 
 from alembic import context
@@ -16,7 +15,8 @@ target_metadata = Base.metadata
 
 
 def get_url() -> str:
-    return os.environ["DATABASE_URL"]
+    from finacialsim_saas.settings import get_settings
+    return str(get_settings().database_url)
 
 
 def run_migrations_offline() -> None:

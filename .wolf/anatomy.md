@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-06T13:53:16.532Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-06T14:14:01.196Z
 > Files: 359 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
@@ -47,7 +47,7 @@
 
 ## backend/alembic/
 
-- `env.py` — get_url, run_migrations_offline, do_run_migrations, run_async_migrations (~421 tok)
+- `env.py` — get_url, run_migrations_offline, do_run_migrations, run_async_migrations (~436 tok)
 
 ## backend/alembic/versions/
 
@@ -68,7 +68,7 @@
 - `__init__.py` — FinacialSim SaaS backend. (~10 tok)
 - `errors.py` — Declares AppError (~368 tok)
 - `main.py` — API router (~1482 tok)
-- `settings.py` — Settings: get_settings (~445 tok)
+- `settings.py` — Resolve .env relative to this file so alembic (run from backend/) finds it (~488 tok)
 
 ## backend/finacialsim_saas/api/
 
@@ -496,7 +496,7 @@
 
 ## frontend/src/routes/clientes/
 
-- `ClientesPage.tsx` — isValidCpf — renders form (~4703 tok)
+- `ClientesPage.tsx` — isValidCpf — renders form (~4705 tok)
 
 ## frontend/src/routes/propostas/
 
@@ -507,13 +507,13 @@
 - `ResultCards.tsx` — Card (~516 tok)
 - `ScheduleTable.tsx` — CSV_HEADERS — renders table (~742 tok)
 - `SimulacaoCharts.tsx` — SimulacaoCharts (~970 tok)
-- `SimulacaoForm.tsx` — schema — renders form (~6327 tok)
+- `SimulacaoForm.tsx` — schema — renders form (~6862 tok)
 - `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~917 tok)
 
 ## frontend/src/routes/veiculos/
 
 - `FipeCascadePicker.tsx` — selectClass (~1854 tok)
-- `VeiculosPage.tsx` — TIPOS — renders form, modal (~4525 tok)
+- `VeiculosPage.tsx` — TIPOS — renders form, modal (~4527 tok)
 
 ## frontend/src/tests/
 
@@ -535,7 +535,7 @@
 ## ops/
 
 - `Caddyfile` (~31 tok)
-- `docker-compose.yml` — Docker Compose services (~695 tok)
+- `docker-compose.yml` — Docker Compose services (~704 tok)
 - `Dockerfile.api` (~164 tok)
 - `Dockerfile.web` (~71 tok)
 - `Dockerfile.worker` (~276 tok)

@@ -6,11 +6,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useBusinessRules, suggestRate } from "@/hooks/useBusinessRules";
 import { useSimulationPreview } from "@/hooks/useSimulationPreview";
 import { listClients } from "@/lib/clients";
 import { listVehicles } from "@/lib/vehicles";
 import { fmtBRL, parseBRL } from "@/lib/decimal";
+import { ClientModal } from "@/routes/clientes/ClientesPage";
+import { VehicleModal } from "@/routes/veiculos/VeiculosPage";
 import type { SimulationFormValues, PreviewPayload } from "./types";
 
 const schema = z.object({
@@ -122,8 +125,8 @@ function PercentInput({ id, value, onChange }: {
   );
 }
 
-function ClientPicker({ value, onChange, error }: {
-  value: string; onChange: (id: string) => void; error?: string;
+function ClientPicker({ value, onChange, error, onNew }: {
+  value: string; onChange: (id: string) => void; error?: string; onNew?: () => void;
 }) {
   const [q, setQ] = useState("");
   const { data } = useQuery({
@@ -133,7 +136,14 @@ function ClientPicker({ value, onChange, error }: {
   });
   return (
     <div className="grid gap-2">
-      <label className="block text-sm font-medium mb-1">Cliente</label>
+      <div className="flex items-center justify-between">
+        <label className="block text-sm font-medium">Cliente</label>
+        {onNew && (
+          <button type="button" onClick={onNew} className="text-xs text-blue-600 hover:text-blue-800">
+            + Novo Cliente
+          </button>
+        )}
+      </div>
       <input
         className="w-full border rounded px-3 py-2 text-sm"
         placeholder="Buscar cliente por nome ou CPF..."
@@ -159,8 +169,8 @@ function ClientPicker({ value, onChange, error }: {
   );
 }
 
-function VehiclePicker({ value, onChange, error }: {
-  value: string; onChange: (id: string, fipeValue: string | null, tipo: string | null) => void; error?: string;
+function VehiclePicker({ value, onChange, error, onNew }: {
+  value: string; onChange: (id: string, fipeValue: string | null, tipo: string | null) => void; error?: string; onNew?: () => void;
 }) {
   const [q, setQ] = useState("");
   const { data } = useQuery({
@@ -170,7 +180,14 @@ function VehiclePicker({ value, onChange, error }: {
   });
   return (
     <div className="grid gap-2">
-      <label className="block text-sm font-medium mb-1">Veículo</label>
+      <div className="flex items-center justify-between">
+        <label className="block text-sm font-medium">Veículo</label>
+        {onNew && (
+          <button type="button" onClick={onNew} className="text-xs text-blue-600 hover:text-blue-800">
+            + Novo Veículo
+          </button>
+        )}
+      </div>
       <input
         className="w-full border rounded px-3 py-2 text-sm"
         placeholder="Buscar veículo por placa..."
@@ -220,6 +237,8 @@ interface Props {
 export function SimulacaoForm({ initialValues, onSave }: Props) {
   const { data: rules } = useBusinessRules();
   const { preview, loading: previewLoading, request: requestPreview } = useSimulationPreview();
+  const [clientModalOpen, setClientModalOpen] = useState(false);
+  const [vehicleModalOpen, setVehicleModalOpen] = useState(false);
 
   const today = todayIso();
   const defaultPrazo = rules?.prazo_minimo_meses ?? 24;
@@ -315,6 +334,7 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
       <ClientPicker
         value={watch("client_id") ?? ""}
         onChange={v => setValue("client_id", v)}
+        onNew={() => setClientModalOpen(true)}
       />
       <VehiclePicker
         value={watch("vehicle_id") ?? ""}
@@ -323,6 +343,7 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
           if (fipeValue) setValue("valor_veiculo", fipeValue);
           setSelectedVehicle({ fipeValue: fipeValue ?? null, tipo: tipo ?? null });
         }}
+        onNew={() => setVehicleModalOpen(true)}
       />
 
       {/* Valor do Veículo */}
@@ -603,6 +624,24 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
       {/* Hidden preview state for parent usage */}
       {previewLoading && <span style={{ display: "none" }}>preview-loading</span>}
       {preview && <span style={{ display: "none" }}>preview-ready</span>}
+
+      <Dialog open={clientModalOpen} onOpenChange={setClientModalOpen}>
+        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-white text-gray-900">
+          <DialogHeader>
+            <DialogTitle className="text-gray-900 text-lg font-semibold">Novo Cliente</DialogTitle>
+          </DialogHeader>
+          <ClientModal editing={null} onClose={() => setClientModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={vehicleModalOpen} onOpenChange={setVehicleModalOpen}>
+        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-white text-gray-900">
+          <DialogHeader>
+            <DialogTitle className="text-gray-900 text-lg font-semibold">Novo Veículo</DialogTitle>
+          </DialogHeader>
+          <VehicleModal onClose={() => setVehicleModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </form>
   );
 }

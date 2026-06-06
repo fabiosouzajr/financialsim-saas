@@ -83,7 +83,7 @@ function FormField({ label, error, children }: { label: string; error?: string; 
   );
 }
 
-function VehicleModal({ onClose }: { onClose: () => void }) {
+export function VehicleModal({ onClose }: { onClose: () => void }) {
   const qc = useQueryClient();
   const [modo, setModo] = useState<"fipe" | "manual">("fipe");
   const [tipo, setTipo] = useState<"carro" | "moto" | "caminhao">("carro");

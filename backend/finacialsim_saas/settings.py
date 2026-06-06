@@ -1,12 +1,16 @@
+from pathlib import Path
 from typing import Literal
 
 from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Resolve .env relative to this file so alembic (run from backend/) finds it
+_ENV_FILE = Path(__file__).parents[2] / ".env"
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=_ENV_FILE,
         env_file_encoding="utf-8",
         case_sensitive=False,
     )
