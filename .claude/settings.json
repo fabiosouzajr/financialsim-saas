@@ -101,7 +101,7 @@
       "TodoWrite(*)",
       "Task(*)",
       "NotebookEdit(*)",
-      "mcp__*(*)"
+      "mcp__*__*"
     ]
   }
 }

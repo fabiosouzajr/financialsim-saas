@@ -1,6 +1,6 @@
 # Efí Pix Provider — Phase 1 (PIX básico real)
 
-> Implements the real PSP wiring that Phase 6 deferred: a working `EfiPixProvider` behind the existing `PixProvider` Protocol, replacing `StubExternalPixProvider`. No changes to `PixService`'s business logic, DB schema, frontend, or the fake-provider demo flow.
+> Implements the real PSP wiring that Phase 6 deferred: a working `EfiPixProvider` behind the existing `PixProvider` Protocol, replacing `StubExternalPixProvider`. Touches `PixService` only for the mechanical `PayerInfo`/`query_params` threading this requires, plus one small deliberate guard (§2a — a clientless proposal can't be Pix-charged, applies to `fake` too). No DB schema or frontend changes; the fake-provider demo is otherwise unaffected.
 >
 > **Predecessor:** Phase 6 — Portal do cliente + Pix scaffold (`2026-05-28-saas-phase-6-portal-cliente-pix.md`)
 > **Roadmap reference:** `docs/prompts/pix-gpt.md` — "FASE 1 — PIX básico"
@@ -13,7 +13,7 @@
 
 ### 1. `EfiPixProvider` (`backend/finacialsim_saas/pix/efi.py`)
 
-Implements `PixProvider` using the official `efipay` Python SDK (sync/`requests`-based), wrapped in `asyncio.to_thread` — the same pattern this codebase already uses for sync libraries inside async code (`workers/tasks.py:292` for WeasyPrint, `storage/s3.py` for boto3).
+Implements `PixProvider` using the official `efipay` Python SDK (`pip install efipay`, confirmed on PyPI and at `github.com/efipay/sdk-python-apis-efi` — not currently in `pyproject.toml`, add it there as part of this work), sync/`requests`-based, wrapped in `asyncio.to_thread` — the same pattern this codebase already uses for sync libraries inside async code (`workers/tasks.py:292` for WeasyPrint, `storage/s3.py` for boto3).
 
 ```python
 class EfiPixProvider:
@@ -34,11 +34,15 @@ The optional `client` param exists purely for test injection — production goes
 
 | Protocol method | Efí REST call (via SDK) | Behavior |
 |---|---|---|
-| `create_charge` | `PUT /v2/cob/:txid` then `GET /v2/loc/:id/qrcode` | Builds `devedor` from `payer.document`/`payer.document_type` (`{"cpf": ...}` or `{"cnpj": ...}`); `valor.original` from `amount`; `chave` from settings; `calendario.expiracao` from `expires_in`. Response gives `pixCopiaECola` (→ `brcode`) and `loc.id`; second call returns base64 QR PNG → decoded into `qr_png_bytes`. Maps Efí's `calendario.criacao + expiracao` to `expires_at`. SDK/network exceptions are caught here and re-raised as `ValidationError("Não foi possível gerar o PIX no momento, tente novamente")` — see §7 (Error translation). |
-| `cancel_charge` | `PATCH /v2/cob/:txid` `{"status": "REMOVIDA_PELO_USUARIO_RECEBEDOR"}` | Errors logged and swallowed — `PixService.cancel_charges_for_proposal` already treats provider cancel failures as best-effort (`service.py:319-322`). |
+| `create_charge` | `efi.pix_create_charge(params={"txid": txid}, body=body)` → `PUT /v2/cob/:txid`, then `efi.pix_generate_qrcode(params={"id": loc_id})` → `GET /v2/loc/:id/qrcode` | Builds `devedor` from `payer.document`/`payer.document_type` (`{"cpf": ...}` or `{"cnpj": ...}`); `valor.original` from `amount`; `chave` from settings; `calendario.expiracao` from `expires_in`. Response gives `pixCopiaECola` (→ `brcode`) and `loc.id`; second call returns `imagemQrcode` — a base64 PNG with a `data:image/png;base64,` prefix that must be stripped before decoding into `qr_png_bytes`. Maps Efí's `calendario.criacao + expiracao` to `expires_at`. SDK/network exceptions are caught here and re-raised as `ValidationError("Não foi possível gerar o PIX no momento, tente novamente")` — see §7 (Error translation). |
+| `cancel_charge` | `efi.pix_update_charge(params={"txid": txid}, body={"status": "REMOVIDA_PELO_USUARIO_RECEBEDOR"})` → `PATCH /v2/cob/:txid` | Errors logged and swallowed — `PixService.cancel_charges_for_proposal` already treats provider cancel failures as best-effort (`service.py:319-322`). |
 | `verify_webhook` | — (local validation only) | See §3 below: static token in the callback URL's query string, NOT body HMAC. Synthesizes `WebhookEvent(status="paid", ...)` from Efí's real payload shape, which carries no explicit status field. |
 
-Exact SDK method names for txid-based create / QR fetch / cancel (`pix_create_immediate_charge` is confirmed; the others are not shown in the doc excerpts) will be pinned down by reading the installed SDK's source/examples during implementation — this is a mechanical lookup, not a design decision.
+**SDK method names — verified directly against `efipay/sdk-python-apis-efi`'s own example files (not a placeholder anymore):**
+
+- **`pix_create_charge(params={"txid": txid}, body=body)`** is the txid-based call (`PUT /v2/cob/:txid`) — **not** `pix_create_immediate_charge`. That name is misleading: `pix_create_immediate_charge(body=body)` takes *no* `params`/`txid` — it's the `POST /v2/cob` variant where Efí generates the txid server-side. Using it would return a different txid than the one `PixService.create_charge_for_parcela` generates locally (`service.py:73-74`) and stores on `PixCharge.txid`, breaking the webhook lookup `select(PixCharge).where(PixCharge.txid == event.txid)` (`service.py:182-185`). `EfiPixProvider` MUST call `pix_create_charge`, passing the locally-generated `txid` through `params`.
+- **`pix_generate_qrcode(params={"id": loc_id})`** fetches the QR — confirmed via `examples/pix/location/loc/pix_generate_qrcode.py`. Response key is `imagemQrcode` (not a generic "base64 QR PNG" — it's prefixed `data:image/png;base64,...`).
+- **`pix_update_charge(params={"txid": txid}, body=...)`** is `PATCH /v2/cob/:txid` — confirmed via `examples/pix/cob/pix_update_charge.py`. Used for `cancel_charge` with `body={"status": "REMOVIDA_PELO_USUARIO_RECEBEDOR"}`.
 
 ### 7. Error translation at the provider boundary
 
@@ -59,6 +63,8 @@ class PayerInfo:
 ```
 
 **Type comes from `Client.tipo` (already `pf`/`pj`, `models.py:380-382`), not from sniffing digit-count** — `Client.cpf_cnpj` is stored as-entered with punctuation (`client_service.py:108` does no normalization: `123.456.789-09` / `12.345.678/0001-90`), so length-based guessing would be both wrong (wrong length pre-strip) and fragile (malformed data could produce a misleading length post-strip). `create_charge`'s `payer: str` becomes `payer: PayerInfo | None`. `PixService.create_charge_for_parcela` looks up the `Client` (via `Proposal → Simulation → Client`), strips non-digits from `cpf_cnpj`, maps `tipo.pf → "cpf"` / `tipo.pj → "cnpj"`, and passes `PayerInfo(document=..., document_type=..., name=client.nome)`.
+
+**New guard — clientless proposal can't be Pix-charged.** `Simulation.client_id` is nullable (`models.py:273-275`); `proposal_service.py:89` already shows `Proposal`s can exist with no linked `Client` (`client = ... if sim.client_id else None`). Staff (not just customers) can reach `create_charge_for_parcela` for such a proposal's parcelas — the customer-ownership check only applies `if ctx.client_id is not None`. Rather than thread `payer=None` through to a real PSP (Efí's `devedor` is technically optional, but a Pix charge with no payer binding is a real gap for reconciliation/compliance), `create_charge_for_parcela` now raises `ValidationError("não é possível gerar Pix sem cliente vinculado à proposta")` when `sim.client_id is None` or the `Client` row is missing — **before** calling `provider.create_charge`. This is a deliberate, small `PixService` business-rule change (not Efí-specific — the rule is "a Pix charge needs a payer"), and it applies to `fake` too: today the fake demo *can* Pix-pay a clientless proposal (the fake provider ignores `payer` entirely); after this change it can't. Accepted as correct — a clientless proposal reaching a real "Pagar com Pix" click is itself a data-quality smell worth surfacing rather than silently charging with no payer.
 
 **b) Webhook query params.** Efí does not HMAC-sign the body. Their mechanism: a static token embedded in the *registered callback URL's query string* (`?hmac=<token>&ignorar=`); the receiver validates incoming requests carry the same token — a "shared secret in callback URL" pattern other PSPs also use. `verify_webhook` gains a `query_params` parameter:
 
@@ -91,6 +97,8 @@ efi_sandbox: bool = True
 **Selector rename: `pix_provider` values become `fake | efi`** (was `fake | external`). Renaming now — while `EfiPixProvider` is the only real provider and zero deployed `.env` files depend on the old value — avoids a breaking rename later when a second real PSP exists and `"external"` stops meaning anything specific. `EfiPixProvider.name = "efi"` to match. Cascading edits (both confirmed via grep — no other references exist):
 
 - `deps.get_pix_provider`: `if settings.pix_provider == "efi": return EfiPixProvider(settings)`, replacing the `StubExternalPixProvider` branch (which is deleted — its sole purpose, a placeholder for "real PSP wiring," is now fulfilled; no test references it).
+
+**Cached singleton for the `efi` branch.** All four call sites (`webhooks.py`, `portal.py`, `proposals.py`, `pix_admin.py` — confirmed via grep) call `get_pix_provider(settings)` fresh per-request; harmless for `fake`/`stub` (cheap to construct, no I/O), but `EfiPixProvider.__init__` builds an `EfiPay({...})` client that reads the cert from disk and (per Efí's OAuth2 model) authenticates with Efí's token endpoint — doing that on *every* charge creation, cancel, admin check, and incoming webhook delivery multiplies auth calls and risks throttling on a real PSP's auth endpoint. This is a new pattern for the codebase (no existing dep — `get_settings`, `get_storage_backend` — caches today), kept minimal and scoped to the `efi` branch only: a module-level `_efi_provider: EfiPixProvider | None = None` in `pix/deps.py`, lazily constructed once and reused (not `lru_cache` on `get_pix_provider` itself, since that would also wrongly cache `fake`/`stub` across settings changes in tests). `fake`/`stub` branches stay exactly as today — constructed fresh, no caching.
 - `pix_admin.py:41` mark-paid gate: `if settings.pix_provider == "external"` → **`if settings.pix_provider != "fake"`**. Semantically exact ("block the demo button whenever a real provider is active") and stays correct automatically if a third provider is ever added — no more naming-debt in this file.
 
 **Startup guards (in `deps.get_pix_provider` or app startup), both fail fast rather than at the worst possible moment:**
@@ -100,7 +108,7 @@ efi_sandbox: bool = True
 
 ### 5. CLI command: `pix register-webhook`
 
-One-time setup action — registers the callback URL with Efí (`PUT /v2/webhook/:chave`, `webhookUrl: "https://<frontend_base_url>/api/v1/webhooks/pix?hmac=<PIX_WEBHOOK_SECRET>&ignorar="`). Implemented as a `typer` sub-app alongside the existing CLI structure (`cli/main.py` already composes `tenant_app`/`user_app`/`db_app`/`notifications_app` via `app.add_typer(...)` — a `pix_app` follows the same shape), reusable whenever the domain or secret changes (env migration, rotation). Idempotent — re-running overwrites the registration with the current URL/secret (`PUT` semantics).
+One-time setup action — registers the callback URL with Efí (`PUT /v2/webhook/:chave`, `webhookUrl: "https://<frontend_base_url>/api/v1/webhooks/pix?hmac=<PIX_WEBHOOK_SECRET>&ignorar="`, **header `x-skip-mtls-checking: true`** — required on this call per Efí's docs to register skip-mTLS mode matching §3's decision; omitting it risks Efí defaulting to mTLS validation, which the Caddy proxy can't satisfy, silently breaking webhook delivery in production). Implemented as a `typer` sub-app alongside the existing CLI structure (`cli/main.py` already composes `tenant_app`/`user_app`/`db_app`/`notifications_app` via `app.add_typer(...)` — a `pix_app` follows the same shape), reusable whenever the domain or secret changes (env migration, rotation). Idempotent — re-running overwrites the registration with the current URL/secret (`PUT` semantics).
 
 ### 6. Setup runbook (new doc: `docs/agents/efi-pix-setup.md` or similar)
 
@@ -119,7 +127,7 @@ Step-by-step guide covering:
 - `EfiPixProvider`: mock the `EfiPay` client at the boundary (inject a stub/`MagicMock` client), assert request payload shape (`devedor`, `valor.original`, `chave`, `calendario.expiracao`) and correct mapping of the SDK response into `PixChargeData` (brcode, decoded QR PNG bytes, `expires_at`).
 - `cancel_charge`: asserts `PATCH` payload `{"status": "REMOVIDA_PELO_USUARIO_RECEBEDOR"}`; provider exception is swallowed (matches existing `cancel_charges_for_proposal` contract).
 - `verify_webhook`: matching `hmac` query param → valid; mismatched/missing → raises; real-shaped Efí payload (`{"pix": [{"txid", "valor", "horario", ...}]}`, no `status` field) → `WebhookEvent(status="paid", paid_amount=Decimal(...))`.
-- `PixService.create_charge_for_parcela`: asserts `PayerInfo` is correctly built from the `Client` (CPF vs CNPJ based on `cpf_cnpj` length) and threaded through to `provider.create_charge`.
+- `PixService.create_charge_for_parcela`: asserts `PayerInfo` is correctly built from the `Client` (`document_type` from `Client.tipo`, digits-only `document` stripped from `cpf_cnpj`) and threaded through to `provider.create_charge`; asserts `ValidationError` is raised when `sim.client_id is None` (§2a guard), for both `fake` and `efi` providers.
 - `pix register-webhook` CLI: asserts the registered URL is built correctly from `frontend_base_url` + `pix_webhook_secret`.
 - Real sandbox round-trip (actual cert + creds) is a **manual** verification step in the runbook — not part of automated CI, since it requires a live Efí sandbox account.
 
@@ -129,7 +137,8 @@ Step-by-step guide covering:
 - Pix Automático, scheduled/recurring Pix.
 - Per-tenant Efí accounts (this is a single platform-wide account/cert, matching how the rest of the SaaS centralizes PSP credentials).
 - Refund/devolução flows.
-- Changes to `PixService` business logic, DB schema, frontend, or the `fake` provider's demo behavior — all of that is Phase 6-complete and stays as-is.
+- DB schema and frontend changes — Phase 6-complete, stays as-is.
+- Any `PixService`/`fake`-provider changes beyond the two enumerated in this doc: (a) mechanical `PayerInfo`/`query_params` threading (§2), and (b) the clientless-proposal guard (§2a, which deliberately *does* change `fake`'s demo behavior — see rationale there). No other `PixService` business logic shifts.
 
 ## Risks & mitigations
 

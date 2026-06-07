@@ -1,690 +1,414 @@
-Caso você refatore para um modelo SaaS, a arquitetura do Pix muda drasticamente — e praticamente todos os problemas difíceis do modelo local desaparecem.
+# CONTEXTO DO PRODUTO
 
-Nesse cenário, o Pix deixa de ser “um módulo do carnê” e passa a ser parte central da plataforma financeira.
+Você é um Arquiteto de Software Sênior especializado em sistemas financeiros brasileiros, PIX, cobrança recorrente, crédito direto ao consumidor (CDC/CCB), event-driven architecture, integração com APIs bancárias e sistemas de cobrança.
 
-A mudança mais importante é esta:
+Sua missão é elaborar um PLANO COMPLETO DE IMPLANTAÇÃO da camada de pagamentos PIX do sistema FinancialSim utilizando a API da Efí.
 
-# No modelo desktop local
+FinancialSim é um aplicativo desktop multi-perfil utilizado por uma loja de veículos para:
 
-Você está tentando adaptar o Pix a um software offline.
+* Simulação financeira bancária
+* Emissão de propostas
+* Geração de carnês
+* Controle de contratos
+* Cobrança de parcelas
+* Integração PIX
+* Futuras integrações com CRM, WhatsApp e APIs bancárias
 
-# No modelo SaaS
+O sistema possui:
 
-Você passa a operar da forma que o ecossistema Pix foi realmente projetado para funcionar:
+* Cadastro de clientes PF/PJ
+* Simulação financeira estilo CCB
+* Tabela Price
+* IOF
+* CET
+* Geração de PDF
+* Geração de carnês
+* Histórico auditável
+* Logs técnicos e de negócio
+* Perfis vendedor, gerente e administrador
 
-* APIs online,
-* webhooks,
-* eventos,
-* sincronização em tempo real,
-* notificações automáticas,
-* automação financeira.
+O sistema deve ser capaz de administrar contratos com duração entre 12 e 48 meses.
 
-Isso simplifica MUITO a implementação.
+## OBJETIVO
+
+Projetar toda a arquitetura necessária para permitir:
+
+1. Geração de cobranças PIX
+2. Geração de QR Codes PIX
+3. Geração de Links de Pagamento PIX
+4. Recebimento de confirmações via webhook
+5. Controle de inadimplência
+6. Cálculo automático de juros e multa
+7. Renegociação
+8. Emissão de segunda via
+9. Envio automatizado de cobranças
+10. Rastreabilidade completa de pagamentos
 
 ---
 
-# O que muda arquiteturalmente
+## REQUISITOS FUNCIONAIS
 
-# Arquitetura atual (local)
+### Geração de Carnê
 
-```text
-GTK4 Desktop
-    ↓
-SQLite local
-    ↓
-API Pix
-    ↓
-Polling manual
+Ao gerar um carnê:
+
+* Todas as parcelas devem ser criadas no banco.
+* Deve ser possível gerar os PIX imediatamente.
+* Deve ser possível gerar:
+
+  * QR Code
+  * Copia e Cola
+  * Link de Pagamento
+
+Avalie:
+
+* gerar todos os PIX no ato da criação do contrato
+* gerar PIX sob demanda
+* modelo híbrido
+
+Comparar vantagens e desvantagens.
+
+---
+
+### Cobrança
+
+Cada parcela deve possuir estados:
+
+```Text
+PENDING
+
+SCHEDULED
+
+PIX_GENERATED
+
+SENT
+
+PAID
+
+PARTIALLY_PAID
+
+OVERDUE
+
+RENEGOTIATED
+
+CANCELLED
+
+DEFAULTED
+
+Descrever a máquina de estados completa.
 ```
 
 ---
 
-# Arquitetura SaaS ideal
+### Inadimplência
 
-```text
-Frontend Web
-    ↓
-Backend API
-    ↓
-PostgreSQL
-    ↓
-Módulo Financeiro Pix
-    ↓
-PSP Pix (Efí / Asaas / Celcoin)
-    ↓
-Webhook
-```
+Implementar:
 
----
+* multa fixa configurável
+* juros diário configurável
+* carência configurável
+* atualização automática dos valores
 
-# O maior ganho: Webhooks
+Avaliar:
 
-No SaaS você finalmente consegue usar:
+* cálculo em tempo real
+* cálculo batch diário
 
-* confirmação instantânea,
-* baixa automática,
-* atualização em tempo real,
-* eventos financeiros,
-* automações.
+Comparar.
 
 ---
 
-# Fluxo ideal SaaS
+### Renegociação
 
-# 1. Usuário gera carnê
+Permitir:
 
-O backend:
+* renegociar parcela única
+* renegociar múltiplas parcelas
+* renegociar contrato inteiro
 
-* cria parcelas,
-* gera cobranças COBV,
-* salva txids,
-* gera QR codes.
+Detalhar:
 
----
-
-# 2. Carnê é emitido
-
-Com:
-
-* QR,
-* copia e cola,
-* link Pix,
-* URL online da parcela.
+* impactos contábeis
+* rastreabilidade
+* preservação do histórico
 
 ---
 
-# 3. Cliente paga
+### Comunicação
 
-PSP envia webhook:
+Analisar estratégias para envio por:
 
-```json
-{
-  "txid": "abc123",
-  "status": "CONCLUIDA"
-}
-```
+* WhatsApp
+* Email
+* SMS
 
----
+Para cada canal informar:
 
-# 4. Backend recebe webhook
-
-Automaticamente:
-
-* quita parcela,
-* registra pagamento,
-* atualiza contrato,
-* recalcula saldo,
-* dispara notificações.
+* arquitetura recomendada
+* custo operacional
+* taxa de entrega
+* limitações
 
 ---
 
-# 5. Sistema notifica
+### Integração Efí
 
-Pode enviar:
+Descrever detalhadamente:
 
-* WhatsApp,
-* email,
-* SMS,
-* push.
+* autenticação
+* emissão de cobrança PIX
+* QR Codes
+* webhooks
+* consulta de cobranças
+* consulta de pagamentos
+* cancelamentos
+* tratamento de falhas
+* idempotência
+* retry policies
 
----
-
-# Resultado
-
-Você elimina:
-
-* polling,
-* sincronização manual,
-* divergências,
-* conferência manual.
+Explicar quais recursos da API Efí devem ser utilizados.
 
 ---
 
-# O Pix muda completamente no SaaS
+## EVENT-DRIVEN ARCHITECTURE
 
-# No desktop local
+Projetar uma arquitetura baseada em eventos.
 
-Pix é:
+Apresentar:
 
-* “geração de QR”.
+### Eventos de Contrato
 
-# No SaaS
+CONTRACT_CREATED
 
-Pix vira:
+CONTRACT_ACTIVATED
 
-* motor financeiro transacional.
+CONTRACT_RENEGOTIATED
 
----
+CONTRACT_CANCELLED
 
-# O que passa a ser possível
-
-# 1. Baixa automática em tempo real
-
-Extremamente importante.
-
----
-
-# 2. Juros dinâmicos automáticos
-
-Ao abrir cobrança:
-
-```text
-Parcela original: R$ 800
-+ multa
-+ juros
-= valor atualizado
-```
-
-automaticamente calculado pela API.
-
----
-
-# 3. Reemissão automática
-
-Se QR expirar:
-
-* sistema gera outro,
-* preserva rastreabilidade.
-
----
-
-# 4. Portal do cliente
-
-Muito importante para carnês longos.
-
-Cliente pode:
-
-* ver parcelas,
-* baixar PDF,
-* copiar Pix,
-* pagar online,
-* renegociar.
-
----
-
-# 5. WhatsApp automatizado
-
-Você já trabalha com WhatsApp integration.
-
-Nesse cenário:
-isso vira MUITO poderoso.
-
----
-
-# Fluxos extremamente úteis
-
-## Antes do vencimento
-
-```text
-Sua parcela vence amanhã.
-[PIX]
-```
-
----
-
-## Após pagamento
-
-```text
-Pagamento confirmado.
-Obrigado.
-```
-
----
-
-## Em atraso
-
-```text
-Sua parcela está vencida.
-Valor atualizado:
-R$ 853,44
-```
-
----
-
-# 6. Conciliação automática
-
-SaaS permite:
-
-* auditoria,
-* relatórios,
-* extrato financeiro,
-* DRE,
-* inadimplência,
-* fluxo de caixa.
-
----
-
-# 7. Multiusuário
-
-Muito importante para loja de carros.
-
-Você passa a ter:
-
-* vendedores,
-* financeiro,
-* administrador,
-* auditoria.
-
----
-
-# 8. Escalabilidade real
-
-O modelo desktop começa a sofrer quando:
-
-* há múltiplos operadores,
-* muitos contratos,
-* múltiplas máquinas,
-* backups,
-* sincronização.
-
----
-
-# Em SaaS o banco muda completamente
-
-# SQLite deixa de ser adequado
-
-Você provavelmente migraria para:
-
-## PostgreSQL
-
----
-
-# Motivos
-
-* concorrência,
-* integridade,
-* transações,
-* índices,
-* jobs,
-* eventos,
-* escalabilidade.
-
----
-
-# Arquitetura recomendada SaaS
-
-# Backend
-
-## Python
-
-Você já está em Python.
-
-Então recomendaria:
-
-## FastAPI
-
-ou
-
-## Django
-
----
-
-# Minha recomendação
-
-# FastAPI
-
-Porque:
-
-* APIs modernas,
-* async,
-* excelente para webhooks,
-* excelente para jobs,
-* excelente para integrações Pix,
-* excelente para websocket.
-
----
-
-# Banco
-
-## PostgreSQL
-
----
-
-# ORM
-
-## SQLAlchemy
-
----
-
-# Frontend
-
-Você pode:
-
-* manter GTK como cliente administrativo,
-* ou migrar totalmente web.
-
----
-
-# Se migrar para web
-
-Recomendaria:
-
-## React
-
-Você já trabalha com React no GoZap.
-
----
-
-# Melhor arquitetura Pix em SaaS
-
-# Recomendação objetiva
-
-## Efí
-
-Continua provavelmente sendo a melhor.
-
-Porque:
-
-* webhook muito bom,
-* suporte COBV excelente,
-* API madura,
-* documentação boa,
-* recorrência funciona bem.
-
----
-
-# Alternativa MUITO interessante em SaaS
-
-## [Asaas](https://www.asaas.com?utm_source=chatgpt.com)
-
-Em SaaS o Asaas fica muito forte.
-
-Porque ele já resolve:
-
-* cobrança,
-* notificações,
-* régua de cobrança,
-* email,
-* SMS,
-* Pix,
-* boleto,
-* cartão.
-
----
-
-# Em SaaS surge uma pergunta importante
-
-# Você quer ser:
-
-## 1. Apenas integrador Pix
-
-ou
-
-## 2. Plataforma financeira completa
-
----
-
-# Se for apenas integração Pix
-
-Efí é melhor.
-
-Mais controle.
-
----
-
-# Se quiser plataforma financeira
-
-Asaas pode reduzir MUITO desenvolvimento.
-
----
-
-# Porque o SaaS muda tudo
-
-No desktop:
-você precisa construir:
-
-* sincronização,
-* notificações,
-* reconciliação.
-
-No SaaS:
-isso vira nativo.
-
----
-
-# Funcionalidades que passam a valer muito a pena
-
-# 1. Filas assíncronas
-
-Exemplo:
-
-## Redis
-
-*
-
-## Celery
-
----
-
-# Uso
-
-* envio WhatsApp,
-* consulta Pix,
-* geração PDF,
-* lembretes,
-* retries.
-
----
-
-# 2. Scheduler central
-
-Muito importante.
-
-Você terá:
-
-* lembretes automáticos,
-* juros diários,
-* inadimplência,
-* renegociação.
-
----
-
-# 3. Event-driven architecture
-
-O sistema financeiro começa a girar em torno de eventos:
-
-```text
-PIX_RECEIVED
-INSTALLMENT_OVERDUE
-PAYMENT_CONFIRMED
 CONTRACT_DEFAULTED
-```
 
 ---
 
-# Estrutura ideal SaaS
+### Eventos de Parcela
 
-```text
-Frontend
-    ↓
+INSTALLMENT_CREATED
+
+INSTALLMENT_UPDATED
+
+INSTALLMENT_DUE_SOON
+
+INSTALLMENT_OVERDUE
+
+INSTALLMENT_RENEGOTIATED
+
+INSTALLMENT_CANCELLED
+
+---
+
+### Eventos PIX
+
+PIX_GENERATED
+
+PIX_SENT
+
+PIX_VIEWED
+
+PIX_EXPIRED
+
+PIX_RECEIVED
+
+PIX_CONFIRMED
+
+PIX_RECONCILED
+
+---
+
+### Eventos Financeiros
+
+PAYMENT_RECEIVED
+
+PAYMENT_CONFIRMED
+
+PAYMENT_REVERSED
+
+INTEREST_APPLIED
+
+PENALTY_APPLIED
+
+---
+
+### Eventos de Comunicação
+
+WHATSAPP_SENT
+
+EMAIL_SENT
+
+SMS_SENT
+
+DELIVERY_FAILED
+
+---
+
+## ARQUITETURA
+
+Projetar arquitetura completa.
+
+Apresentar diagrama textual semelhante a:
+
+```Text
+Frontend Desktop
+↓
 API Gateway
-    ↓
-Auth Service
-    ↓
-Financial Service
-    ↓
-Pix Service
-    ↓
+↓
+Authentication Service
+↓
+Contract Service
+↓
+Installment Service
+↓
+PIX Service
+↓
 Notification Service
-    ↓
-Queue Workers
+↓
+Event Bus
+↓
+Workers
 ```
 
+
+Descrever responsabilidades de cada serviço.
+
 ---
 
-# Sobre links Pix
+## MODELAGEM DE DADOS
 
-No SaaS você pode criar:
+Projetar tabelas:
 
-```text
-https://app.sistema.com/p/abc123
+```Text
+clients
+
+contracts
+
+installments
+
+pix_charges
+
+payments
+
+payment_events
+
+renegotiations
+
+notifications
+
+audit_logs
+
+webhook_events
 ```
 
-Cliente abre:
+Incluir:
 
-* QR,
-* botão copiar,
-* histórico,
-* segunda via.
-
-Isso é extremamente poderoso.
+* campos
+* índices
+* relacionamentos
+* chaves de auditoria
 
 ---
 
-# Sobre segurança
+## RESILIÊNCIA
 
-No SaaS a exigência sobe MUITO.
+Detalhar:
 
-Você precisará:
-
-* LGPD,
-* HTTPS,
-* criptografia,
-* logs,
-* auditoria,
-* backups,
-* RBAC,
-* MFA opcional.
+* idempotência
+* deduplicação de webhooks
+* retry
+* dead-letter queue
+* circuit breaker
+* cache
+* auditoria
 
 ---
 
-# Custos operacionais surgem
+## SEGURANÇA
 
-Você passa a ter:
+Analisar:
 
-* VPS,
-* banco,
-* monitoramento,
-* storage,
-* CDN,
-* fila,
-* observabilidade.
+* LGPD
+* criptografia
+* armazenamento de tokens Efí
+* assinatura de webhooks
+* controle de acesso por perfil
 
 ---
 
-# Mas em troca ganha
+## ESCALABILIDADE
 
-* recorrência,
-* multiusuário,
-* automação,
-* escalabilidade,
-* previsibilidade,
-* SaaS vendável.
+Comparar:
 
----
+## Opção A
 
-# O ponto MAIS importante
+Aplicação Desktop + Backend Monolítico
 
-# Em SaaS você deve abandonar a ideia de “gerar todos os QR codes para 48 meses de uma vez”.
+## Opção B
 
-Isso é importante.
+Modular Monolith
 
----
+## Opção C
 
-# Melhor estratégia SaaS
+Microservices Event-Driven
 
-# Gerar cobranças sob demanda
+Para cada opção apresentar:
 
-Exemplo:
+* complexidade
+* custo
+* manutenção
+* escalabilidade
 
-Hoje:
-
-* gera apenas próximas 3 parcelas.
-
-Ou:
-
-* gera cobrança automaticamente 15 dias antes do vencimento.
+E indicar qual é a melhor escolha para um sistema de loja de veículos de pequeno e médio porte.
 
 ---
 
-# Motivos
+## ROADMAP
 
-* reduz problemas de expiração,
-* reduz inconsistência,
-* facilita renegociação,
-* facilita alteração de juros,
-* evita QR inválido anos depois.
+Criar roadmap dividido em fases:
 
----
+* FASE 1 - PIX básico
 
-# Isso muda completamente a modelagem
+* FASE 2 - Cobrança automática
 
-Você deixa de modelar:
+* FASE 3 - Inadimplência
 
-* “QR permanente”
+* FASE 4 - Renegociação
 
-e passa a modelar:
+* FASE 5 - Integração WhatsApp
 
-* “cobrança dinâmica”.
+* FASE 6 - Integração CRM
 
----
+* FASE 7 - Integração bancária
 
-# Melhor abordagem SaaS moderna
+Para cada fase informar:
 
-# Modelo híbrido de cobrança
-
-## Contrato
-
-↓
-
-## Parcelas
-
-↓
-
-## Cobranças geradas dinamicamente
-
-↓
-
-## Eventos financeiros
+* funcionalidades
+* riscos
+* dependências
+* esforço estimado
 
 ---
 
-# Em resumo
+## RESULTADO ESPERADO
 
-# Desktop local
+Gerar um documento técnico completo contendo:
 
-## Melhor solução:
+1. Arquitetura recomendada
+2. Fluxos de negócio
+3. Fluxos de eventos
+4. Modelagem de banco
+5. Estratégia de integração Efí
+6. Estratégia de cobrança recorrente
+7. Estratégia de inadimplência
+8. Estratégia de renegociação
+9. Roadmap de implantação
+10. Riscos técnicos e operacionais
 
-* COBV
-* polling
-* SQLite
-* geração imediata
-
----
-
-# SaaS
-
-## Melhor solução:
-
-* webhook
-* geração dinâmica
-* PostgreSQL
-* filas
-* automação
-* portal cliente
-* notificações
-* conciliação
-
----
-
-# Minha recomendação estratégica
-
-Dado o tipo do seu sistema:
-
-* carnês,
-* pagamentos recorrentes,
-* WhatsApp,
-* automação,
-* notificações,
-* integrações,
-
-o modelo SaaS faz MUITO mais sentido no médio prazo.
-
-Porque o Pix foi claramente desenhado para:
-
-* APIs online,
-* eventos,
-* webhooks,
-* sincronização contínua.
-
-Seu sistema naturalmente evolui para isso.
+O nível de detalhamento deve ser equivalente ao de um documento de arquitetura produzido por um arquiteto de software sênior para aprovação de projeto.

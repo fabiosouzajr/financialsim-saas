@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: finacialsim
       POSTGRES_PASSWORD: changeme
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
     healthcheck:

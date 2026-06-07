@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-06T14:14:01.196Z
-> Files: 359 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-07T17:07:46.579Z
+> Files: 363 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -13,6 +13,7 @@
 
 ## ./
 
+- `.dockerignore` (~23 tok)
 - `.gitignore` — Git ignore rules (~1099 tok)
 - `CLAUDE.md` — CLAUDE.md (~1980 tok)
 - `dev.sh` — dev.sh — FinacialSim SaaS local dev runner (~2996 tok)
@@ -22,7 +23,7 @@
 
 ## .claude/
 
-- `settings.json` (~441 tok)
+- `settings.json` (~667 tok)
 - `settings.local.json` (~34 tok)
 
 ## .claude/rules/
@@ -246,7 +247,7 @@
 
 - `notifications.py` — drain_notifications_outbox, schedule_parcela_due_reminders (~2073 tok)
 - `tasks.py` — ping, update_bacen_indicators, prune_fipe_cache, verify_provider_health (~3788 tok)
-- `worker.py` — WorkerSettings: get_redis_settings, startup, shutdown (~724 tok)
+- `worker.py` — WorkerSettings: get_redis_settings, startup, shutdown (~754 tok)
 
 ## backend/tests/
 
@@ -378,6 +379,7 @@
 - `2026-06-03-setup-tenant-script.md` — Setup Tenant Script Implementation Plan (~3471 tok)
 - `2026-06-04-indicators-bacen-fixes.md` — Indicadores BACEN — Label Fixes + Derived Values Implementation Plan (~4444 tok)
 - `2026-06-04-ipva-emplacamento-business-rules.md` — IPVA & Emplacamento — Configurable Business Rules Implementation Plan (~5075 tok)
+- `2026-06-07-efi-pix-provider.md` — Efí Pix Provider Implementation Plan (~14755 tok)
 
 ## docs/superpowers/plans/done/
 
@@ -408,6 +410,7 @@
 - `2026-06-03-setup-tenant-script.md` — Setup Tenant Script — Design Spec (~1039 tok)
 - `2026-06-04-indicators-bacen-fixes.md` — Indicadores BACEN — Label Fixes + Derived Values — Design Spec (~1334 tok)
 - `2026-06-04-ipva-emplacamento-business-rules.md` — IPVA & Emplacamento — Configurable Business Rules (~1918 tok)
+- `2026-06-07-efi-pix-provider-design.md` — Efí Pix Provider — Phase 1 (PIX básico real) (~6006 tok)
 
 ## docs/superpowers/specs/done/
 
@@ -421,6 +424,7 @@
 
 ## frontend/
 
+- `.dockerignore` (~7 tok)
 - `index.html` — FinacialSim (~210 tok)
 - `package.json` — Node.js package manifest (~316 tok)
 - `tailwind.config.ts` — /*.{ts,tsx}"], (~50 tok)

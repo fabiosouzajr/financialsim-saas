@@ -112,6 +112,134 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-06-06T14:13:39.689Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-06-07T14:04:12.308Z",
+      "error_message": "Missing await",
+      "file": "backend/finacialsim_saas/workers/worker.py",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-07T14:04:12.308Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-06-07T15:31:54.905Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md",
+      "root_cause": "Had \"efi\"",
+      "fix": "Changed to \"external\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-07T15:31:54.905Z"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-06-07T16:09:49.878Z",
+      "error_message": "Missing error handling in __init__",
+      "file": "docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-07T16:09:49.878Z"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-06-07T16:10:04.905Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 10→11 lines (4 removed) | Also: efi_certificate_path: str = \"\"   # absolute path t; `pix_provider` keeps its existing `fake | external | Also: | Skip-mTLS leaves webhook authenticity resting on; | Cert file missing/misconfigured at startup | `Ef | Also: - [ ] `PIX_PROVIDER=external` with valid Efí sandb; - [ ] `PayerInfo` correctly built from `Client.cpf",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-06-07T16:12:17.975Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-06-07T16:10:23.489Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md",
+      "root_cause": "Had 's authenticity via (a) a static token they embed ",
+      "fix": "Changed to 's authenticity. Efí'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-06-07T16:12:27.865Z"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-06-07T16:14:50.508Z",
+      "error_message": "Incorrect value in code",
+      "file": ".claude/settings.json",
+      "root_cause": "Had \"mcp__*(*)\"",
+      "fix": "Changed to \"mcp__*__*\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "json"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-07T16:14:50.508Z"
+    },
+    {
+      "id": "bug-014",
+      "timestamp": "2026-06-07T16:22:00.878Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 5→9 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-07T16:22:00.878Z"
+    },
+    {
+      "id": "bug-015",
+      "timestamp": "2026-06-07T16:38:26.981Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md",
+      "root_cause": "Had `). Implemented as a `",
+      "fix": "Changed to `, **header `",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-06-07T16:41:38.000Z"
     }
   ]
 }
