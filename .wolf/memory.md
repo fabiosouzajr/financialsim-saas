@@ -1440,3 +1440,83 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+
+## Session: 2026-06-07 14:20
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:38 | Created docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | — | ~3548 |
+| 14:38 | Session end: 1 writes across 1 files (2026-06-07-pix-cobranca-automatica-design.md) | 0 reads | ~3802 tok |
+| 16:42 | Session end: 1 writes across 1 files (2026-06-07-pix-cobranca-automatica-design.md) | 0 reads | ~3802 tok |
+| 16:43 | Session end: 1 writes across 1 files (2026-06-07-pix-cobranca-automatica-design.md) | 0 reads | ~3802 tok |
+| 16:45 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | 6→9 lines | ~214 |
+| 16:46 | Session end: 2 writes across 1 files (2026-06-07-pix-cobranca-automatica-design.md) | 0 reads | ~4031 tok |
+| 16:47 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | 5→7 lines | ~360 |
+| 16:48 | Session end: 3 writes across 1 files (2026-06-07-pix-cobranca-automatica-design.md) | 0 reads | ~4417 tok |
+| 16:52 | Session end: 3 writes across 1 files (2026-06-07-pix-cobranca-automatica-design.md) | 0 reads | ~4417 tok |
+| 16:54 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | expanded (+12 lines) | ~951 |
+| 16:54 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | inline fix | ~182 |
+| 16:54 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | "dias_antes == 1" → "skip the whole parcela" | ~151 |
+| 16:54 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | modified failure() | ~138 |
+| 16:54 | Session end: 7 writes across 1 files (2026-06-07-pix-cobranca-automatica-design.md) | 1 reads | ~10018 tok |
+| 16:58 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | 2→2 lines | ~52 |
+| 16:58 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | "011_seed_pix_auto_charge_" → "011_seed_pix_cobranca_aut" | ~24 |
+| 16:59 | Session end: 9 writes across 1 files (2026-06-07-pix-cobranca-automatica-design.md) | 1 reads | ~10099 tok |
+| 17:05 | Session end: 9 writes across 1 files (2026-06-07-pix-cobranca-automatica-design.md) | 1 reads | ~10099 tok |
+
+## Session: 2026-06-07 17:12
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:01 | Created docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md | — | ~10976 |
+| 18:04 | Created docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | — | ~5020 |
+| 18:04 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | 4→4 lines | ~34 |
+| 18:06 | Edited docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md | inline fix | ~23 |
+| 18:06 | Edited docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md | inline fix | ~19 |
+| 18:06 | Edited docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md | inline fix | ~8 |
+| 18:06 | Edited docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md | inline fix | ~28 |
+
+## Session: 2026-06-07 18:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:10 | Edited docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md | inline fix | ~13 |
+| 18:10 | Edited docs/superpowers/specs/2026-06-07-efi-pix-provider-design.md | inline fix | ~11 |
+| 18:10 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | inline fix | ~13 |
+| 18:10 | Session end: 3 writes across 2 files (2026-06-07-efi-pix-provider-design.md, 2026-06-07-pix-cobranca-automatica-design.md) | 2 reads | ~15038 tok |
+
+## Session: 2026-06-07 18:27
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-07 18:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-08 10:13
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:31 | Created docs/adr/0001-pix-cobranca-automatica-always-send-reminder.md | — | ~712 |
+| 10:31 | Session end: 1 writes across 1 files (0001-pix-cobranca-automatica-always-send-reminder.md) | 4 reads | ~16889 tok |
+| 10:35 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | 26→30 lines | ~465 |
+| 10:35 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | expanded (+9 lines) | ~1155 |
+| 10:36 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | 3→5 lines | ~232 |
+| 10:36 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | "pix_valido_ate = charge.e" → "pix_valido_ate" | ~278 |
+| 10:36 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | 3→3 lines | ~532 |
+| 10:37 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | 2→4 lines | ~694 |
+| 10:37 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | modified runs() | ~803 |
+| 10:37 | Edited docs/superpowers/specs/2026-06-07-pix-cobranca-automatica-design.md | inline fix | ~27 |
+| 10:38 | Session end: 9 writes across 2 files (0001-pix-cobranca-automatica-always-send-reminder.md, 2026-06-07-pix-cobranca-automatica-design.md) | 5 reads | ~27718 tok |
+
+## Session: 2026-06-08 10:44
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-08 11:05
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

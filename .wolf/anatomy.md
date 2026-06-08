@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-07T17:07:46.579Z
-> Files: 363 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-08T13:37:48.597Z
+> Files: 365 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -327,6 +327,10 @@
 - `todo.md` — TODO List (~1039 tok)
 - `troubleshooting.md` — Troubleshooting (~330 tok)
 
+## docs/adr/
+
+- `0001-pix-cobranca-automatica-always-send-reminder.md` — Always send the due-soon reminder regardless of cobrança-automática charge-generation outcome (~668 tok)
+
 ## docs/agents/
 
 - `domain.md` — Domain Docs (~485 tok)
@@ -410,7 +414,8 @@
 - `2026-06-03-setup-tenant-script.md` — Setup Tenant Script — Design Spec (~1039 tok)
 - `2026-06-04-indicators-bacen-fixes.md` — Indicadores BACEN — Label Fixes + Derived Values — Design Spec (~1334 tok)
 - `2026-06-04-ipva-emplacamento-business-rules.md` — IPVA & Emplacamento — Configurable Business Rules (~1918 tok)
-- `2026-06-07-efi-pix-provider-design.md` — Efí Pix Provider — Phase 1 (PIX básico real) (~6006 tok)
+- `2026-06-07-efi-pix-provider-design.md` — Efí Pix Provider — Phase 1 (PIX básico real, fundação CobV) (~10291 tok)
+- `2026-06-07-pix-cobranca-automatica-design.md` — Pix — Phase 2 (Cobrança automática) (~6638 tok)
 
 ## docs/superpowers/specs/done/
 
