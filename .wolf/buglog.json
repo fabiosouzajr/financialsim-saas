@@ -336,6 +336,86 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-06-08T13:37:39.895Z"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-06-08T15:11:27.322Z",
+      "error_message": "Function not marked async",
+      "file": "docs/superpowers/specs/2026-06-07-02-pix-cobranca-automatica-design.md",
+      "root_cause": "Function uses await but wasn't declared async",
+      "fix": "Added async modifier",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T15:11:27.322Z"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-06-08T15:11:42.146Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/superpowers/specs/2026-06-07-02-pix-cobranca-automatica-design.md",
+      "root_cause": "Had `await session.commit()`",
+      "fix": "Changed to `async with session_factory() as session:`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-06-08T15:13:19.596Z"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-06-08T15:16:33.641Z",
+      "error_message": "Missing await",
+      "file": "docs/superpowers/specs/2026-06-07-02-pix-cobranca-automatica-design.md",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T15:16:33.641Z"
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-06-08T15:19:23.013Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/superpowers/specs/2026-06-07-02-pix-cobranca-automatica-design.md",
+      "root_cause": "Had \"Lembrete: Parcela {{ parcela_num }} vence em {{ d",
+      "fix": "Changed to \"Lembrete: Parcela {{ parcela_num }} vence em {{ d",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-08T15:20:19.911Z"
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-06-08T15:26:02.340Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/superpowers/specs/2026-06-07-02-pix-cobranca-automatica-design.md",
+      "root_cause": "Had 's due-soon emails committed and queued for delive",
+      "fix": "Changed to `async with session_factory()`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-08T15:26:02.340Z"
     }
   ]
 }

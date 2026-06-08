@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-08T14:47:42.048Z
-> Files: 369 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-08T15:29:56.865Z
+> Files: 371 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -16,6 +16,7 @@
 - `.dockerignore` (~23 tok)
 - `.gitignore` — Git ignore rules (~1099 tok)
 - `CLAUDE.md` — CLAUDE.md (~1980 tok)
+- `CONTEXT.md` — Domain Glossary (~940 tok)
 - `dev.sh` — dev.sh — FinacialSim SaaS local dev runner (~2996 tok)
 - `pyproject.toml` (~34 tok)
 - `README.md` — Project documentation (~1467 tok)
@@ -418,6 +419,7 @@
 - `2026-06-03-setup-tenant-script.md` — Setup Tenant Script — Design Spec (~1039 tok)
 - `2026-06-04-indicators-bacen-fixes.md` — Indicadores BACEN — Label Fixes + Derived Values — Design Spec (~1334 tok)
 - `2026-06-04-ipva-emplacamento-business-rules.md` — IPVA & Emplacamento — Configurable Business Rules (~1918 tok)
+- `2026-06-07-02-pix-cobranca-automatica-design.md` — Pix — Phase 2 (Cobrança automática) (~4564 tok)
 - `2026-06-07-efi-pix-provider-design.md` — Efí Pix Provider — Phase 1 (PIX básico real, fundação CobV) (~10291 tok)
 - `2026-06-07-pix-cobranca-automatica-design.md` — Pix — Phase 2 (Cobrança automática) (~6638 tok)
 

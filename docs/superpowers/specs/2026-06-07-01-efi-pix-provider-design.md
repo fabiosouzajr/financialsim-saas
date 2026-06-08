@@ -153,6 +153,7 @@ expires_at_utc = datetime.combine(valid_through, time(23, 59, 59), tzinfo=BRT).a
 Unchanged from the original design — entirely independent of Cob vs. CobV (Efí validates webhook authenticity per registered `chave`, not per charge type).
 
 Efí supports two validation modes:
+
 - **mTLS** (their default recommendation): requires the web server/reverse-proxy to perform mutual-TLS handshakes with Efí's client certificate chain — infrastructure-level work (nginx/traefik config), out of place for a backend-code "Phase 1 básico" change.
 - **Skip-mTLS**: register the webhook with `x-skip-mtls-checking: true`; the integrator is responsible for validating the callback's authenticity. Efí's own guidance suggests combining a static URL token with their fixed sender IP (`34.193.116.226`) — but **this codebase has no `request.client`/`X-Forwarded-For` handling anywhere** (verified via grep). Behind a reverse proxy (the `ops/docker-compose.yml` setup likely runs one — note the `Caddyfile` mount), `request.client.host` would be the *proxy's* IP, not Efí's; trusting `X-Forwarded-For` without proxy-level config would make the check spoofable. Implementing it now would either always-fail or be a check that doesn't actually check anything.
 
@@ -175,6 +176,7 @@ efi_sandbox: bool = True
 - `deps.get_pix_provider`: `if settings.pix_provider == "efi": return EfiPixProvider(settings)`, replacing the `StubExternalPixProvider` branch (which is deleted — its sole purpose, a placeholder for "real PSP wiring," is now fulfilled; no test references it).
 
 **Cached singleton for the `efi` branch.** All four call sites (`webhooks.py`, `portal.py`, `proposals.py`, `pix_admin.py` — confirmed via grep) call `get_pix_provider(settings)` fresh per-request; harmless for `fake`/`stub` (cheap to construct, no I/O), but `EfiPixProvider.__init__` builds an `EfiPay({...})` client that reads the cert from disk and (per Efí's OAuth2 model) authenticates with Efí's token endpoint — doing that on *every* charge creation, cancel, admin check, and incoming webhook delivery multiplies auth calls and risks throttling on a real PSP's auth endpoint. This is a new pattern for the codebase (no existing dep — `get_settings`, `get_storage_backend` — caches today), kept minimal and scoped to the `efi` branch only: a module-level `_efi_provider: EfiPixProvider | None = None` in `pix/deps.py`, lazily constructed once and reused (not `lru_cache` on `get_pix_provider` itself, since that would also wrongly cache `fake`/`stub` across settings changes in tests). `fake`/`stub` branches stay exactly as today — constructed fresh, no caching.
+
 - `pix_admin.py:41` mark-paid gate: `if settings.pix_provider == "external"` → **`if settings.pix_provider != "fake"`**. Semantically exact ("block the demo button whenever a real provider is active") and stays correct automatically if a third provider is ever added — no more naming-debt in this file.
 
 **Startup guards (in `deps.get_pix_provider` or app startup), both fail fast rather than at the worst possible moment:**
