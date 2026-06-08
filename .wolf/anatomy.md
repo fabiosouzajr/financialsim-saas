@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-08T13:37:48.597Z
-> Files: 365 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-08T14:47:42.048Z
+> Files: 369 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -383,7 +383,11 @@
 - `2026-06-03-setup-tenant-script.md` — Setup Tenant Script Implementation Plan (~3471 tok)
 - `2026-06-04-indicators-bacen-fixes.md` — Indicadores BACEN — Label Fixes + Derived Values Implementation Plan (~4444 tok)
 - `2026-06-04-ipva-emplacamento-business-rules.md` — IPVA & Emplacamento — Configurable Business Rules Implementation Plan (~5075 tok)
-- `2026-06-07-efi-pix-provider.md` — Efí Pix Provider Implementation Plan (~14755 tok)
+- `2026-06-07-efi-pix-provider.md` — Efí Pix Provider (Phase 1 — CobV Redesign) Implementation Plan (~1179 tok)
+- `2026-06-08-efi-pix-provider-plan-part1.md` — Efí Pix Provider — Part 1: Foundation (Tasks 1–4) (~3854 tok)
+- `2026-06-08-efi-pix-provider-plan-part2.md` — Efí Pix Provider — Part 2: Service Layer (Tasks 5–6) (~4869 tok)
+- `2026-06-08-efi-pix-provider-plan-part3.md` — Efí Pix Provider — Part 3: EfiPixProvider (Tasks 7–9) (~4304 tok)
+- `2026-06-08-efi-pix-provider-plan-part4.md` — Efí Pix Provider — Part 4: Wiring + Runbook (Tasks 10–13) (~5859 tok)
 
 ## docs/superpowers/plans/done/
 

@@ -1520,3 +1520,9 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 11:40 | Created docs/superpowers/plans/2026-06-07-efi-pix-provider.md | — | ~1256 |
+| 11:41 | Edited docs/superpowers/plans/2026-06-07-efi-pix-provider.md | 2→2 lines | ~12 |
+| 11:42 | Created docs/superpowers/plans/2026-06-08-efi-pix-provider-plan-part1.md | — | ~4111 |
+| 11:44 | Created docs/superpowers/plans/2026-06-08-efi-pix-provider-plan-part2.md | — | ~5193 |
+| 11:45 | Created docs/superpowers/plans/2026-06-08-efi-pix-provider-plan-part3.md | — | ~4591 |
+| 11:47 | Created docs/superpowers/plans/2026-06-08-efi-pix-provider-plan-part4.md | — | ~6250 |
