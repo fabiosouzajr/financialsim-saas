@@ -73,16 +73,15 @@ async def create_charge(
 **`EfiPixProvider.create_charge` mapping:**
 
 ```python
-# dataInicio: penalties start the day AFTER vencimento + carencia_dias
-# (carencia_dias=0 → day after vencimento; carencia_dias=3 → 4 days after vencimento)
-penalty_start = (due_date + timedelta(days=carencia_dias + 1)).isoformat()
+# Carência is implemented at the _ensure_charge level (see §3), not via a dataInicio field.
+# The BACEN CobV spec defines multa and juros with exactly two fields: modalidade + valorPerc.
+# dataInicio does not exist in the schema — passing it would be rejected or silently ignored.
 
 # multa
 if multa_pct > 0:
     body["multa"] = {
-        "modalidade": 2,            # 2 = percentage of original value
+        "modalidade": 2,    # 2 = Percentual (% of original value); 1 = Valor Fixo (BRL)
         "valorPerc": str(multa_pct),
-        "dataInicio": penalty_start,
     }
 else:
     body["multa"] = {"modalidade": 2, "valorPerc": "0.00"}  # explicit zero (Phase 1 §1b unchanged)
@@ -90,19 +89,26 @@ else:
 # juros
 if juros_diario_pct > 0:
     body["juros"] = {
-        "modalidade": 1,               # 1 = daily simple interest (valorPerc = % per day)
+        "modalidade": 2,    # 2 = Percentual ao dia (dias corridos); 1 = Valor fixo/dia (BRL)
         "valorPerc": str(juros_diario_pct),
-        "dataInicio": penalty_start,
     }
 else:
-    body["juros"] = {"modalidade": 1, "valorPerc": "0.00"}
+    body["juros"] = {"modalidade": 2, "valorPerc": "0.00"}
 ```
 
-`modalidade` values (verified against the Efí SDK's `pix_create_due_charge.py` example — same verification rigor Phase 1 applied to distinguishing `pix_create_charge` from `pix_create_due_charge`):
-- Multa modalidade `2` — percentage (`valorPerc`); modalidade `1` is a fixed `valor` in BRL. We use percentage because the business rules store a rate, not a fixed amount per parcela.
-- Juros modalidade `1` — daily rate (`valorPerc` = % per day); Efí accrues against the original value across the number of days elapsed since `dataInicio`. Other modalidades (monthly, etc.) exist — daily was chosen to match the "juros diário configurável" requirement literally.
+**`modalidade` values — verified against the official BACEN Pix openapi.yaml (authoritative spec Efí implements):**
 
-`dataInicio` semantics: `carencia_dias=0` → `penalty_start = vencimento + 1` (the day after vencimento — a customer paying exactly on the due date is never penalized). `carencia_dias=3` → penalties start 4 days after vencimento. **Verify sandbox behavior** — confirm a payment on `penalty_start - 1` does not apply charges, and one on `penalty_start` does, before enabling non-zero rates on a live tenant.
+Multa modalidades (1–2):
+- `1` = Valor Fixo (fixed BRL amount)
+- `2` = **Percentual** (percentage of `valor.original`) ← used here
+
+Juros modalidades (1–8):
+- `1` = Valor fixo por dia (BRL, dias corridos)
+- `2` = **Percentual ao dia** (dias corridos) ← used here — matches "juros diário configurável"
+- `3`–`4` = Monthly/annual percentage (calendar days)
+- `5`–`8` = Same, but business days (`dias úteis`)
+
+**Carência — implemented at `_ensure_charge` level, not via the CobV body.** The BACEN schema has no `dataInicio` field on multa or juros objects; passing it would be a schema violation. Instead, `_ensure_charge` passes zero rates when `dias_atraso <= carencia_dias` and configured rates when `dias_atraso > carencia_dias` (see §3). The daily regeneration cycle (`_created_before_today_brt`) naturally issues a new charge with real rates the first day after the grace period expires.
 
 **`InMemoryFakePixProvider.create_charge`** — accepts all three new params, ignores them. The fake provider charges `amount` exactly. This is correct for tests: penalty math is tested via `_calculate_overdue_amount` (a pure Python function, no provider call), not by mocking PSP behavior.
 
@@ -114,25 +120,38 @@ else:
 
 ```python
 rules = await RulesService(self._s).get_rules(parcela.tenant_id)
-multa_pct        = Decimal(str(rules["inadimplencia_multa_pct"]))
-juros_diario_pct = Decimal(str(rules["inadimplencia_juros_diario_pct"]))
+multa_pct_raw    = Decimal(str(rules["inadimplencia_multa_pct"]))
+juros_pct_raw    = Decimal(str(rules["inadimplencia_juros_diario_pct"]))
 carencia_dias    = int(rules["inadimplencia_carencia_dias"])
 validity_days    = int(rules["pix_validade_apos_vencimento_dias"])
+
+# Carência: suppress rates while within grace period.
+# dataInicio does not exist in the BACEN CobV schema, so grace period is enforced here.
+dias_atraso = (date.today() - parcela.vencimento).days
+rates_past_grace = dias_atraso > carencia_dias
+multa_pct        = multa_pct_raw    if rates_past_grace else Decimal("0.00")
+juros_diario_pct = juros_pct_raw    if rates_past_grace else Decimal("0.00")
 ```
 
 **Overdue regeneration — new conditional before the idempotent-reuse early-return:**
 
 ```python
+BRT = ZoneInfo("America/Sao_Paulo")
 existing = await self._s.get(PixCharge, parcela.last_pix_charge_id) if parcela.last_pix_charge_id else None
-rates_configured = multa_pct > 0 or juros_diario_pct > 0
 
-if (
+def _created_before_today_brt(charge: PixCharge) -> bool:
+    return charge.criado_em.astimezone(BRT).date() < datetime.now(BRT).date()
+
+# Regenerate a stale overdue charge so it reflects today's accrued rates.
+# Condition: overdue + rates apply today (past grace) + existing charge is from a previous day.
+needs_regeneration = (
     existing is not None
     and existing.status == PixChargeStatus.pending
     and parcela.status == ParcelaPaymentStatus.overdue
-    and rates_configured
-):
-    # cancel the zero-rate charge and fall through to create a new one with real rates
+    and rates_past_grace                        # only when past carência
+    and _created_before_today_brt(existing)     # stops infinite regeneration loop
+)
+if needs_regeneration:
     await self._provider.cancel_charge(existing.txid)
     existing.status = PixChargeStatus.canceled
     self._s.add(existing)
@@ -140,12 +159,14 @@ if (
     existing = None
 ```
 
-After this block the existing idempotent-reuse path runs normally (returns `existing` if still pending, creates a new one otherwise). The new charge picks up the current rates via `provider.create_charge(..., multa_pct=multa_pct, ...)`.
+After this block the existing idempotent-reuse path runs normally (returns `existing` if still pending and created today, creates a new one otherwise). The new charge picks up the current rates via `provider.create_charge(..., multa_pct=multa_pct, juros_diario_pct=juros_diario_pct, carencia_dias=carencia_dias)`.
 
-**Why always-regenerate for overdue + non-zero rates:**
-- A CobV charge's juros/multa are baked in at creation time (Efí can't update them on an existing charge). A charge created yesterday with zero rates will never apply penalties, regardless of what the tenant configures today.
-- Daily interest compounds — a charge created on day 5 of arrears will compute fewer days of interest than one created on day 6. Regenerating ensures the brcode always reflects the current accrual.
-- Cancel-then-create is idempotent across repeated calls (same parcela, same overdue status, rates unchanged → only the first call cancels; subsequent calls create a fresh one which is then returned via the idempotent-reuse path on the next call). Actually: since each regeneration creates a NEW `PixCharge` row (new `txid`), subsequent same-day calls will hit the reuse path on the new charge and return it unchanged. The one-cancel-per-day cadence is only broken if the customer generates two charges in less than a day — acceptable.
+**Why daily-staleness check is required:**
+Without `_created_before_today_brt`, every call to `_ensure_charge` for an overdue parcela would cancel the newly-created charge and create another — an infinite cancel-create loop across calls. The staleness check gates regeneration: a charge created today already reflects today's interest accrual and is reused by the idempotent-reuse path for the rest of the day. Tomorrow it becomes stale and is regenerated. Semantics: one regeneration per BRT calendar day per overdue parcela.
+
+**Carência transition:** when a parcela is overdue but still within the grace period (`dias_atraso <= carencia_dias`), `rates_past_grace = False`, so the charge is generated with zero rates and `needs_regeneration = False` — same as Phase 1. The day `dias_atraso` crosses `carencia_dias`, the existing zero-rate charge is stale (created the previous day) → `needs_regeneration = True` → cancel + create with real rates. No special migration needed.
+
+**Why BRT for the staleness check:** `PixCharge.criado_em` is UTC. Comparing against `date.today()` (server local time, UTC in prod) would mis-attribute a charge created at 22:00 BRT (01:00 UTC next day) as "tomorrow's charge." Anchoring both sides in BRT matches the business calendar, consistent with `expires_at`'s BRT-anchoring in Phase 1 §3b.
 
 **No DB schema change.** `PixCharge` columns unchanged. The canceled charge remains in the table (audit trail). `parcela.last_pix_charge_id` is updated to point to the new charge (existing `service.py` post-creation path — no change).
 
@@ -164,7 +185,7 @@ def _calculate_overdue_amount(
     carencia_dias: int,
 ) -> dict:
     dias_atraso = (date.today() - vencimento).days
-    dias_com_encargos = max(dias_atraso - carencia_dias - 1, 0)  # +1: no penalty on vencimento itself
+    dias_com_encargos = max(dias_atraso - carencia_dias, 0)  # 0 on vencimento; >0 once late
     multa = (valor_parcela * multa_pct / 100).quantize(Decimal("0.01")) if dias_com_encargos > 0 else Decimal("0.00")
     juros = (valor_parcela * juros_diario_pct / 100 * dias_com_encargos).quantize(Decimal("0.01"))
     valor_corrigido = valor_parcela + multa + juros
@@ -236,7 +257,7 @@ All other statuses — unchanged.
 
 | Risk | Mitigation |
 |---|---|
-| `dataInicio` semantics on Efí: "starts on" vs "starts the day after" `due_date + carencia_dias` | Explicit sandbox smoke-test: create a CobV with `carencia_dias=1`, pay it on `vencimento+1`, verify whether multa applies. Document expected behavior in the runbook. |
+| Carência boundary: a parcela exactly at `dias_atraso == carencia_dias` gets zero-rate charge; day `carencia_dias + 1` triggers regeneration with real rates — customer may have shared the zero-rate brcode already | The zero-rate charge expires or is superseded the next day; the daily regeneration cycle means any shared brcode is at most 1 day stale. Acceptable for this use case. |
 | Tenant configures `multa_pct=2.0` and `juros_diario_pct=0.033` → portal estimate and Efí's actual charge differ by a few centavos (rounding) | `estimativa: true` flag surfaced in the portal UI; label reads "estimativa". No user confusion if the expectation is set correctly. |
 | Overdue-regeneration cancels a charge the customer had already shared with their spouse (who is about to pay it) | Window is single-day per regeneration (on the next `create_charge_for_parcela` call). The old brcode becomes invalid after cancel. Acceptable tradeoff — daily compounding makes a yesterday-brcode semantically stale anyway. |
 | `RulesService.get_rules` called inside `_ensure_charge` (now in both `create_charge_for_parcela` and `create_auto_charge_for_parcela`) — one extra DB roundtrip per charge creation | Acceptable: charge creation is already I/O-heavy (provider network call, QR fetch, storage upload). One extra SELECT on a tiny `business_rules` table is noise. |
@@ -248,11 +269,12 @@ All other statuses — unchanged.
 ## Tests
 
 - `_calculate_overdue_amount`:
-  - Zero carência, day 1: multa + 1 day juros.
-  - `carencia_dias=3`, day 2: no multa, no juros (within grace).
-  - `carencia_dias=3`, day 4: multa + 1 day juros.
-  - All-zero rates: `valor_corrigido == valor_parcela`, both encargo fields = `"0.00"`.
-  - `dias_atraso` correct (today − vencimento).
+  - `carencia_dias=0`, `dias_atraso=0` (on vencimento): `dias_com_encargos=0` → multa=0, juros=0, `valor_corrigido==valor_parcela`.
+  - `carencia_dias=0`, `dias_atraso=1`: `dias_com_encargos=1` → multa=`valor*multa_pct/100`, juros=`valor*juros_pct/100*1`, both non-zero.
+  - `carencia_dias=3`, `dias_atraso=3`: `dias_com_encargos=0` → multa=0, juros=0 (still within grace).
+  - `carencia_dias=3`, `dias_atraso=4`: `dias_com_encargos=1` → multa and 1 day juros both applied.
+  - All-zero rates: `valor_corrigido==valor_parcela`, all encargo fields = `"0.00"` regardless of `dias_atraso`.
+  - `dias_atraso` equals `(date.today() - vencimento).days`.
 
 - `RulesService.update` validation:
   - `inadimplencia_multa_pct` outside `[0, 2]` → `AppError`.
@@ -264,6 +286,8 @@ All other statuses — unchanged.
   - Overdue parcela, all-zero rates, existing pending charge → no cancel, reuse as today (rates=0 path unchanged).
   - Non-overdue parcela, existing pending charge → no cancel, reuse (unchanged path).
   - `cancel_charge` raises → old charge stays pending, no new charge created, exception logged and swallowed.
+  - Overdue parcela, non-zero rates, existing pending charge created **today** (BRT) → no cancel, reuse (staleness guard prevents regeneration loop).
+  - Overdue parcela, non-zero rates, existing pending charge created **yesterday** (BRT) → cancel + regenerate.
 
 - `get_schedule` / `get_parcela` portal endpoints:
   - Overdue parcela → response includes `encargos` with correct `valor_corrigido`/`multa_valor`/`juros_valor`/`dias_atraso`/`estimativa=true`.
@@ -280,7 +304,8 @@ All other statuses — unchanged.
 
 ## Acceptance checklist
 
-- [ ] Tenant with default rates (`multa=2%, juros=0.033%/day, carência=0`) and an overdue parcela: generating PIX cancels the old zero-rate charge and creates a new one; the new CobV body has `multa.modalidade=2`/`multa.valorPerc="2.00"` and `juros.modalidade=1`/`juros.valorPerc="0.033"` with `dataInicio = vencimento`.
+- [ ] Tenant with default rates (`multa=2%, juros=0.033%/day, carência=0`) and an overdue parcela (`dias_atraso=1`): generating PIX cancels the stale zero-rate charge and creates a new one; the new CobV body has `multa={"modalidade":2,"valorPerc":"2.00"}` and `juros={"modalidade":2,"valorPerc":"0.033"}` — no `dataInicio` field (it doesn't exist in the BACEN schema).
+- [ ] Overdue parcela within grace period (`dias_atraso <= carencia_dias`): charge generated with zero rates (`valorPerc="0.00"` for both); no regeneration until grace expires.
 - [ ] Portal schedule for the same parcela shows `encargos.valor_corrigido > valor_parcela`, breakdown is arithmetically correct, `estimativa=true`.
 - [ ] Tenant with all-zero rates: no regeneration, no encargos non-zero, existing pending charge reused.
 - [ ] `inadimplencia_multa_pct=2.5` → `AppError` from `RulesService.update`; not silently accepted.

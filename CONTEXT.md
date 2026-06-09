@@ -24,7 +24,7 @@ Single-context repo. See `docs/adr/` for architectural decisions.
 
 **pix_valido_ate** — the charge's last valid payment date, displayed to the customer. Derived from `PixCharge.expires_at` (UTC) via a BRT round-trip: `expires_at.astimezone(ZoneInfo("America/Sao_Paulo")).strftime("%d/%m/%Y")`. Equals `vencimento + validadeAposVencimento` days in BRT — not the vencimento itself.
 
-**`_ensure_charge`** (`PixService`) — the shared idempotent core for Pix charge creation. Called by both the portal path (`create_charge_for_parcela`) and the cron path (`create_auto_charge_for_parcela`). Returns the existing pending `PixCharge` if one exists, or creates a new CobV charge via the provider. Either trigger always resolves to the same charge — no duplicate provider calls, no duplicate rows.
+**`_ensure_charge`** (`PixService`) — the shared idempotent core for Pix charge creation. Called by both the portal path (`create_charge_for_parcela`) and the cron path (`create_auto_charge_for_parcela`). For open parcelas, returns the existing pending `PixCharge` if one exists. For overdue parcelas with penalty rates configured and past the grace period, regenerates a stale charge (created before today BRT) so the brcode always reflects current interest accrual. Creates a new CobV charge when no valid pending charge exists.
 
 ---
 
@@ -43,3 +43,17 @@ Single-context repo. See `docs/adr/` for architectural decisions.
 **Tenant** — a car dealership (or similar small/mid business) using FinancialSim. Has `id`, `name`, `slug`, `created_at`. No `is_active` field — every row in the `tenants` table is considered active.
 
 **BusinessRule** — a per-tenant configuration key/value stored in `business_rules` table. `RulesService.get_rules(tenant_id)` fills any missing keys from `_RULE_DEFAULTS` at read time. Seed migrations (`010_`, `011_`, …) insert defaults for all existing tenants so rows appear in the admin UI without requiring an explicit set.
+
+---
+
+## Inadimplência Concepts
+
+**Inadimplência** — the state of a `Parcela` being overdue and unpaid (`status = overdue`). Triggers penalty accrual (`multa` + `juros`) per tenant-configured rates once the grace period (`carência`) has passed.
+
+**Multa** — a one-time flat penalty, expressed as a percentage of `valor_parcela` (BACEN ceiling: 2%). Applied once when `dias_atraso > carencia_dias`. Not a fixed BRL amount — "multa fixa" in Brazilian CDC means "one-time, non-accruing" as opposed to daily juros, not a literal fixed value.
+
+**Juros moratórios** (`juros_diario_pct`) — daily interest that accrues from the first day past the grace period. Expressed as a percentage per day (BACEN ceiling: ~0.033%/day = 1%/month). CobV `modalidade: 2` = "Percentual ao dia (dias corridos)".
+
+**Carência** (`carencia_dias`) — grace period in calendar days after `vencimento` before multa and juros start accruing. Implemented at the `_ensure_charge` level (not via a `dataInicio` field — that field does not exist in the BACEN CobV schema). A charge generated within the grace period carries zero rates; the daily regeneration cycle issues a new charge with real rates the first day past grace.
+
+**Encargos** — the combined late-payment charges: `multa + juros_acumulado`. The portal displays a real-time `encargos` estimate (labeled `estimativa: true`) alongside the corrected `valor_corrigido` for overdue parcelas.
