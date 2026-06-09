@@ -1588,3 +1588,56 @@
 | 12:29 | Edited docs/superpowers/specs/2026-06-07-02-pix-cobranca-automatica-design.md | 2→2 lines | ~7 |
 | 12:29 | Edited docs/superpowers/specs/2026-06-07-02-pix-cobranca-automatica-design.md | 2→2 lines | ~8 |
 | 12:30 | Session end: 16 writes across 2 files (2026-06-07-02-pix-cobranca-automatica-design.md, CONTEXT.md) | 10 reads | ~31362 tok |
+| 10:20 | Created docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | — | ~4636 |
+| 10:21 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | inline fix | ~36 |
+| 10:21 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | modified values() | ~512 |
+| 10:21 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | 2→2 lines | ~59 |
+| 10:21 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | 1→2 lines | ~79 |
+
+## Session: 2026-06-09 10:23
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-09 10:24
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-09 10:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-09 10:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:28 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | modified _created_before_today_brt() | ~569 |
+| 10:28 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | 1→3 lines | ~99 |
+| 10:29 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | 2→2 lines | ~56 |
+| 10:30 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | 6→7 lines | ~181 |
+| 10:38 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | modified yaml() | ~495 |
+| 10:38 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | expanded (+7 lines) | ~236 |
+| 10:39 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | modified _created_before_today_brt() | ~701 |
+| 10:39 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | "dataInicio" → "dias_atraso == carencia_d" | ~103 |
+| 10:39 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | modified parcela() | ~146 |
+| 10:39 | Edited CONTEXT.md | inline fix | ~142 |
+| 10:40 | Edited CONTEXT.md | expanded (+14 lines) | ~465 |
+| 10:40 | Created docs/adr/0002-overdue-charge-daily-regeneration.md | — | ~633 |
+| 10:44 | Edited docs/superpowers/specs/2026-06-09-pix-fase3-inadimplencia-design.md | inline fix | ~29 |
+
+## Session: 2026-06-09 10:48
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:57 | Created docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | — | ~15511 |
+| 10:58 | Edited docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | 24→24 lines | ~227 |
+| 10:58 | Edited docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | InMemoryStorageBackend() → AsyncMock() | ~121 |
+| 10:58 | Edited docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | removed 9 lines | ~11 |
+| 10:59 | Edited docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | reduced (-7 lines) | ~117 |
+| 10:59 | Edited docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | 7→10 lines | ~109 |
+| 10:59 | Edited docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | 14→10 lines | ~103 |
+| 10:59 | Edited docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | 8→8 lines | ~60 |
+| 11:00 | Edited docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | modified feat() | ~67 |
+| 11:10 | writing-plans: Fase 3 Inadimplência — 6 tasks, 3 test files, seed migration 011, carencia gate + daily regeneration in _ensure_charge | docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | plan complete, self-reviewed, storage mock fixed | ~25k |

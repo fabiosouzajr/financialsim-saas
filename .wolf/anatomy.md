@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-08T15:29:56.865Z
-> Files: 371 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-09T14:00:02.020Z
+> Files: 374 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -16,7 +16,7 @@
 - `.dockerignore` (~23 tok)
 - `.gitignore` — Git ignore rules (~1099 tok)
 - `CLAUDE.md` — CLAUDE.md (~1980 tok)
-- `CONTEXT.md` — Domain Glossary (~940 tok)
+- `CONTEXT.md` — Domain Glossary (~1324 tok)
 - `dev.sh` — dev.sh — FinacialSim SaaS local dev runner (~2996 tok)
 - `pyproject.toml` (~34 tok)
 - `README.md` — Project documentation (~1467 tok)
@@ -331,6 +331,7 @@
 ## docs/adr/
 
 - `0001-pix-cobranca-automatica-always-send-reminder.md` — Always send the due-soon reminder regardless of cobrança-automática charge-generation outcome (~668 tok)
+- `0002-overdue-charge-daily-regeneration.md` — ADR-0002 — Overdue CobV charges regenerated daily (not stored-rate comparison) (~593 tok)
 
 ## docs/agents/
 
@@ -389,6 +390,7 @@
 - `2026-06-08-efi-pix-provider-plan-part2.md` — Efí Pix Provider — Part 2: Service Layer (Tasks 5–6) (~4869 tok)
 - `2026-06-08-efi-pix-provider-plan-part3.md` — Efí Pix Provider — Part 3: EfiPixProvider (Tasks 7–9) (~4304 tok)
 - `2026-06-08-efi-pix-provider-plan-part4.md` — Efí Pix Provider — Part 4: Wiring + Runbook (Tasks 10–13) (~5859 tok)
+- `2026-06-09-pix-fase3-inadimplencia.md` — Fase 3 — Inadimplência Implementation Plan (~14387 tok)
 
 ## docs/superpowers/plans/done/
 
@@ -422,6 +424,7 @@
 - `2026-06-07-02-pix-cobranca-automatica-design.md` — Pix — Phase 2 (Cobrança automática) (~4564 tok)
 - `2026-06-07-efi-pix-provider-design.md` — Efí Pix Provider — Phase 1 (PIX básico real, fundação CobV) (~10291 tok)
 - `2026-06-07-pix-cobranca-automatica-design.md` — Pix — Phase 2 (Cobrança automática) (~6638 tok)
+- `2026-06-09-pix-fase3-inadimplencia-design.md` — Pix — Fase 3 (Inadimplência) (~4929 tok)
 
 ## docs/superpowers/specs/done/
 
