@@ -127,7 +127,7 @@ validity_days    = int(rules["pix_validade_apos_vencimento_dias"])
 
 # Carência: suppress rates while within grace period.
 # dataInicio does not exist in the BACEN CobV schema, so grace period is enforced here.
-dias_atraso = (date.today() - parcela.vencimento).days
+dias_atraso = (date.today() - parcela.vencimento).days  # UTC server time, matches mark_overdue convention
 rates_past_grace = dias_atraso > carencia_dias
 multa_pct        = multa_pct_raw    if rates_past_grace else Decimal("0.00")
 juros_diario_pct = juros_pct_raw    if rates_past_grace else Decimal("0.00")
