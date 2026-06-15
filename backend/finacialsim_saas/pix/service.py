@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import json
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from loguru import logger
 from sqlalchemy import select
@@ -21,6 +22,14 @@ from finacialsim_saas.services.rules_service import RulesService
 from finacialsim_saas.storage import StorageBackend
 
 UTC = timezone.utc
+_BRT = ZoneInfo("America/Sao_Paulo")
+
+
+def _created_before_today_brt(charge: PixCharge) -> bool:
+    """True if the charge was created on a previous BRT calendar day."""
+    created_brt = charge.criado_em.astimezone(_BRT).date()
+    today_brt = datetime.now(_BRT).date()
+    return created_brt < today_brt
 
 
 class PixService:
@@ -43,15 +52,40 @@ class PixService:
             charge.atualizado_em = datetime.now(UTC)
 
     async def _ensure_charge(self, parcela: ParcelaPayment) -> tuple[PixCharge, bool]:
-        """Idempotent: one CobV charge per parcela, ever.
-        Returns (charge, created) — callers that notify only on fresh creation branch on it."""
+        """Idempotent CobV charge per parcela with daily regeneration for overdue.
+        Returns (charge, created) — callers notify only when created=True."""
+        rules = await RulesService(self._s).get_rules(parcela.tenant_id)
+        validity_days = int(rules["pix_validade_apos_vencimento_dias"])
+        multa_pct_raw = Decimal(str(rules.get("inadimplencia_multa_pct", "0.00")))
+        juros_pct_raw = Decimal(str(rules.get("inadimplencia_juros_diario_pct", "0.00")))
+        carencia_dias = int(rules.get("inadimplencia_carencia_dias", 0))
+
+        today = date.today()
+        dias_atraso = (today - parcela.vencimento).days if parcela.vencimento < today else 0
+        rates_past_grace = (
+            parcela.status == ParcelaPaymentStatus.overdue
+            and dias_atraso > carencia_dias
+            and (multa_pct_raw > 0 or juros_pct_raw > 0)
+        )
+        multa_pct = multa_pct_raw if rates_past_grace else Decimal("0.00")
+        juros_diario_pct = juros_pct_raw if rates_past_grace else Decimal("0.00")
+
         if parcela.last_pix_charge_id is not None:
             existing = await self._s.get(PixCharge, parcela.last_pix_charge_id)
             if existing is not None:
                 await self._lazy_flip_expired(existing)
                 if existing.status == PixChargeStatus.pending:
-                    await self._s.flush()
-                    return existing, False
+                    needs_regeneration = rates_past_grace and _created_before_today_brt(existing)
+                    if not needs_regeneration:
+                        await self._s.flush()
+                        return existing, False
+                    # Cancel stale charge to regenerate with current interest
+                    try:
+                        await self._provider.cancel_charge(existing.txid)
+                    except Exception:
+                        pass
+                    existing.status = PixChargeStatus.canceled
+                    existing.atualizado_em = datetime.now(UTC)
 
         proposal = await self._s.get(Proposal, parcela.proposal_id)
         sim = await self._s.get(Simulation, proposal.simulation_id) if proposal else None
@@ -65,9 +99,6 @@ class PixService:
             name=client.nome,
         )
 
-        rules = await RulesService(self._s).get_rules(parcela.tenant_id)
-        validity_days = int(rules["pix_validade_apos_vencimento_dias"])
-
         charge_id = uuid.uuid4()
         txid = str(charge_id).replace("-", "")[:35]
 
@@ -78,6 +109,9 @@ class PixService:
             validity_days=validity_days,
             description=f"Parcela {parcela.parcela_num}",
             payer=payer,
+            multa_pct=multa_pct,
+            juros_diario_pct=juros_diario_pct,
+            carencia_dias=carencia_dias,
         )
 
         qr_key = f"pix/{charge_id}/qr.png"
