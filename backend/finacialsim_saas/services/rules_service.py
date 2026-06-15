@@ -40,6 +40,9 @@ _RULE_DEFAULTS: dict[str, tuple[Any, str]] = {
     "emplacamento_valor_moto":         ("188.96", "Emplacamento — moto (R$)"),
     "emplacamento_valor_caminhao":     ("220.46", "Emplacamento — caminhão (R$)"),
     "pix_validade_apos_vencimento_dias": (60,     "Dias de validade do Pix após o vencimento da parcela"),
+    "inadimplencia_multa_pct":          ("0.00",  "Multa por inadimplência (%, máx 2%)"),
+    "inadimplencia_juros_diario_pct":   ("0.00",  "Juros moratórios diários (%, máx 0.1%)"),
+    "inadimplencia_carencia_dias":      (0,       "Carência antes dos encargos (dias, máx 30)"),
 }
 
 _REQUIRED_RULES = frozenset(_RULE_DEFAULTS.keys())
