@@ -53,7 +53,7 @@ async def client_and_vehicle(session, tenant, user, rules_seeded):
 
 
 @pytest.mark.asyncio
-async def test_get_rules_returns_all_20_keys(session, tenant, rules_seeded):
+async def test_get_rules_returns_all_21_keys(session, tenant, rules_seeded):
     from finacialsim_saas.services.rules_service import RulesService
     svc = RulesService(session)
     rules = await svc.get_rules(tenant.id)
@@ -61,7 +61,8 @@ async def test_get_rules_returns_all_20_keys(session, tenant, rules_seeded):
     assert "taxa_por_prazo_curva" in rules
     assert "ipva_pct_carro" in rules
     assert "emplacamento_valor_moto" in rules
-    assert len(rules) == 20
+    assert rules["pix_validade_apos_vencimento_dias"] == 60
+    assert len(rules) == 21
 
 
 @pytest.mark.asyncio

@@ -39,6 +39,7 @@ _RULE_DEFAULTS: dict[str, tuple[Any, str]] = {
     "emplacamento_valor_carro":        ("220.46", "Emplacamento — carro (R$)"),
     "emplacamento_valor_moto":         ("188.96", "Emplacamento — moto (R$)"),
     "emplacamento_valor_caminhao":     ("220.46", "Emplacamento — caminhão (R$)"),
+    "pix_validade_apos_vencimento_dias": (60,     "Dias de validade do Pix após o vencimento da parcela"),
 }
 
 _REQUIRED_RULES = frozenset(_RULE_DEFAULTS.keys())
