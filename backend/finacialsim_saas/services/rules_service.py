@@ -47,6 +47,12 @@ _RULE_DEFAULTS: dict[str, tuple[Any, str]] = {
 
 _REQUIRED_RULES = frozenset(_RULE_DEFAULTS.keys())
 
+_RULE_VALIDATORS: dict[str, tuple[float, float]] = {
+    "inadimplencia_multa_pct":          (0.0, 2.0),
+    "inadimplencia_juros_diario_pct":   (0.0, 0.1),
+    "inadimplencia_carencia_dias":      (0.0, 30.0),
+}
+
 
 class RulesService:
     def __init__(self, session: AsyncSession) -> None:
@@ -73,6 +79,21 @@ class RulesService:
         motivo: str | None = None,
         redis: Any | None = None,
     ) -> None:
+        if chave not in _RULE_DEFAULTS:
+            from finacialsim_saas.errors import AppError
+            raise AppError(f"business rule not found: {chave}")
+
+        if chave in _RULE_VALIDATORS:
+            lo, hi = _RULE_VALIDATORS[chave]
+            try:
+                num = float(valor)
+            except (TypeError, ValueError):
+                from finacialsim_saas.errors import ValidationError
+                raise ValidationError(f"{chave} must be a number between {lo} and {hi}")
+            if not (lo <= num <= hi):
+                from finacialsim_saas.errors import ValidationError
+                raise ValidationError(f"{chave} must be between {lo} and {hi}")
+
         result = await self._s.execute(
             select(BusinessRule).where(
                 BusinessRule.tenant_id == ctx.tenant_id,
@@ -83,9 +104,6 @@ class RulesService:
 
         audit = AuditService(self._s)
         if rule is None:
-            if chave not in _RULE_DEFAULTS:
-                from finacialsim_saas.errors import AppError
-                raise AppError(f"business rule not found: {chave}")
             _, descricao = _RULE_DEFAULTS[chave]
             rule = BusinessRule(
                 id=uuid.uuid4(),
