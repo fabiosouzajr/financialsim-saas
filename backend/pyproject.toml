@@ -23,6 +23,7 @@ dependencies = [
     "jinja2>=3.1.0",
     "aiosmtplib>=3.0.0",
     "qrcode[pil]>=7.4.2",
+    "efipay>=1.0.7",
 ]
 
 [project.optional-dependencies]

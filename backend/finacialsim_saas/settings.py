@@ -41,6 +41,12 @@ class Settings(BaseSettings):
     pix_provider: str = "fake"
     pix_webhook_secret: str = ""
 
+    efi_client_id: str = ""
+    efi_client_secret: str = ""
+    efi_certificate_path: str = ""   # absolute in-container path to .pem
+    efi_pix_key: str = ""            # registered Pix key (UUID format)
+    efi_sandbox: bool = True
+
     # Email delivery
     email_provider: str = "smtp"  # smtp | ses | resend
     smtp_host: str = "localhost"

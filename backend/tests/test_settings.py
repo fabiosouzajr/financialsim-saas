@@ -28,3 +28,13 @@ def test_settings_has_jwt_and_phase1_fields(monkeypatch):
     assert s.access_token_expire_minutes == 15
     assert s.refresh_token_expire_days == 7
     assert s.frontend_base_url == "http://localhost:5173"
+
+
+def test_settings_has_efi_pix_fields(monkeypatch):
+    monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://u:p@localhost/db")
+    s = Settings()
+    assert s.efi_client_id == ""
+    assert s.efi_client_secret == ""
+    assert s.efi_certificate_path == ""
+    assert s.efi_pix_key == ""
+    assert s.efi_sandbox is True
