@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
-from typing import Protocol, runtime_checkable
+from typing import Literal, Protocol, runtime_checkable
 
 
 @dataclass
@@ -15,6 +15,14 @@ class PixChargeData:
     amount: Decimal
     expires_at: datetime
     provider_payload: dict = field(default_factory=dict)
+
+
+@dataclass
+class PayerInfo:
+    """Structured payer identity — Efí's `devedor` needs distinct CPF/CNPJ fields."""
+    document: str          # CPF or CNPJ, digits only (punctuation stripped)
+    document_type: Literal["cpf", "cnpj"]
+    name: str
 
 
 @dataclass
@@ -35,11 +43,12 @@ class PixProvider(Protocol):
         *,
         txid: str,
         amount: Decimal,
-        expires_in: int,
+        due_date: date,
+        validity_days: int,
         description: str,
-        payer: str,
+        payer: PayerInfo | None,
     ) -> PixChargeData: ...
 
     async def cancel_charge(self, txid: str) -> None: ...
 
-    def verify_webhook(self, headers: dict, body: bytes) -> WebhookEvent: ...
+    def verify_webhook(self, headers: dict, query_params: dict, body: bytes) -> WebhookEvent: ...
