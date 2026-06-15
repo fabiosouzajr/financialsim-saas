@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import date, datetime, timezone
+from decimal import Decimal
 from typing import Any
 
 from sqlalchemy import select, and_
@@ -34,6 +35,30 @@ def _effective_status(p: ParcelaPayment) -> str:
     if p.status == ParcelaPaymentStatus.open and p.vencimento < date.today():
         return "overdue"
     return p.status.value
+
+
+def _calculate_overdue_amount(
+    valor_parcela: Decimal,
+    dias_atraso: int,
+    multa_pct: Decimal,
+    juros_diario_pct: Decimal,
+    carencia_dias: int,
+) -> dict:
+    """Pure function: computes real-time encargos estimate for an overdue parcela."""
+    dias_com_encargos = max(dias_atraso - carencia_dias, 0)
+    if dias_com_encargos > 0:
+        multa = (valor_parcela * multa_pct / 100).quantize(Decimal("0.01"))
+    else:
+        multa = Decimal("0.00")
+    juros = (valor_parcela * juros_diario_pct / 100 * dias_com_encargos).quantize(Decimal("0.01"))
+    valor_corrigido = valor_parcela + multa + juros
+    return {
+        "multa": str(multa),
+        "juros_acumulado": str(juros),
+        "valor_corrigido": str(valor_corrigido),
+        "dias_atraso": dias_atraso,
+        "estimativa": True,
+    }
 
 
 class ParcelaService:
@@ -109,29 +134,41 @@ class ParcelaService:
             )
         )
 
+        from finacialsim_saas.services.rules_service import RulesService
+        rules = await RulesService(self._s).get_rules(proposal.tenant_id)
+        multa_pct = Decimal(str(rules.get("inadimplencia_multa_pct", "0.00")))
+        juros_diario_pct = Decimal(str(rules.get("inadimplencia_juros_diario_pct", "0.00")))
+        carencia_dias = int(rules.get("inadimplencia_carencia_dias", 0))
+
+        today = date.today()
         next_open_id = None
+        parcela_list = []
         for p in parcelas:
-            if _effective_status(p) in ("open", "overdue"):
+            status = _effective_status(p)
+            if next_open_id is None and status in ("open", "overdue"):
                 next_open_id = str(p.id)
-                break
+            item: dict[str, Any] = {
+                "id": str(p.id),
+                "parcela_num": p.parcela_num,
+                "vencimento": p.vencimento.isoformat(),
+                "valor_parcela": str(p.valor_parcela),
+                "status": status,
+                "paid_at": p.paid_at.isoformat() if p.paid_at else None,
+                "paid_amount": str(p.paid_amount) if p.paid_amount else None,
+            }
+            if status == "overdue":
+                dias_atraso = (today - p.vencimento).days
+                item["encargos"] = _calculate_overdue_amount(
+                    p.valor_parcela, dias_atraso, multa_pct, juros_diario_pct, carencia_dias
+                )
+            parcela_list.append(item)
 
         return {
             "proposal_id": str(proposal.id),
             "codigo": proposal.codigo,
             "veiculo": _vehicle_desc(proposal.snapshot_json),
             "next_open_parcela_id": next_open_id,
-            "parcelas": [
-                {
-                    "id": str(p.id),
-                    "parcela_num": p.parcela_num,
-                    "vencimento": p.vencimento.isoformat(),
-                    "valor_parcela": str(p.valor_parcela),
-                    "status": _effective_status(p),
-                    "paid_at": p.paid_at.isoformat() if p.paid_at else None,
-                    "paid_amount": str(p.paid_amount) if p.paid_amount else None,
-                }
-                for p in parcelas
-            ],
+            "parcelas": parcela_list,
         }
 
     async def get_parcela(

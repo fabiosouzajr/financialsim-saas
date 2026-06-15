@@ -82,17 +82,34 @@ async def get_parcela(
     ctx: _CustomerCtx,
     session: _Session,
 ) -> dict:
+    from datetime import date
+    from decimal import Decimal
+    from finacialsim_saas.services.parcela_service import _calculate_overdue_amount, _effective_status
+    from finacialsim_saas.services.rules_service import RulesService
+
     svc = _parcela_svc(session)
     p = await svc.get_parcela(parcela_id, ctx)
-    return {
+    effective = _effective_status(p)
+    resp: dict = {
         "id": str(p.id),
         "parcela_num": p.parcela_num,
         "vencimento": p.vencimento.isoformat(),
         "valor_parcela": str(p.valor_parcela),
-        "status": p.status.value,
+        "status": effective,
         "paid_at": p.paid_at.isoformat() if p.paid_at else None,
         "paid_amount": str(p.paid_amount) if p.paid_amount else None,
     }
+    if effective == "overdue":
+        rules = await RulesService(session).get_rules(ctx.tenant_id)
+        dias_atraso = (date.today() - p.vencimento).days
+        resp["encargos"] = _calculate_overdue_amount(
+            p.valor_parcela,
+            dias_atraso,
+            Decimal(str(rules.get("inadimplencia_multa_pct", "0.00"))),
+            Decimal(str(rules.get("inadimplencia_juros_diario_pct", "0.00"))),
+            int(rules.get("inadimplencia_carencia_dias", 0)),
+        )
+    return resp
 
 
 @router.post("/parcelas/{parcela_id}/pix-charge", status_code=201)
