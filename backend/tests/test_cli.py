@@ -60,3 +60,50 @@ def test_notifications_retry_unknown_id(runner):
     bad_id = str(uuid.uuid4())
     result = runner.invoke(app, ["notifications", "retry", "--outbox-id", bad_id])
     assert result.exit_code != 0 or "not found" in result.output.lower()
+
+
+def test_pix_register_webhook_builds_url_and_calls_provider(runner, monkeypatch):
+    from finacialsim_saas.cli import pix_cli
+    from finacialsim_saas.settings import Settings
+
+    test_settings = Settings(
+        database_url="postgresql+asyncpg://u:p@localhost/db",  # type: ignore[arg-type]
+        pix_provider="efi", pix_webhook_secret="test-secret",
+        frontend_base_url="https://app.test",
+    )
+    monkeypatch.setattr(pix_cli, "get_settings", lambda: test_settings)
+
+    registered = {}
+
+    class _FakeProvider:
+        def __init__(self, settings):
+            pass
+
+        async def register_webhook(self, url):
+            registered["url"] = url
+
+    monkeypatch.setattr(pix_cli, "EfiPixProvider", _FakeProvider)
+
+    from finacialsim_saas.cli.main import app
+    result = runner.invoke(app, ["pix", "register-webhook"])
+
+    assert result.exit_code == 0, result.output
+    assert registered["url"] == "https://app.test/api/v1/webhooks/pix?hmac=test-secret&ignorar="
+    assert "Webhook registered" in result.output
+
+
+def test_pix_register_webhook_rejects_non_efi_provider(runner, monkeypatch):
+    from finacialsim_saas.cli import pix_cli
+    from finacialsim_saas.settings import Settings
+
+    test_settings = Settings(
+        database_url="postgresql+asyncpg://u:p@localhost/db",  # type: ignore[arg-type]
+        pix_provider="fake",
+    )
+    monkeypatch.setattr(pix_cli, "get_settings", lambda: test_settings)
+
+    from finacialsim_saas.cli.main import app
+    result = runner.invoke(app, ["pix", "register-webhook"])
+
+    assert result.exit_code != 0
+    assert "PIX_PROVIDER is not 'efi'" in result.output
