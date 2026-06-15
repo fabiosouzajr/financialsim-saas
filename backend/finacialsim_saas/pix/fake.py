@@ -32,6 +32,9 @@ class InMemoryFakePixProvider:
         validity_days: int,
         description: str,
         payer: PayerInfo | None,
+        multa_pct: Decimal = Decimal("0.00"),
+        juros_diario_pct: Decimal = Decimal("0.00"),
+        carencia_dias: int = 0,
     ) -> PixChargeData:
         brcode = (
             f"00020126330014BR.GOV.BCB.PIX0114{txid[:14]}"

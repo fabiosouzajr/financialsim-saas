@@ -47,6 +47,9 @@ class PixProvider(Protocol):
         validity_days: int,
         description: str,
         payer: PayerInfo | None,
+        multa_pct: Decimal = Decimal("0.00"),
+        juros_diario_pct: Decimal = Decimal("0.00"),
+        carencia_dias: int = 0,
     ) -> PixChargeData: ...
 
     async def cancel_charge(self, txid: str) -> None: ...
