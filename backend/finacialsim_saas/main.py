@@ -19,6 +19,19 @@ from finacialsim_saas.settings import get_settings
 app_state: dict[str, Any] = {}
 
 
+def _pix_sandbox_warning(settings) -> str | None:
+    """A real-PSP-in-sandbox-in-production combo silently lands charges in Efí's sandbox —
+    customers think they paid, nothing shows up in the real account. Loud warning, not a
+    hard stop (a legitimate staged-rollout could legitimately hit this combination)."""
+    if settings.pix_provider == "efi" and settings.app_env == "production" and settings.efi_sandbox:
+        return (
+            "PIX_PROVIDER=efi with EFI_SANDBOX=true in production — Pix charges will land "
+            "in Efí's sandbox; customers will think they paid and nothing will show up in "
+            "the real account. This is almost certainly a misconfiguration."
+        )
+    return None
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
@@ -29,6 +42,13 @@ async def lifespan(app: FastAPI):
     app.state.fipe_chain = build_fipe_chain(app.state.session_factory)
     app.state.redis = aioredis.from_url(str(settings.redis_url), decode_responses=True)
     app.state.arq = await create_pool(ArqRedisSettings.from_dsn(str(settings.redis_url)))
+
+    from finacialsim_saas.pix.deps import get_pix_provider
+    get_pix_provider(settings)  # fail fast on efi misconfiguration — not on the first charge
+    sandbox_warning = _pix_sandbox_warning(settings)
+    if sandbox_warning:
+        logger.warning(sandbox_warning)
+
     logger.info("startup", env=settings.app_env, sha=settings.git_sha)
     yield
     await app.state.arq.aclose()
