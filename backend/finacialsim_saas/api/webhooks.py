@@ -24,5 +24,5 @@ async def pix_webhook(request: Request, session: _Session) -> dict:
     headers = dict(request.headers)
     settings = get_settings()
     svc = PixService(session, get_pix_provider(settings), get_storage_backend(settings))
-    await svc.handle_webhook(headers, body)
+    await svc.handle_webhook(headers, dict(request.query_params), body)
     return {"ok": True}

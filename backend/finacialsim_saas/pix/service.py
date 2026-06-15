@@ -138,7 +138,7 @@ class PixService:
         qr_url = await self._storage.signed_url(qr_key, expires_in=1800)
         return charge, qr_url
 
-    async def handle_webhook(self, headers: dict[str, str], body: bytes) -> None:
+    async def handle_webhook(self, headers: dict[str, str], query_params: dict, body: bytes) -> None:
         """Logs every payload. Verifies HMAC. Processes paid events idempotently."""
         now = datetime.now(UTC)
 
@@ -149,7 +149,7 @@ class PixService:
 
         # Verify signature
         try:
-            event = self._provider.verify_webhook(headers, body)
+            event = self._provider.verify_webhook(headers, query_params, body)
             signature_valid = True
         except Exception as exc:
             self._s.add(

@@ -4,15 +4,17 @@ import hashlib
 import hmac
 import io
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, time, timedelta, timezone
+from zoneinfo import ZoneInfo
 from decimal import Decimal
 
 import qrcode
 from qrcode.image.pil import PilImage
 
-from finacialsim_saas.pix.protocol import PixChargeData, WebhookEvent
+from finacialsim_saas.pix.protocol import PayerInfo, PixChargeData, WebhookEvent
 
 UTC = timezone.utc
+BRT = ZoneInfo("America/Sao_Paulo")
 
 
 class InMemoryFakePixProvider:
@@ -26,9 +28,10 @@ class InMemoryFakePixProvider:
         *,
         txid: str,
         amount: Decimal,
-        expires_in: int,
+        due_date: date,
+        validity_days: int,
         description: str,
-        payer: str,
+        payer: PayerInfo | None,
     ) -> PixChargeData:
         brcode = (
             f"00020126330014BR.GOV.BCB.PIX0114{txid[:14]}"
@@ -40,7 +43,8 @@ class InMemoryFakePixProvider:
         img.save(buf, format="PNG")
         qr_png = buf.getvalue()
 
-        expires_at = datetime.now(UTC) + timedelta(seconds=expires_in)
+        valid_through = due_date + timedelta(days=validity_days)
+        expires_at = datetime.combine(valid_through, time(23, 59, 59), tzinfo=BRT).astimezone(UTC)
         return PixChargeData(
             txid=txid,
             brcode=brcode,
@@ -52,7 +56,8 @@ class InMemoryFakePixProvider:
     async def cancel_charge(self, txid: str) -> None:
         pass  # no-op for fake
 
-    def verify_webhook(self, headers: dict, body: bytes) -> WebhookEvent:
+    def verify_webhook(self, headers: dict, query_params: dict, body: bytes) -> WebhookEvent:
+        """`query_params` accepted for Protocol parity; unused in fake (keeps its own HMAC-over-body scheme)."""
         if self._secret:
             sig_header = headers.get("X-Pix-Signature", "")
             if not sig_header.startswith("sha256="):
