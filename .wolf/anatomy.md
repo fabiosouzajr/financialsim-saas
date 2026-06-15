@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-09T14:00:02.020Z
-> Files: 374 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-15T17:57:32.506Z
+> Files: 388 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -44,7 +44,7 @@
 
 ## backend/
 
-- `pyproject.toml` (~322 tok)
+- `pyproject.toml` (~327 tok)
 - `smoke_weasyprint.py` — Run once locally to verify WeasyPrint renders on Linux. Delete after passing. (~924 tok)
 
 ## backend/alembic/
@@ -64,13 +64,15 @@
 - `008_phase7_notifications.py` — phase7 — finalize notifications_outbox schema; add email_log stub (~998 tok)
 - `009_system_settings.py` — system_settings global config table (~227 tok)
 - `010_seed_ipva_emplacamento_rules.py` — seed IPVA and emplacamento business rules for all tenants (~434 tok)
+- `011_seed_pix_validade_apos_vencimento_rule.py` — seed pix_validade_apos_vencimento_dias business rule (~319 tok)
+- `012_seed_inadimplencia_rules.py` — seed inadimplencia business rules for all tenants (~379 tok)
 
 ## backend/finacialsim_saas/
 
 - `__init__.py` — FinacialSim SaaS backend. (~10 tok)
 - `errors.py` — Declares AppError (~368 tok)
-- `main.py` — API router (~1482 tok)
-- `settings.py` — Resolve .env relative to this file so alembic (run from backend/) finds it (~488 tok)
+- `main.py` — API router (~1767 tok)
+- `settings.py` — Resolve .env relative to this file so alembic (run from backend/) finds it (~556 tok)
 
 ## backend/finacialsim_saas/api/
 
@@ -78,21 +80,21 @@
 - `admin_settings.py` — API: 2 endpoints (~457 tok)
 - `audit_log.py` — API: 1 endpoints (~659 tok)
 - `auth.py` — API: 5 endpoints (~820 tok)
-- `business_rules.py` — API: 2 endpoints (~773 tok)
+- `business_rules.py` — API: 2 endpoints (~838 tok)
 - `cep.py` — API: 1 endpoints (~70 tok)
 - `clients.py` — API: 6 endpoints (~964 tok)
 - `fipe.py` — API: 5 endpoints (~727 tok)
 - `health.py` — API: 2 endpoints (~387 tok)
 - `indicators.py` — API: 3 endpoints (~442 tok)
-- `pix_admin.py` — Staff Pix admin endpoints — manager|admin only. (~1173 tok)
-- `portal.py` — Portal API endpoints — customer-facing (role=customer JWT required). (~1242 tok)
+- `pix_admin.py` — Staff Pix admin endpoints — manager|admin only. (~1172 tok)
+- `portal.py` — Portal API endpoints — customer-facing (role=customer JWT required). (~1464 tok)
 - `proposals.py` — Proposal API endpoints. (~1294 tok)
 - `simulations.py` — API: 7 endpoints (~1042 tok)
 - `storage.py` — Storage serve endpoint — validates HMAC token and streams the file. (~368 tok)
 - `users.py` — API: 4 endpoints (~1214 tok)
 - `vehicles.py` — API: 6 endpoints (~855 tok)
 - `vehicles.py` — API: 6 endpoints (~871 tok)
-- `webhooks.py` — PSP webhook endpoints — no JWT auth; HMAC-SHA256 verified per provider. (~304 tok)
+- `webhooks.py` — PSP webhook endpoints — no JWT auth; HMAC-SHA256 verified per provider. (~312 tok)
 
 ## backend/finacialsim_saas/auth/
 
@@ -105,8 +107,9 @@
 
 - `__init__.py` (~0 tok)
 - `db.py` — db_migrate, db_reset (~540 tok)
-- `main.py` — tenant_create, user_create, user_reset_password (~1318 tok)
+- `main.py` — tenant_create, user_create, user_reset_password (~1342 tok)
 - `notifications_cli.py` — notifications_drain, notifications_retry (~873 tok)
+- `pix_cli.py` — pix_register_webhook (~252 tok)
 
 ## backend/finacialsim_saas/data/
 
@@ -183,17 +186,12 @@
 
 ## backend/finacialsim_saas/pix/
 
-- `__init__.py` — Exports PixProvider, PixChargeData, WebhookEvent (~30 tok)
-- `__init__.py` (~41 tok)
-- `deps.py` — get_pix_provider(settings) → PixProvider (fake or external) (~100 tok)
-- `deps.py` — get_pix_provider (~170 tok)
-- `fake.py` — InMemoryFakePixProvider: create_charge (PIL QR PNG), cancel_charge, verify_webhook (~250 tok)
-- `fake.py` — InMemoryFakePixProvider: create_charge, cancel_charge, verify_webhook (~669 tok)
-- `protocol.py` — PixChargeData, WebhookEvent dataclasses; PixProvider Protocol (~200 tok)
-- `protocol.py` — class: create_charge, cancel_charge, verify_webhook (~310 tok)
-- `service.py` — PixService: create_charge_for_parcela, handle_webhook, get_charge, cancel_charges_for_proposal (~3762 tok)
-- `stub.py` — StubExternalPixProvider: raises NotImplementedError for all methods (~120 tok)
-- `stub.py` — StubExternalPixProvider: create_charge, cancel_charge, verify_webhook (~227 tok)
+- `__init__.py` — Exports PixProvider, PixChargeData, WebhookEvent (~41 tok)
+- `deps.py` — get_pix_provider with cached EfiPixProvider singleton and _validate_efi_settings (~490 tok)
+- `efi.py` — EfiPixProvider: create_charge (CobV), cancel_charge, register_webhook, verify_webhook (hmac token) (~1402 tok)
+- `fake.py` — InMemoryFakePixProvider: create_charge, cancel_charge, verify_webhook (~808 tok)
+- `protocol.py` — PixProvider Protocol + PixChargeData, PayerInfo, WebhookEvent dataclasses (~440 tok)
+- `service.py` — PixService: _ensure_charge (idempotent CobV), create_charge_for_parcela, handle_webhook (~4602 tok)
 
 ## backend/finacialsim_saas/reports/
 
@@ -207,7 +205,7 @@
 - `__init__.py` (~0 tok)
 - `admin_settings.py` — Declares SettingItem (~54 tok)
 - `audit_log.py` — Declares AuditLogItem (~138 tok)
-- `business_rules.py` — Declares RateCurvePointOut (~298 tok)
+- `business_rules.py` — Declares RateCurvePointOut (~334 tok)
 - `clients.py` — Declares ClientIn (~381 tok)
 - `fipe.py` — Declares FipeBrandItem (~154 tok)
 - `indicators.py` — Declares IndicatorOut (~408 tok)
@@ -225,9 +223,9 @@
 - `fipe_cache.py` — PostgresFipeCache: name, fetch (~1427 tok)
 - `fipe_service.py` — FipeService: build_fipe_chain, get_brands, get_models, get_years + 1 more (~745 tok)
 - `indicators_service.py` — IndicatorsService: upsert, latest, latest_all, series (~1300 tok)
-- `parcela_service.py` — ParcelaService: list_for_customer, get_schedule, get_parcela, mark_overdue (~2470 tok)
+- `parcela_service.py` — ParcelaService: list_for_customer, get_schedule, get_parcela, mark_overdue (~2917 tok)
 - `proposal_service.py` — ProposalService — manages the full proposal lifecycle. (~3092 tok)
-- `rules_service.py` — Single source of truth for all business rule defaults: key → (value, description) (~1351 tok)
+- `rules_service.py` — Single source of truth for all business rule defaults: key → (value, description) (~1669 tok)
 - `settings_service.py` — SettingsService: get_all, update (~684 tok)
 - `simulation_service.py` — from: preview, create (~8192 tok)
 - `vehicle_service.py` — VehicleService: create, get, list, update + 2 more (~2393 tok)
@@ -252,7 +250,7 @@
 
 ## backend/tests/
 
-- `conftest.py` — ── Postgres ────────────────────────────────────────────────────────────────── (~1005 tok)
+- `conftest.py` — ── Postgres ────────────────────────────────────────────────────────────────── (~1146 tok)
 - `test_admin_health.py` — test_admin_health_returns_expected_shape, test_admin_health_non_admin_returns_403 (~653 tok)
 - `test_admin_settings.py` — clean_settings, test_get_settings_returns_env_defaults, test_put_get_round_trip, test_put_non_admin_ (~1055 tok)
 - `test_arq_jobs.py` — test_update_bacen_indicators_populates_db, test_verify_provider_health_prunes_to_50 (~1068 tok)
@@ -261,43 +259,52 @@
 - `test_audit_log_endpoints.py` — test_audit_log_returns_entries, test_audit_log_filter_by_acao, test_audit_log_user_role_sees_only_ow (~1204 tok)
 - `test_audit_service.py` — test_log_and_list, test_list_user_sees_only_own, test_cursor_pagination, test_cross_tenant_isolation (~1019 tok)
 - `test_auth_endpoints.py` — seed, test_login_returns_tokens, test_login_wrong_password_returns_401, test_refresh_returns_new_tok (~850 tok)
-- `test_auth_invite.py` — tenant, admin_user, client_record, test_invite_customer_creates_user_and_token (~1306 tok)
+- `test_auth_invite.py` — tenant, admin_user, client_record, test_invite_customer_creates_user_and_token (~1305 tok)
 - `test_auth_service.py` — tenant, test_register_and_authenticate, test_authenticate_wrong_password_raises, test_issue_tokens_r (~1184 tok)
 - `test_bacen_providers.py` — test_sgs_primary_ok, test_sgs_http_error_returns_err, test_chain_primary_fail_brasilapi_fallback, te (~1058 tok)
 - `test_br_format.py` — test_format_brl_basic, test_format_brl_negative, test_format_brl_large, test_format_pct_default (~289 tok)
 - `test_business_rules_update.py` — test_put_business_rule_updates_value, test_put_business_rule_non_admin_forbidden, test_put_business_ (~832 tok)
 - `test_cep_service.py` — test_cep_lookup_returns_brasilapi_response, test_cep_lookup_fails_open_on_error, test_cep_invalid_le (~317 tok)
-- `test_cli.py` — runner, test_tenant_create_and_user_create, test_db_migrate_runs_without_error, test_db_reset_requir (~658 tok)
+- `test_cli.py` — _FakeProvider: runner, test_tenant_create_and_user_create, test_db_migrate_runs_without_error, test_ (~1038 tok)
 - `test_client_endpoints.py` — test_create_and_get_client, test_create_client_invalid_cpf_returns_422, test_deactivate_client, test (~802 tok)
 - `test_client_service.py` — ctx_and_session, test_create_pf_client_valid_cpf, test_create_pf_client_invalid_cpf_raises, test_cre (~976 tok)
 - `test_database.py` — test_db_ping, test_session_can_execute_query (~124 tok)
 - `test_deps_client_id.py` — _Req: test_parse_bearer_includes_client_id, test_parse_bearer_no_client_id_for_staff (~491 tok)
 - `test_deps.py` — test_parse_bearer_valid_token, test_parse_bearer_no_header_returns_none, test_require_role_wrong_rol (~607 tok)
 - `test_drain_outbox.py` — Tests for drain_notifications_outbox ARQ job (SMTP mocked). (~1790 tok)
+- `test_efi_pix_provider.py` — test_create_charge_sends_cobv_request_shape_and_maps_response, test_create_charge_with_penalty_rates (~2417 tok)
 - `test_errors.py` — test_not_found_code_and_status, test_external_provider_degraded_flag, test_all_six_errors_are_app_er (~255 tok)
+- `test_fake_pix_provider.py` — test_create_charge_anchors_expiry_to_due_date_plus_validity_days_in_brt, test_verify_webhook_accepts (~643 tok)
 - `test_fipe_chain.py` — test_primary_ok_returns_value, test_primary_fail_fallback_ok, test_cache_hit_skips_provider, test_bo (~1132 tok)
 - `test_health.py` — client, test_healthz_returns_ok, test_version_has_expected_keys, test_healthz_returns_postgres_and_r (~526 tok)
+- `test_inadimplencia_overdue_amount.py` — test_within_carencia_returns_zero_encargos, test_day_1_past_carencia_applies_multa_and_juros, test_f (~2117 tok)
+- `test_inadimplencia_rules.py` — test_multa_pct_above_ceiling_rejected, test_juros_pct_above_ceiling_rejected, test_carencia_dias_abo (~996 tok)
 - `test_indicators_endpoints.py` — test_list_indicators_returns_array, test_indicator_series, test_refresh_indicators_requires_admin, t (~993 tok)
 - `test_indicators_service.py` — test_upsert_and_latest, test_upsert_idempotent, test_series_returns_ordered_points, test_series_inva (~1499 tok)
 - `test_maildir.py` — test_deliver_writes_eml_file (~122 tok)
+- `test_main_pix_startup.py` — test_pix_sandbox_warning_fires_for_efi_sandbox_in_production, test_pix_sandbox_warning_silent_outsid (~277 tok)
 - `test_models.py` — test_all_phase1_models_importable_and_tables_exist, test_all_phase2_models_importable_and_tables_exi (~834 tok)
 - `test_notification_service.py` — Integration tests for NotificationService.enqueue() — DB only, no SMTP. (~846 tok)
-- `test_notification_templates.py` — Tests that every template key renders without error and contains expected strings. (~1023 tok)
-- `test_parcela_service.py` — setup, test_list_for_customer_returns_proposals, test_get_schedule_returns_parcelas, test_cannot_acc (~1694 tok)
+- `test_notification_templates.py` — Tests that every template key renders without error and contains expected strings. (~1024 tok)
+- `test_parcela_service.py` — setup, test_list_for_customer_returns_proposals, test_get_schedule_returns_parcelas, test_cannot_acc (~1698 tok)
+- `test_pix_deps.py` — _FakeEfiProvider: test_external_provider_value_no_longer_supported, test_efi_provider_requires_setti (~618 tok)
+- `test_pix_protocol.py` — test_payer_info_fields, test_create_charge_uses_date_based_due_date_and_validity_days, test_create_c (~349 tok)
+- `test_pix_service_inadimplencia.py` — Integration tests for _ensure_charge overdue regeneration logic. (~1896 tok)
 - `test_pix_service_smoke.py` — Smoke test — full PixService tests are in test_pix_service.py (Plan 6E). (~63 tok)
-- `test_portal_endpoints_smoke.py` — Smoke tests for portal API — full isolation tests are in test_portal_endpoints.py (Plan 6E). (~368 tok)
+- `test_pix_service.py` — pix_setup, test_ensure_charge_builds_payer_info_from_linked_client, test_ensure_charge_threads_due_d (~2305 tok)
+- `test_portal_endpoints_smoke.py` — Smoke tests for portal API — full isolation tests are in test_portal_endpoints.py (Plan 6E). (~546 tok)
 - `test_proposal_endpoints.py` — Integration tests for proposal API endpoints. (~1505 tok)
 - `test_proposal_phase6.py` — Tests for Phase 6 ProposalService changes: invite on approve, cancel with cleanup. (~1302 tok)
 - `test_proposal_service_unit.py` — Unit tests for ProposalService using mocked session + arq. (~785 tok)
-- `test_proposal_service.py` — Integration tests for ProposalService against a real Postgres. (~2399 tok)
+- `test_proposal_service.py` — Integration tests for ProposalService against a real Postgres. (~2401 tok)
 - `test_proposal_snapshot.py` — test_build_snapshot_basic, test_build_snapshot_tarifas_computed, test_snapshot_rejects_extra_fields, (~1010 tok)
 - `test_render_tasks.py` — Worker render task tests — WeasyPrint is mocked. (~1147 tok)
 - `test_rules_update.py` — test_update_changes_value_and_writes_audit, test_update_with_motivo_stored_in_diff, test_update_publ (~949 tok)
 - `test_schemas.py` — M: test_decimal_str_serializes_as_string, test_decimal_str_parses_from_string, test_simulation_creat (~552 tok)
 - `test_settings_service.py` — clean_settings, test_get_all_returns_env_defaults_when_table_empty, test_update_and_get_round_trip, (~596 tok)
-- `test_settings.py` — test_settings_loads_with_valid_env, test_settings_missing_database_url_raises, test_settings_has_jwt (~313 tok)
+- `test_settings.py` — test_settings_loads_with_valid_env, test_settings_missing_database_url_raises, test_settings_has_jwt (~425 tok)
 - `test_simulation_endpoints.py` — test_get_business_rules, test_preview_returns_schedule, test_create_simulation_returns_201, test_lis (~2167 tok)
-- `test_simulation_service.py` — tenant, user, rules_seeded, client_and_vehicle (~3312 tok)
+- `test_simulation_service.py` — tenant, user, rules_seeded, client_and_vehicle (~3377 tok)
 - `test_storage_contract.py` — Storage backend contract test — same assertions pass both Local and S3 (MinIO). (~590 tok)
 - `test_storage_local.py` — storage, test_put_and_get, test_signed_url_structure, test_signed_url_valid_hmac (~588 tok)
 - `test_tenant_isolation.py` — two_tenants, test_get_users_returns_only_own_tenant, test_get_me_returns_own_tenant, test_patch_user (~1047 tok)
@@ -336,6 +343,7 @@
 ## docs/agents/
 
 - `domain.md` — Domain Docs (~485 tok)
+- `efi-pix-setup.md` — Efí Pix provider setup (~992 tok)
 - `issue-tracker.md` — Issue tracker: GitHub (~271 tok)
 - `triage-labels.md` — Triage Labels (~265 tok)
 

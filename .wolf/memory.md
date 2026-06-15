@@ -1641,3 +1641,92 @@
 | 10:59 | Edited docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | 8→8 lines | ~60 |
 | 11:00 | Edited docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | modified feat() | ~67 |
 | 11:10 | writing-plans: Fase 3 Inadimplência — 6 tasks, 3 test files, seed migration 011, carencia gate + daily regeneration in _ensure_charge | docs/superpowers/plans/2026-06-09-pix-fase3-inadimplencia.md | plan complete, self-reviewed, storage mock fixed | ~25k |
+
+## Session: 2026-06-15 13:51
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-15 13:52
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:02 | Edited backend/tests/test_settings.py | modified test_settings_has_efi_pix_fields() | ~110 |
+| 14:02 | Edited backend/finacialsim_saas/settings.py | expanded (+6 lines) | ~92 |
+| 14:02 | Edited backend/pyproject.toml | 2→3 lines | ~13 |
+| 14:03 | Created backend/tests/test_pix_protocol.py | — | ~349 |
+| 14:03 | Edited backend/finacialsim_saas/pix/protocol.py | 6→6 lines | ~56 |
+| 14:03 | Edited backend/finacialsim_saas/pix/protocol.py | expanded (+8 lines) | ~80 |
+| 14:04 | Edited backend/finacialsim_saas/pix/protocol.py | modified create_charge() | ~113 |
+| 14:04 | Created backend/tests/test_fake_pix_provider.py | — | ~643 |
+| 14:05 | Edited backend/finacialsim_saas/pix/fake.py | added 1 import(s) | ~27 |
+| 14:05 | Edited backend/finacialsim_saas/pix/fake.py | 3→4 lines | ~39 |
+| 14:05 | Edited backend/finacialsim_saas/pix/fake.py | modified create_charge() | ~266 |
+| 14:05 | Edited backend/finacialsim_saas/pix/fake.py | modified verify_webhook() | ~59 |
+| 14:05 | Edited backend/finacialsim_saas/pix/service.py | inline fix | ~29 |
+| 14:05 | Edited backend/finacialsim_saas/pix/service.py | inline fix | ~23 |
+| 14:05 | Edited backend/finacialsim_saas/api/webhooks.py | inline fix | ~21 |
+| 14:06 | Edited backend/tests/test_simulation_service.py | test_get_rules_returns_all_20_keys() → test_get_rules_returns_all_21_keys() | ~136 |
+| 14:06 | Edited backend/finacialsim_saas/services/rules_service.py | 2→3 lines | ~55 |
+| 14:06 | Created backend/alembic/versions/011_seed_pix_validade_apos_vencimento_rule.py | — | ~319 |
+| 14:14 | Edited backend/tests/test_settings.py | modified test_settings_loads_with_valid_env() | ~98 |
+| 14:14 | Edited backend/tests/test_cli.py | inline fix | ~16 |
+| 14:14 | Edited backend/tests/test_notification_templates.py | inline fix | ~12 |
+| 14:14 | Edited backend/tests/test_parcela_service.py | "parcela_overdue" → "portal.parcela_overdue" | ~21 |
+| 14:15 | Edited backend/tests/test_auth_invite.py | "customer_invite" → "portal.customer_invite" | ~21 |
+| 14:15 | Edited backend/tests/test_proposal_service.py | "customer_invite" → "portal.customer_invite" | ~22 |
+| 14:15 | Edited backend/tests/test_portal_endpoints_smoke.py | modified test_portal_me_requires_customer_role() | ~450 |
+| 14:18 | Edited backend/tests/test_auth_invite.py | 2→2 lines | ~35 |
+| 14:19 | Edited backend/tests/test_parcela_service.py | 2→2 lines | ~29 |
+| 14:19 | Edited backend/tests/conftest.py | added 1 import(s) | ~136 |
+| 14:19 | Edited backend/tests/conftest.py | modified _create_schema() | ~219 |
+
+## Session: 2026-06-15 14:25
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:27 | Created backend/tests/test_pix_service.py | — | ~2305 |
+| 14:27 | Edited backend/finacialsim_saas/pix/service.py | added 1 import(s) | ~144 |
+| 14:28 | Edited backend/finacialsim_saas/pix/service.py | modified _ensure_charge() | ~1598 |
+| 14:32 | Implemented Part 2 plan: extract _ensure_charge (idempotent CobV core) from create_charge_for_parcela; added Task 6 test (query_params already done) | backend/finacialsim_saas/pix/service.py, backend/tests/test_pix_service.py | 240 passed, 1 skipped | ~8k |
+| 14:36 | Edited backend/finacialsim_saas/services/rules_service.py | 2→5 lines | ~111 |
+| 14:36 | Created backend/alembic/versions/012_seed_inadimplencia_rules.py | — | ~379 |
+| 14:36 | Edited backend/tests/test_simulation_service.py | test_get_rules_returns_all_21_keys() → test_get_rules_returns_all_24_keys() | ~184 |
+| 14:37 | Created backend/tests/test_inadimplencia_rules.py | — | ~996 |
+| 14:37 | Edited backend/finacialsim_saas/services/rules_service.py | expanded (+6 lines) | ~82 |
+| 14:37 | Edited backend/finacialsim_saas/services/rules_service.py | modified update() | ~353 |
+| 14:38 | Edited backend/finacialsim_saas/schemas/business_rules.py | 3→6 lines | ~71 |
+| 14:38 | Edited backend/finacialsim_saas/api/business_rules.py | 4→7 lines | ~126 |
+| 14:39 | Edited backend/finacialsim_saas/pix/protocol.py | modified create_charge() | ~105 |
+| 14:39 | Edited backend/finacialsim_saas/pix/fake.py | modified create_charge() | ~104 |
+| 14:40 | Edited backend/finacialsim_saas/pix/stub.py | modified create_charge() | ~292 |
+| 14:41 | Created backend/tests/test_pix_service_inadimplencia.py | — | ~1896 |
+| 14:42 | Edited backend/finacialsim_saas/pix/service.py | added 1 import(s) | ~43 |
+| 14:42 | Edited backend/finacialsim_saas/pix/service.py | modified _created_before_today_brt() | ~99 |
+| 14:42 | Edited backend/finacialsim_saas/pix/service.py | modified _ensure_charge() | ~1115 |
+| 14:43 | Created backend/tests/test_inadimplencia_overdue_amount.py | — | ~2117 |
+| 14:44 | Edited backend/finacialsim_saas/services/parcela_service.py | added 1 import(s) | ~146 |
+| 14:44 | Edited backend/finacialsim_saas/services/parcela_service.py | modified _effective_status() | ~308 |
+| 14:44 | Edited backend/finacialsim_saas/services/parcela_service.py | modified in() | ~541 |
+| 14:44 | Edited backend/finacialsim_saas/api/portal.py | modified get_parcela() | ~385 |
+| 15:10 | Implemented Fase 3 inadimplência plan (6 tasks): 3 business rules, validation guards, schema/API, Protocol penalty params, _ensure_charge regeneration, _calculate_overdue_amount + portal enrichment | rules_service.py, schemas/business_rules.py, api/business_rules.py, pix/protocol.py, pix/fake.py, pix/stub.py, pix/service.py, services/parcela_service.py, api/portal.py, alembic/versions/012_* | 256 passed, 1 skipped | ~20k |
+
+## Session: 2026-06-15 14:51
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:53 | Created backend/tests/test_efi_pix_provider.py | — | ~2208 |
+| 14:53 | Created backend/finacialsim_saas/pix/efi.py | — | ~1270 |
+| 14:54 | Created backend/tests/test_pix_deps.py | — | ~618 |
+| 14:54 | Created backend/finacialsim_saas/pix/deps.py | — | ~490 |
+| 14:54 | Edited backend/finacialsim_saas/api/pix_admin.py | "external" → "fake" | ~12 |
+| 14:55 | Created backend/tests/test_main_pix_startup.py | — | ~277 |
+| 14:55 | Edited backend/finacialsim_saas/main.py | modified _pix_sandbox_warning() | ~489 |
+| 14:55 | Edited backend/tests/test_cli.py | modified test_notifications_retry_unknown_id() | ~554 |
+| 14:56 | Edited backend/tests/test_efi_pix_provider.py | modified test_verify_webhook_rejects_missing_or_mismatched_hmac_token() | ~369 |
+| 14:56 | Edited backend/finacialsim_saas/pix/efi.py | modified register_webhook() | ~159 |
+| 14:56 | Created backend/finacialsim_saas/cli/pix_cli.py | — | ~252 |
+| 14:56 | Edited backend/finacialsim_saas/cli/main.py | added 1 import(s) | ~82 |
+| 14:57 | Created docs/agents/efi-pix-setup.md | — | ~1059 |
+
+| 15:00 | Executed Efi Pix Provider Plans Parts 3 & 4: EfiPixProvider (CobV create_charge, cancel_charge, verify_webhook, register_webhook), deps.py singleton wiring, main.py fail-fast + sandbox warning, CLI pix register-webhook, runbook doc | pix/efi.py, pix/deps.py, cli/pix_cli.py, cli/main.py, main.py, api/pix_admin.py, docs/agents/efi-pix-setup.md, 5 new test files | 273 passed, pushed to origin/master | ~6000 tok |
