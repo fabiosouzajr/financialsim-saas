@@ -33,6 +33,9 @@ class BusinessRulesOut(BaseModel):
     emplacamento_valor_carro: DecimalStr
     emplacamento_valor_moto: DecimalStr
     emplacamento_valor_caminhao: DecimalStr
+    inadimplencia_multa_pct: DecimalStr
+    inadimplencia_juros_diario_pct: DecimalStr
+    inadimplencia_carencia_dias: int
 
 
 class BusinessRuleUpdateIn(BaseModel):

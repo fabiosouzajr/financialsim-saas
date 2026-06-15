@@ -42,6 +42,9 @@ async def get_business_rules(
         emplacamento_valor_carro=rules["emplacamento_valor_carro"],
         emplacamento_valor_moto=rules["emplacamento_valor_moto"],
         emplacamento_valor_caminhao=rules["emplacamento_valor_caminhao"],
+        inadimplencia_multa_pct=rules["inadimplencia_multa_pct"],
+        inadimplencia_juros_diario_pct=rules["inadimplencia_juros_diario_pct"],
+        inadimplencia_carencia_dias=int(rules["inadimplencia_carencia_dias"]),
     )
 
 
