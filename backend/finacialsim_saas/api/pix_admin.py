@@ -38,7 +38,7 @@ async def mark_paid(
 ) -> dict:
     """Fake-provider only: triggers webhook path to mark a charge as paid."""
     settings = get_settings()
-    if settings.pix_provider == "external":
+    if settings.pix_provider != "fake":
         raise HTTPException(status_code=501, detail="mark-paid not available for external provider")
 
     # Look up charge to get amount
