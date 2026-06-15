@@ -1,5 +1,6 @@
 import asyncio
 import os
+from pathlib import Path
 import pytest
 import pytest_asyncio
 from testcontainers.postgres import PostgresContainer
@@ -42,6 +43,18 @@ def engine(db_url: str) -> AsyncEngine:
             await conn.run_sync(Base.metadata.create_all)
 
     asyncio.run(_create_schema())
+
+    # Stamp alembic to head so `alembic upgrade head` in CLI tests is a no-op
+    from alembic.config import Config as AlembicConfig
+    from alembic import command as alembic_command
+    alembic_cfg = AlembicConfig()
+    alembic_cfg.set_main_option(
+        "script_location",
+        str(Path(__file__).parent.parent / "alembic"),
+    )
+    alembic_cfg.set_main_option("sqlalchemy.url", db_url.replace("+asyncpg", ""))
+    alembic_command.stamp(alembic_cfg, "head")
+
     yield eng
     asyncio.run(eng.dispose())
 

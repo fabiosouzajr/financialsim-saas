@@ -59,7 +59,7 @@ TEMPLATE_CASES = [
             "valor_pago": "R$ 500,00",
             "parcela_num": 2,
         },
-        ["Lucia", "pago", "500,00"],
+        ["Lucia", "pagamento", "500,00"],
         [],
     ),
     (

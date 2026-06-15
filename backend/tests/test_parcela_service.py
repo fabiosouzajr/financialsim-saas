@@ -151,9 +151,9 @@ async def test_mark_overdue_flips_past_due_parcelas(session, setup):
 
     outbox = await session.scalar(
         select(NotificationsOutbox).where(
-            NotificationsOutbox.template_key == "parcela_overdue",
+            NotificationsOutbox.template_key == "portal.parcela_overdue",
             NotificationsOutbox.tenant_id == setup["tenant"].id,
         )
     )
     assert outbox is not None
-    assert outbox.payload_json["parcela_id"] == str(overdue_p.id)
+    assert outbox.payload_json["parcela_num"] == overdue_p.parcela_num

@@ -4,6 +4,7 @@ from finacialsim_saas.settings import Settings
 
 def test_settings_loads_with_valid_env(monkeypatch):
     monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://u:p@localhost/db")
+    monkeypatch.setenv("PDF_OUTPUT_DIR", "/tmp/finacialsim-pdfs")
     s = Settings()
     assert s.app_env == "development"
     assert s.git_sha == "dev"

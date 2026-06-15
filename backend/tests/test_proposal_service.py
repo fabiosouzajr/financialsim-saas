@@ -186,7 +186,7 @@ async def test_approve_writes_customer_invite_outbox(ctx_and_session, tmp_path):
     outbox = list(await session.scalars(
         select(NotificationsOutbox)
         .where(NotificationsOutbox.tenant_id == ctx.tenant_id)
-        .where(NotificationsOutbox.template_key == "customer_invite")
+        .where(NotificationsOutbox.template_key == "portal.customer_invite")
     ))
     assert len(outbox) == 1
     assert outbox[0].payload_json["proposal_id"] == str(proposal.id)

@@ -67,12 +67,12 @@ async def test_invite_customer_creates_user_and_token(session, tenant, client_re
         select(NotificationsOutbox)
         .where(
             NotificationsOutbox.tenant_id == tenant.id,
-            NotificationsOutbox.template_key == "customer_invite",
+            NotificationsOutbox.template_key == "portal.customer_invite",
         )
     )
     entry = outbox_result.scalars().first()
     assert entry is not None
-    assert entry.payload_json["user_id"] == str(user.id)
+    assert entry.payload_json["user_name"] == user.name
     assert entry.payload_json["proposal_id"] == str(proposal_id)
 
 

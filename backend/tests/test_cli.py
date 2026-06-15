@@ -34,7 +34,7 @@ def test_tenant_create_and_user_create(runner, engine):
     assert result2.exit_code == 0, result2.output
 
 
-def test_db_migrate_runs_without_error(runner):
+def test_db_migrate_runs_without_error(runner, engine):
     from finacialsim_saas.cli.main import app
     result = runner.invoke(app, ["db", "migrate"])
     assert result.exit_code == 0, result.output
