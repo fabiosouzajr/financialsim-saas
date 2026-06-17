@@ -13,6 +13,7 @@ from finacialsim_core.money import quantize_brl
 class ExtraModalidade(StrEnum):
     MENSAL_CONTINUO = "mensal_continuo"
     RATEIO_MESES = "rateio_meses"
+    RATEIO_CICLICO = "rateio_ciclico"
     UNICO_INICIAL = "unico_inicial"
 
 
@@ -29,7 +30,7 @@ class Extra:
 def _valor_por_parcela(extra: Extra) -> Decimal:
     if extra.modalidade is ExtraModalidade.MENSAL_CONTINUO:
         return quantize_brl(extra.valor_total)
-    if extra.modalidade is ExtraModalidade.RATEIO_MESES:
+    if extra.modalidade in (ExtraModalidade.RATEIO_MESES, ExtraModalidade.RATEIO_CICLICO):
         return quantize_brl(extra.valor_total / Decimal(extra.duracao_meses))
     if extra.modalidade is ExtraModalidade.UNICO_INICIAL:
         return quantize_brl(extra.valor_total)
@@ -55,6 +56,20 @@ def compute_extras_per_parcela(extras: list[Extra], prazo_total: int) -> list[De
             # Last installment absorbs rounding so total == valor_total
             residual = extra.valor_total - per * Decimal(limit - 1)
             result[limit - 1] += quantize_brl(residual)
+        elif extra.modalidade is ExtraModalidade.RATEIO_CICLICO:
+            # Repeat the rateio every duracao_meses for the full loan term.
+            # Each complete cycle spreads valor_total over duracao_meses.
+            # A partial last cycle spreads the full valor_total over the remaining months.
+            cycle_len = extra.duracao_meses
+            start = 0
+            while start < prazo_total:
+                cycle_months = min(cycle_len, prazo_total - start)
+                cycle_per = quantize_brl(extra.valor_total / Decimal(cycle_months))
+                for j in range(cycle_months - 1):
+                    result[start + j] += cycle_per
+                residual = extra.valor_total - cycle_per * Decimal(cycle_months - 1)
+                result[start + cycle_months - 1] += quantize_brl(residual)
+                start += cycle_len
         else:
             limit = min(extra.duracao_meses, prazo_total)
             for i in range(limit):

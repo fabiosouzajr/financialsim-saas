@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-15T17:57:32.506Z
-> Files: 388 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-17T14:16:11.231Z
+> Files: 384 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -20,11 +20,11 @@
 - `dev.sh` — dev.sh — FinacialSim SaaS local dev runner (~2996 tok)
 - `pyproject.toml` (~34 tok)
 - `README.md` — Project documentation (~1467 tok)
-- `setup-tenant.sh` — setup-tenant.sh — FinacialSim SaaS first-tenant setup wizard (~1710 tok)
+- `setup-tenant.sh` — setup-tenant.sh — FinacialSim SaaS first-tenant setup wizard (~2259 tok)
 
 ## .claude/
 
-- `settings.json` (~667 tok)
+- `settings.json` (~662 tok)
 - `settings.local.json` (~34 tok)
 
 ## .claude/rules/
@@ -41,6 +41,10 @@
 - `layout.html` (~2213 tok)
 - `rules-edit.html` (~2222 tok)
 - `waiting.html` (~39 tok)
+
+## .vscode/
+
+- `settings.json` (~31 tok)
 
 ## backend/
 
@@ -533,8 +537,8 @@
 - `ResultCards.tsx` — Card (~516 tok)
 - `ScheduleTable.tsx` — CSV_HEADERS — renders table (~742 tok)
 - `SimulacaoCharts.tsx` — SimulacaoCharts (~970 tok)
-- `SimulacaoForm.tsx` — schema — renders form (~6862 tok)
-- `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~917 tok)
+- `SimulacaoForm.tsx` — schema — renders form (~6892 tok)
+- `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~928 tok)
 
 ## frontend/src/routes/veiculos/
 
@@ -561,7 +565,7 @@
 ## ops/
 
 - `Caddyfile` (~31 tok)
-- `docker-compose.yml` — Docker Compose services (~704 tok)
+- `docker-compose.yml` — Docker Compose services (~710 tok)
 - `Dockerfile.api` (~164 tok)
 - `Dockerfile.web` (~71 tok)
 - `Dockerfile.worker` (~276 tok)
@@ -574,6 +578,7 @@
 ## packages/finacialsim_core/finacialsim_core/
 
 - `__init__.py` — Pure financial math library — no SQLAlchemy, no NiceGUI. (~18 tok)
+- `extras.py` — Custos adicionais mensais (extras) acrescidos a parcela. (~904 tok)
 
 ## packages/finacialsim_core/finacialsim_core/integrations/
 

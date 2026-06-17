@@ -38,7 +38,7 @@ const schema = z.object({
     tipo: z.string(),
     nome: z.string(),
     valor_total: z.string(),
-    modalidade: z.enum(["mensal_continuo", "rateio_meses", "unico_inicial"]),
+    modalidade: z.enum(["mensal_continuo", "rateio_meses", "rateio_ciclico", "unico_inicial"]),
     duracao_meses: z.number().int(),
     ordem: z.number().int(),
   })).default([]),
@@ -534,7 +534,7 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
                   tipo: "ipva",
                   nome: "IPVA",
                   valor_total: valorTotal,
-                  modalidade: "rateio_meses",
+                  modalidade: "rateio_ciclico",
                   duracao_meses: rules?.rateio_ipva_meses_default ?? 12,
                   ordem: extraFields.length,
                 });
@@ -552,7 +552,7 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
                   tipo: "emplacamento",
                   nome: "Emplacamento",
                   valor_total: valorTotal,
-                  modalidade: "rateio_meses",
+                  modalidade: "rateio_ciclico",
                   duracao_meses: rules?.rateio_emplacamento_meses_default ?? 3,
                   ordem: extraFields.length,
                 });
@@ -583,6 +583,7 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
                   <select className="w-full border rounded px-2 py-1.5 text-sm" {...register(`extras.${i}.modalidade`)}>
                     <option value="mensal_continuo">Mensal contínuo</option>
                     <option value="rateio_meses">Rateio (meses)</option>
+                    <option value="rateio_ciclico">Rateio anual (cíclico)</option>
                     <option value="unico_inicial">Único inicial</option>
                   </select>
                 </div>

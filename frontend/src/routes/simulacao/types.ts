@@ -36,7 +36,7 @@ export interface ExtraInput {
   tipo: string;
   nome: string;
   valor_total: string;
-  modalidade: "mensal_continuo" | "rateio_meses" | "unico_inicial";
+  modalidade: "mensal_continuo" | "rateio_meses" | "rateio_ciclico" | "unico_inicial";
   duracao_meses: number;
   ordem: number;
 }
@@ -114,7 +114,7 @@ export interface SimulationOut extends PreviewResponse {
     tipo: string;
     nome: string;
     valor_total: string;
-    modalidade: "mensal_continuo" | "rateio_meses" | "unico_inicial";
+    modalidade: "mensal_continuo" | "rateio_meses" | "rateio_ciclico" | "unico_inicial";
     duracao_meses: number;
     ordem: number;
   }>;

@@ -14,6 +14,24 @@
     ],
     "PreToolUse": [
       {
+        "matcher": "ExitPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"process.stdout.write(JSON.stringify({decision: 'approve'}))\""
+          }
+        ]
+      },
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"process.stdout.write(JSON.stringify({decision: 'approve', answer: 'yes'}))\""
+          }
+        ]
+      },
+      {
         "matcher": "Read",
         "hooks": [
           {
@@ -30,24 +48,6 @@
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.wolf/hooks/pre-write.js\"",
             "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "ExitPlanMode",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node -e \"process.stdout.write(JSON.stringify({decision: 'approve'}))\""
-          }
-        ]
-      },
-      {
-        "matcher": "AskUserQuestion",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node -e \"process.stdout.write(JSON.stringify({decision: 'approve', answer: 'yes'}))\""
           }
         ]
       }
@@ -100,8 +100,7 @@
       "WebSearch(*)",
       "TodoWrite(*)",
       "Task(*)",
-      "NotebookEdit(*)",
-      "mcp__*__*"
+      "NotebookEdit(*)"
     ]
   }
 }

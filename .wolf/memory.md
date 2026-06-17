@@ -3,6 +3,9 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 2026-06-16 | Fixed Mailpit SMTP not delivering: native mailpit on host held ports 1025/8025; Docker mailpit had no network. Fix: removed port bindings from Docker mailpit, added extra_hosts mailpit:host-gateway to api+worker | ops/docker-compose.yml | sent confirmed | ~800 tok |
+| 2026-06-16 | Added --reset-password mode to setup-tenant.sh: interactive menu + --reset-password flag, runs `user reset-password` CLI | setup-tenant.sh | complete | ~300 tok |
+
 | 15:40 | grill-with-docs on Phase 2 Pix spec | docs/superpowers/specs/2026-06-07-02-pix-cobranca-automatica-design.md, CONTEXT.md | 11 decisions resolved, spec updated, CONTEXT.md created | ~8000 tok |
 
 | 18:29 | refactor: type-safe IPVA/emplacamento lookup using isValidTipo guard + remove unused BusinessRules import | frontend/src/routes/simulacao/SimulacaoForm.tsx | committed fb626da | ~1200 |
@@ -1730,3 +1733,94 @@
 | 14:57 | Created docs/agents/efi-pix-setup.md | — | ~1059 |
 
 | 15:00 | Executed Efi Pix Provider Plans Parts 3 & 4: EfiPixProvider (CobV create_charge, cancel_charge, verify_webhook, register_webhook), deps.py singleton wiring, main.py fail-fast + sandbox warning, CLI pix register-webhook, runbook doc | pix/efi.py, pix/deps.py, cli/pix_cli.py, cli/main.py, main.py, api/pix_admin.py, docs/agents/efi-pix-setup.md, 5 new test files | 273 passed, pushed to origin/master | ~6000 tok |
+
+## Session: 2026-06-16 09:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:16 | Edited .claude/settings.json | removed 2 lines | ~2 |
+
+## Session: 2026-06-16 09:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-16 09:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:36 | Edited .vscode/settings.json | 5→6 lines | ~30 |
+
+## Session: 2026-06-16 09:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-16 09:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-16 09:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-16 09:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-16 09:40
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-16 09:40
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-16 09:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:48 | Edited setup-tenant.sh | expanded (+16 lines) | ~320 |
+| 09:48 | Edited setup-tenant.sh | modified 3() | ~1319 |
+| 09:58 | Edited ops/docker-compose.yml | 8→8 lines | ~90 |
+| 09:58 | Edited ops/docker-compose.yml | 13→15 lines | ~119 |
+| 09:58 | Edited ops/docker-compose.yml | 11→13 lines | ~112 |
+
+## Session: 2026-06-17 09:34
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-17 10:39
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-06-17 10:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:46 | Edited ops/docker-compose.yml | 5→6 lines | ~32 |
+| 10:46 | Edited ops/docker-compose.yml | 7→5 lines | ~26 |
+| 10:46 | Edited ops/docker-compose.yml | 7→5 lines | ~28 |
+| $(date +%H:%M) | Fixed Mailpit not online: removed extra_hosts host-gateway override from api/worker, added port bindings 8025:8025 1025:1025 to mailpit container | ops/docker-compose.yml | resolved | ~300 |
+
+## Session: 2026-06-17 11:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:15 | Edited packages/finacialsim_core/finacialsim_core/extras.py | modified ExtraModalidade() | ~52 |
+| 11:15 | Edited packages/finacialsim_core/finacialsim_core/extras.py | modified _valor_por_parcela() | ~133 |
+| 11:15 | Edited packages/finacialsim_core/finacialsim_core/extras.py | modified range() | ~467 |
+| 11:15 | Edited frontend/src/routes/simulacao/types.ts | 6→6 lines | ~49 |
+| 11:15 | Edited frontend/src/routes/simulacao/types.ts | 4→4 lines | ~40 |
+| 11:15 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~28 |
+| 11:15 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 8→8 lines | ~92 |
+| 11:16 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 8→8 lines | ~99 |
+| 11:16 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 5→6 lines | ~130 |
+| 14:16 | Added RATEIO_CICLICO modalidade for cyclic yearly extras (IPVA/emplacamento) | packages/finacialsim_core/finacialsim_core/extras.py, frontend/src/routes/simulacao/SimulacaoForm.tsx, types.ts | IPVA/emplacamento now repeat every 12 months for full loan term | ~300 tok |

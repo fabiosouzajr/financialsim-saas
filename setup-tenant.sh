@@ -23,6 +23,7 @@ section() { echo -e "\n${BOLD}${CYAN}━━━  $*  ━━━${RESET}"; }
 OPT_NAME=""
 OPT_SLUG=""
 OPT_EMAIL=""
+OPT_MODE=""   # "create" | "reset-password"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -35,9 +36,24 @@ while [[ $# -gt 0 ]]; do
         --admin-email)
             [[ $# -lt 2 || -z "${2:-}" ]] && die "--admin-email requires a value"
             OPT_EMAIL="$2"; shift 2 ;;
-        *) die "Unknown option: $1\nUsage: ./setup-tenant.sh [--name NAME] [--slug SLUG] [--admin-email EMAIL]" ;;
+        --reset-password)
+            OPT_MODE="reset-password"; shift ;;
+        *) die "Unknown option: $1\nUsage: ./setup-tenant.sh [--name NAME] [--slug SLUG] [--admin-email EMAIL] [--reset-password]" ;;
     esac
 done
+
+# ── Mode selection ─────────────────────────────────────────────────────────────
+if [[ -z "$OPT_MODE" ]]; then
+    echo -e "\n${BOLD}What would you like to do?${RESET}"
+    echo "  [1] Create first tenant (default)"
+    echo "  [2] Reset admin password"
+    read -rp "Choice [1]: " _choice
+    case "${_choice:-1}" in
+        1) OPT_MODE="create" ;;
+        2) OPT_MODE="reset-password" ;;
+        *) die "Invalid choice: ${_choice}" ;;
+    esac
+fi
 
 # ── Step 1: Env check ─────────────────────────────────────────────────────────
 section "Step 1/4: Environment check"
@@ -88,104 +104,139 @@ else
     ok "API container is healthy"
 fi
 
-# ── Step 3: Migrations ────────────────────────────────────────────────────────
-section "Step 3/4: Database migrations"
+# ── Step 3 (create): Migrations ───────────────────────────────────────────────
+if [[ "$OPT_MODE" == "create" ]]; then
 
-info "Running Alembic migrations..."
-if ! docker compose exec -T api python -m finacialsim_saas.cli.main db migrate 2>&1; then
-    die "Migration failed. Check the output above."
-fi
-ok "Database is up to date"
+    section "Step 3/4: Database migrations"
 
-# ── Step 4: Tenant creation ───────────────────────────────────────────────────
-section "Step 4/4: Create first tenant"
-
-_slugify() {
-    echo "$1" \
-        | tr '[:upper:]' '[:lower:]' \
-        | sed 's/[^a-z0-9]/-/g' \
-        | sed 's/--*/-/g' \
-        | sed 's/^-//;s/-$//'
-}
-
-# Tenant name
-if [[ -n "$OPT_NAME" ]]; then
-    TENANT_NAME="$OPT_NAME"
-else
-    read -rp "Tenant name (e.g. Acme Financiadora): " TENANT_NAME
-fi
-[[ -z "$TENANT_NAME" ]] && die "Tenant name cannot be empty."
-
-# Slug (auto-suggested from name)
-_suggested_slug=$(_slugify "$TENANT_NAME")
-if [[ -n "$OPT_SLUG" ]]; then
-    TENANT_SLUG="$OPT_SLUG"
-else
-    read -rp "Tenant slug [$_suggested_slug]: " TENANT_SLUG
-    TENANT_SLUG="${TENANT_SLUG:-$_suggested_slug}"
-fi
-[[ -z "$TENANT_SLUG" ]] && die "Tenant slug cannot be empty."
-
-# Admin email
-if [[ -n "$OPT_EMAIL" ]]; then
-    ADMIN_EMAIL="$OPT_EMAIL"
-else
-    read -rp "Admin email: " ADMIN_EMAIL
-fi
-[[ "$ADMIN_EMAIL" =~ ^[^@]+@[^@]+\.[^@]+$ ]] || die "Invalid email address: $ADMIN_EMAIL"
-
-# Admin password — always prompted, never from flags
-while true; do
-    read -rsp "Admin password (min 8 chars): " ADMIN_PASSWORD
-    echo
-    if [[ ${#ADMIN_PASSWORD} -lt 8 ]]; then
-        warn "Password must be at least 8 characters."
-        continue
+    info "Running Alembic migrations..."
+    if ! docker compose exec -T api python -m finacialsim_saas.cli.main db migrate 2>&1; then
+        die "Migration failed. Check the output above."
     fi
-    read -rsp "Confirm password: " ADMIN_PASSWORD2
-    echo
-    if [[ "$ADMIN_PASSWORD" == "$ADMIN_PASSWORD2" ]]; then
-        break
-    fi
-    warn "Passwords do not match. Try again."
-done
+    ok "Database is up to date"
 
-# Create tenant — retry up to 3 times on slug collision
-_attempt=0
-while true; do
-    _attempt=$((_attempt + 1))
-    if [[ $_attempt -gt 3 ]]; then
-        die "Too many failed attempts.\n\n  Run manually:\n    docker compose exec api python -m finacialsim_saas.cli.main tenant create \\\n      --name \"$TENANT_NAME\" --slug <slug> --admin-email \"$ADMIN_EMAIL\""
-    fi
+    # ── Step 4: Tenant creation ───────────────────────────────────────────────
+    section "Step 4/4: Create first tenant"
 
-    _output=$(docker compose exec -T api python -m finacialsim_saas.cli.main tenant create \
-        --name "$TENANT_NAME" \
-        --slug "$TENANT_SLUG" \
-        --admin-email "$ADMIN_EMAIL" \
-        --admin-password "$ADMIN_PASSWORD" 2>&1) && _exit=0 || _exit=$?
+    _slugify() {
+        echo "$1" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed 's/[^a-z0-9]/-/g' \
+            | sed 's/--*/-/g' \
+            | sed 's/^-//;s/-$//'
+    }
 
-    if [[ $_exit -eq 0 ]]; then
-        break
-    elif echo "$_output" | grep -qi "already exists"; then
-        warn "Slug '$TENANT_SLUG' is already taken."
-        read -rp "Choose a different slug: " TENANT_SLUG
-        [[ -z "$TENANT_SLUG" ]] && die "Slug cannot be empty."
+    # Tenant name
+    if [[ -n "$OPT_NAME" ]]; then
+        TENANT_NAME="$OPT_NAME"
     else
-        echo "$_output" >&2
-        die "Tenant creation failed. See output above."
+        read -rp "Tenant name (e.g. Acme Financiadora): " TENANT_NAME
     fi
-done
+    [[ -z "$TENANT_NAME" ]] && die "Tenant name cannot be empty."
 
-# ── Success ────────────────────────────────────────────────────────────────────
-FRONTEND_URL="${FRONTEND_BASE_URL:-http://localhost}"
+    # Slug (auto-suggested from name)
+    _suggested_slug=$(_slugify "$TENANT_NAME")
+    if [[ -n "$OPT_SLUG" ]]; then
+        TENANT_SLUG="$OPT_SLUG"
+    else
+        read -rp "Tenant slug [$_suggested_slug]: " TENANT_SLUG
+        TENANT_SLUG="${TENANT_SLUG:-$_suggested_slug}"
+    fi
+    [[ -z "$TENANT_SLUG" ]] && die "Tenant slug cannot be empty."
 
-echo -e "\n${GREEN}${BOLD}"
-printf "╔══════════════════════════════════════════════════════╗\n"
-printf "║  Tenant created successfully!                        ║\n"
-printf "║                                                      ║\n"
-printf "║  Name:   %-44s║\n" "$TENANT_NAME "
-printf "║  Slug:   %-44s║\n" "$TENANT_SLUG "
-printf "║  Admin:  %-44s║\n" "$ADMIN_EMAIL "
-printf "║  URL:    %-44s║\n" "$FRONTEND_URL "
-printf "╚══════════════════════════════════════════════════════╝\n"
-echo -e "${RESET}"
+    # Admin email
+    if [[ -n "$OPT_EMAIL" ]]; then
+        ADMIN_EMAIL="$OPT_EMAIL"
+    else
+        read -rp "Admin email: " ADMIN_EMAIL
+    fi
+    [[ "$ADMIN_EMAIL" =~ ^[^@]+@[^@]+\.[^@]+$ ]] || die "Invalid email address: $ADMIN_EMAIL"
+
+    # Admin password — always prompted, never from flags
+    while true; do
+        read -rsp "Admin password (min 8 chars): " ADMIN_PASSWORD
+        echo
+        if [[ ${#ADMIN_PASSWORD} -lt 8 ]]; then
+            warn "Password must be at least 8 characters."
+            continue
+        fi
+        read -rsp "Confirm password: " ADMIN_PASSWORD2
+        echo
+        if [[ "$ADMIN_PASSWORD" == "$ADMIN_PASSWORD2" ]]; then
+            break
+        fi
+        warn "Passwords do not match. Try again."
+    done
+
+    # Create tenant — retry up to 3 times on slug collision
+    _attempt=0
+    while true; do
+        _attempt=$((_attempt + 1))
+        if [[ $_attempt -gt 3 ]]; then
+            die "Too many failed attempts.\n\n  Run manually:\n    docker compose exec api python -m finacialsim_saas.cli.main tenant create \\\n      --name \"$TENANT_NAME\" --slug <slug> --admin-email \"$ADMIN_EMAIL\""
+        fi
+
+        _output=$(docker compose exec -T api python -m finacialsim_saas.cli.main tenant create \
+            --name "$TENANT_NAME" \
+            --slug "$TENANT_SLUG" \
+            --admin-email "$ADMIN_EMAIL" \
+            --admin-password "$ADMIN_PASSWORD" 2>&1) && _exit=0 || _exit=$?
+
+        if [[ $_exit -eq 0 ]]; then
+            break
+        elif echo "$_output" | grep -qi "already exists"; then
+            warn "Slug '$TENANT_SLUG' is already taken."
+            read -rp "Choose a different slug: " TENANT_SLUG
+            [[ -z "$TENANT_SLUG" ]] && die "Slug cannot be empty."
+        else
+            echo "$_output" >&2
+            die "Tenant creation failed. See output above."
+        fi
+    done
+
+    # ── Success ────────────────────────────────────────────────────────────────
+    FRONTEND_URL="${FRONTEND_BASE_URL:-http://localhost}"
+
+    echo -e "\n${GREEN}${BOLD}"
+    printf "╔══════════════════════════════════════════════════════╗\n"
+    printf "║  Tenant created successfully!                        ║\n"
+    printf "║                                                      ║\n"
+    printf "║  Name:   %-44s║\n" "$TENANT_NAME "
+    printf "║  Slug:   %-44s║\n" "$TENANT_SLUG "
+    printf "║  Admin:  %-44s║\n" "$ADMIN_EMAIL "
+    printf "║  URL:    %-44s║\n" "$FRONTEND_URL "
+    printf "╚══════════════════════════════════════════════════════╝\n"
+    echo -e "${RESET}"
+
+# ── Step 3 (reset): Reset admin password ──────────────────────────────────────
+elif [[ "$OPT_MODE" == "reset-password" ]]; then
+
+    section "Step 3/3: Reset admin password"
+
+    # Tenant slug
+    if [[ -n "$OPT_SLUG" ]]; then
+        TENANT_SLUG="$OPT_SLUG"
+    else
+        read -rp "Tenant slug: " TENANT_SLUG
+    fi
+    [[ -z "$TENANT_SLUG" ]] && die "Tenant slug cannot be empty."
+
+    # Email
+    if [[ -n "$OPT_EMAIL" ]]; then
+        RESET_EMAIL="$OPT_EMAIL"
+    else
+        read -rp "Admin email: " RESET_EMAIL
+    fi
+    [[ "$RESET_EMAIL" =~ ^[^@]+@[^@]+\.[^@]+$ ]] || die "Invalid email address: $RESET_EMAIL"
+
+    info "Sending password reset email for $RESET_EMAIL..."
+    if ! docker compose exec -T api python -m finacialsim_saas.cli.main user reset-password \
+        --tenant-slug "$TENANT_SLUG" \
+        --email "$RESET_EMAIL" 2>&1; then
+        die "Password reset failed. Check the output above."
+    fi
+
+    ok "Password reset email enqueued for $RESET_EMAIL"
+    echo -e "\n${GREEN}${BOLD}Check dev-mail/ (or your SMTP inbox) for the reset link.${RESET}\n"
+
+fi

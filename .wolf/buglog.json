@@ -480,6 +480,86 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-06-09T13:59:30.901Z"
+    },
+    {
+      "id": "bug-031",
+      "timestamp": "2026-06-16T12:48:59.648Z",
+      "error_message": "Significant refactor of ",
+      "file": "setup-tenant.sh",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 101→136 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "sh"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-16T12:48:59.648Z"
+    },
+    {
+      "id": "bug-032",
+      "timestamp": "2026-06-16T12:58:30.475Z",
+      "error_message": "Significant refactor of ",
+      "file": "ops/docker-compose.yml",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 8→8 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-16T12:58:30.475Z"
+    },
+    {
+      "id": "bug-033",
+      "timestamp": "2026-06-17T13:46:28.880Z",
+      "error_message": "Significant refactor of ",
+      "file": "ops/docker-compose.yml",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 5→6 lines (2 removed) | Also: extra_hosts:; - \"mailpit:host-gateway\"",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-06-17T13:46:38.807Z"
+    },
+    {
+      "id": "bug-034",
+      "timestamp": "2026-06-17T14:15:50.754Z",
+      "error_message": "Incorrect value in code",
+      "file": "frontend/src/routes/simulacao/SimulacaoForm.tsx",
+      "root_cause": "Had \"unico_inicial\"",
+      "fix": "Changed to \"rateio_ciclico\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-06-17T14:15:50.754Z"
+    },
+    {
+      "id": "bug-035",
+      "timestamp": "2026-06-17T14:15:59.362Z",
+      "error_message": "CSS fix: modalidade",
+      "file": "frontend/src/routes/simulacao/SimulacaoForm.tsx",
+      "root_cause": "modalidade: \"rateio_meses\", → \"rateio_ciclico\",",
+      "fix": "Changed modalidade: \"rateio_meses\", → \"rateio_ciclico\",",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-17T14:16:05.352Z"
     }
   ]
 }

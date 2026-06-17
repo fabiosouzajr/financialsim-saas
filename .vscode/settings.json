@@ -1,0 +1,6 @@
+{
+  "docker.composeFiles": [
+    "ops/docker-compose.yml"
+  ],
+  "docker.dockerPath": "/usr/bin/docker"
+}
