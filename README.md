@@ -81,6 +81,11 @@ docker compose -f ops/docker-compose.yml up
 # → http://localhost  (Caddy routes /api/* → FastAPI, everything else → React)
 ```
 
+
+```bash
+docker compose -f ops/docker-compose.yml up --build
+```
+
 Migrations run automatically via the `migrate` service on startup.
 
 ---

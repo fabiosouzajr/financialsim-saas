@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-18T14:25:21.875Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-18T14:41:24.675Z
 > Files: 386 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
@@ -539,7 +539,7 @@
 - `ResultCards.tsx` — Card (~516 tok)
 - `ScheduleTable.tsx` — CSV_HEADERS — renders table (~742 tok)
 - `SimulacaoCharts.tsx` — SimulacaoCharts (~970 tok)
-- `SimulacaoForm.tsx` — schema (~7775 tok)
+- `SimulacaoForm.tsx` — schema (~7710 tok)
 - `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~928 tok)
 
 ## frontend/src/routes/veiculos/

@@ -1857,3 +1857,16 @@
 | 11:24 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | expanded (+17 lines) | ~337 |
 | 11:25 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~20 |
 | 11:25 | Task 6: Added Visualizar button + modal with pendingVisualize state pattern | SimulacaoForm.tsx | committed 96514fe | ~600 |
+
+## Session: 2026-06-18 11:40
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:41 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | — | ~0 |
+| 11:41 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~30 |
+| 11:41 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | — | ~0 |
+
+## Session: 2026-06-18 11:50
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
