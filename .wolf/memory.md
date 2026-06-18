@@ -3,9 +3,10 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
-| 2026-06-16 | Fixed Mailpit SMTP not delivering: native mailpit on host held ports 1025/8025; Docker mailpit had no network. Fix: removed port bindings from Docker mailpit, added extra_hosts mailpit:host-gateway to api+worker | ops/docker-compose.yml | sent confirmed | ~800 tok |
+| 2026-06-18 | Fixed Mailpit SMTP not delivering: native mailpit on host held ports 1025/8025; Docker mailpit had no network. Fix: removed port bindings from Docker mailpit, added extra_hosts mailpit:host-gateway to api+worker | ops/docker-compose.yml | sent confirmed | ~800 tok |
 | 2026-06-16 | Added --reset-password mode to setup-tenant.sh: interactive menu + --reset-password flag, runs `user reset-password` CLI | setup-tenant.sh | complete | ~300 tok |
 
+| 15:40 | UX fix: VehiclePicker empty state — show "Nenhum veículo encontrado" when search query returns no results (instead of dropdown closing silently) | frontend/src/routes/simulacao/SimulacaoForm.tsx | committed 4d14489 | ~400 tok |
 | 15:40 | grill-with-docs on Phase 2 Pix spec | docs/superpowers/specs/2026-06-07-02-pix-cobranca-automatica-design.md, CONTEXT.md | 11 decisions resolved, spec updated, CONTEXT.md created | ~8000 tok |
 
 | 18:29 | refactor: type-safe IPVA/emplacamento lookup using isValidTipo guard + remove unused BusinessRules import | frontend/src/routes/simulacao/SimulacaoForm.tsx | committed fb626da | ~1200 |
@@ -1824,3 +1825,35 @@
 | 11:16 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 8→8 lines | ~99 |
 | 11:16 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 5→6 lines | ~130 |
 | 14:16 | Added RATEIO_CICLICO modalidade for cyclic yearly extras (IPVA/emplacamento) | packages/finacialsim_core/finacialsim_core/extras.py, frontend/src/routes/simulacao/SimulacaoForm.tsx, types.ts | IPVA/emplacamento now repeat every 12 months for full loan term | ~300 tok |
+| 10:54 | Created docs/superpowers/specs/2026-06-18-simulacao-ux-improvements.md | — | ~1350 |
+| 10:57 | Edited docs/superpowers/specs/2026-06-18-simulacao-ux-improvements.md | 4→5 lines | ~126 |
+| 11:02 | Edited docs/superpowers/specs/2026-06-18-simulacao-ux-improvements.md | immediately() → null() | ~81 |
+| 11:03 | Edited CONTEXT.md | 3→5 lines | ~133 |
+| 11:04 | Created docs/superpowers/specs/2026-06-18-simulacao-ux-improvements.md | — | ~1744 |
+| 11:08 | Created docs/superpowers/plans/2026-06-18-simulacao-ux-improvements.md | — | ~5928 |
+| 11:11 | Edited frontend/src/lib/vehicles.ts | inline fix | ~41 |
+| 11:13 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: enabled | ~571 |
+
+| 2026-06-18 | Task 2: ClientPicker combobox — open/close on type/select | frontend/src/routes/simulacao/SimulacaoForm.tsx | replaced ClientPicker with open state, dropdown only shows when open && results exist, onMouseDown prevent on items, typing clears prior selection, query only enabled when open && q.length > 0, TypeScript check pass, committed ee05559 | ~1200 tok |
+| 11:15 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~16 |
+| 11:15 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: limit | ~806 |
+
+| 2026-06-18 | Task 3: VehiclePicker combobox — client-side filter (marca/modelo/placa) | frontend/src/routes/simulacao/SimulacaoForm.tsx | useMemo, open/close state, queryKey vehicles-all limit 100 cache 5m, committed 6410099 | ~1000 |
+| 11:18 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | expanded (+6 lines) | ~430 |
+| 11:19 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 17→20 lines | ~224 |
+| 11:19 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 4→4 lines | ~58 |
+| 11:20 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | reduced (-40 lines) | ~142 |
+
+| 18:39 | Task 4: Default IPVA and Emplacamento in form extras — pre-seed both with 0.00/12m/rateio_ciclico, defaultOpen Extras Collapsible, remove IPVA/Emplacamento quick-add buttons | frontend/src/routes/simulacao/SimulacaoForm.tsx | committed ccf6870 | ~400 tok |
+| 11:22 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 2→2 lines | ~35 |
+| 11:22 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | added 6 condition(s) | ~459 |
+
+| 2026-06-18 | Task 5: auto-fill entrada and update IPVA/Emplacamento on vehicle select | frontend/src/routes/simulacao/SimulacaoForm.tsx | getValues + extended onChange handler, typecheck pass, committed 3a07646 | ~1500 |
+| 11:24 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | added 3 import(s) | ~62 |
+| 11:24 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 2→4 lines | ~75 |
+| 11:24 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | added 1 condition(s) | ~57 |
+| 11:24 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: disabled | ~323 |
+| 11:24 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 5→1 lines | ~21 |
+| 11:24 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | expanded (+17 lines) | ~337 |
+| 11:25 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~20 |
+| 11:25 | Task 6: Added Visualizar button + modal with pendingVisualize state pattern | SimulacaoForm.tsx | committed 96514fe | ~600 |

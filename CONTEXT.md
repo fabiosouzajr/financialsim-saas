@@ -14,6 +14,8 @@ Single-context repo. See `docs/adr/` for architectural decisions.
 
 **Vencimento** — the calendar due date of a `Parcela`. Used as the anchor for both reminder scheduling (cron selects `vencimento == target_date`) and CobV charge creation (`calendario.dataDeVencimento`).
 
+**Extra** — an additional cost appended to each installment within a `Simulação`. Examples: IPVA (annual vehicle tax), Emplacamento (vehicle registration fee), Proteção Veicular. Distributed via a `modalidade`: `mensal_continuo` (every installment), `rateio_ciclico` (annual lump sum spread over N months, recycling each cycle), `rateio_meses` (one-time spread over first N months), `unico_inicial` (first installment only). Stored in `extras` table linked to the simulation.
+
 ---
 
 ## Pix Concepts

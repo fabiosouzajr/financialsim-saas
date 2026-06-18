@@ -560,6 +560,38 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-06-17T14:16:05.352Z"
+    },
+    {
+      "id": "bug-036",
+      "timestamp": "2026-06-18T14:15:39.957Z",
+      "error_message": "CSS fix: queryKey, queryFn, staleTime",
+      "file": "frontend/src/routes/simulacao/SimulacaoForm.tsx",
+      "root_cause": "queryKey: [\"vehicles\", { status: \"ativo\", placa: q || undefined → [\"vehicles-all\"],; queryFn: () => listVehicles({ status: \"ativo\", placa: q || undefined → () => listVehicles({ status: \"ativo\", limit: 100; staleTime: 30_000, → 5 * 60_000,",
+      "fix": "Changed queryKey: [\"vehicles\", { status: \"ativo\", placa: q || undefined → [\"vehicles-all\"],; queryFn: () => listVehicles({ status: \"ativo\", placa: q || undefined → () => listVehicles({ status: \"ativo\", limit: 100; staleTime: 30_000, → 5 * 60_000,",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-18T14:20:02.415Z"
+    },
+    {
+      "id": "bug-037",
+      "timestamp": "2026-06-18T14:19:50.385Z",
+      "error_message": "Type error",
+      "file": "frontend/src/routes/simulacao/SimulacaoForm.tsx",
+      "root_cause": "Missing or incorrect type annotation",
+      "fix": "Added type assertion/annotation | Also: if (fipeValue) {; setValue(\"valor_veiculo\", fipeValue);",
+      "tags": [
+        "auto-detected",
+        "type-fix",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-06-18T14:22:11.896Z"
     }
   ]
 }

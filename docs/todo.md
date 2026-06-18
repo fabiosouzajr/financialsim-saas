@@ -118,4 +118,11 @@ These values (from "regras de negocio - Extra / Rateio") should appear when the 
 
 ---
 
-## changes in "simulação - comparação"
+## changes in "simulação"
+Make the following changes in "simulacao":
+- Change both "cliente" and "veiculo" fields to only display the searchable textbox. This textbox should display search a you type results, displaying a dropdown when multiple results exists. 
+- Entrada should be pre populated with the minimum value as determined by "regras", this should automactically calculate the "entrada".
+In "extras"
+- "IPVA" and "emplacamento" should always be added by default.
+- "emplacamento" should have the same 12 meses "rateio" as ipva.
+- create a "Visualizar" button that enables the user to view the simulacao without saving

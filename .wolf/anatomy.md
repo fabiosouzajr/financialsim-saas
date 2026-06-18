@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-17T14:16:11.231Z
-> Files: 384 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-18T14:25:21.875Z
+> Files: 386 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -16,7 +16,7 @@
 - `.dockerignore` (~23 tok)
 - `.gitignore` — Git ignore rules (~1099 tok)
 - `CLAUDE.md` — CLAUDE.md (~1980 tok)
-- `CONTEXT.md` — Domain Glossary (~1324 tok)
+- `CONTEXT.md` — Domain Glossary (~1444 tok)
 - `dev.sh` — dev.sh — FinacialSim SaaS local dev runner (~2996 tok)
 - `pyproject.toml` (~34 tok)
 - `README.md` — Project documentation (~1467 tok)
@@ -403,6 +403,7 @@
 - `2026-06-08-efi-pix-provider-plan-part3.md` — Efí Pix Provider — Part 3: EfiPixProvider (Tasks 7–9) (~4304 tok)
 - `2026-06-08-efi-pix-provider-plan-part4.md` — Efí Pix Provider — Part 4: Wiring + Runbook (Tasks 10–13) (~5859 tok)
 - `2026-06-09-pix-fase3-inadimplencia.md` — Fase 3 — Inadimplência Implementation Plan (~14387 tok)
+- `2026-06-18-simulacao-ux-improvements.md` — Simulação UX Improvements Implementation Plan (~5558 tok)
 
 ## docs/superpowers/plans/done/
 
@@ -437,6 +438,7 @@
 - `2026-06-07-efi-pix-provider-design.md` — Efí Pix Provider — Phase 1 (PIX básico real, fundação CobV) (~10291 tok)
 - `2026-06-07-pix-cobranca-automatica-design.md` — Pix — Phase 2 (Cobrança automática) (~6638 tok)
 - `2026-06-09-pix-fase3-inadimplencia-design.md` — Pix — Fase 3 (Inadimplência) (~4929 tok)
+- `2026-06-18-simulacao-ux-improvements.md` — Simulação UX Improvements — Design Spec (~1635 tok)
 
 ## docs/superpowers/specs/done/
 
@@ -501,7 +503,7 @@
 - `fipe.ts` — Exports FipeBrand, FipeModel, FipeYear, FipePrice + 4 more (~380 tok)
 - `proposals.ts` — Exports ProposalOut, ProposalListItem, ProposalListPage, createProposal + 6 more (~596 tok)
 - `utils.ts` — Exports cn (~49 tok)
-- `vehicles.ts` — Exports VehicleOut, VehicleListPage, VehicleIn, listVehicles + 4 more (~583 tok)
+- `vehicles.ts` — Exports VehicleOut, VehicleListPage, VehicleIn, listVehicles + 4 more (~582 tok)
 
 ## frontend/src/routes/
 
@@ -537,7 +539,7 @@
 - `ResultCards.tsx` — Card (~516 tok)
 - `ScheduleTable.tsx` — CSV_HEADERS — renders table (~742 tok)
 - `SimulacaoCharts.tsx` — SimulacaoCharts (~970 tok)
-- `SimulacaoForm.tsx` — schema — renders form (~6892 tok)
+- `SimulacaoForm.tsx` — schema (~7775 tok)
 - `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~928 tok)
 
 ## frontend/src/routes/veiculos/
