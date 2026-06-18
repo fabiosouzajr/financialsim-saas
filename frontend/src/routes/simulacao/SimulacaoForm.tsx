@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -180,14 +180,27 @@ function ClientPicker({ value, onChange, error, onNew }: {
 }
 
 function VehiclePicker({ value, onChange, error, onNew }: {
-  value: string; onChange: (id: string, fipeValue: string | null, tipo: string | null) => void; error?: string; onNew?: () => void;
+  value: string;
+  onChange: (id: string, fipeValue: string | null, tipo: string | null) => void;
+  error?: string;
+  onNew?: () => void;
 }) {
   const [q, setQ] = useState("");
+  const [open, setOpen] = useState(false);
   const { data } = useQuery({
-    queryKey: ["vehicles", { status: "ativo", placa: q || undefined }],
-    queryFn: () => listVehicles({ status: "ativo", placa: q || undefined }),
-    staleTime: 30_000,
+    queryKey: ["vehicles-all"],
+    queryFn: () => listVehicles({ status: "ativo", limit: 100 }),
+    staleTime: 5 * 60_000,
   });
+
+  const filtered = useMemo(() => {
+    if (!data?.items || !q.trim()) return [];
+    const term = q.trim().toLowerCase();
+    return data.items.filter(v =>
+      `${v.marca} ${v.modelo} ${v.ano_modelo} ${v.placa ?? ""}`.toLowerCase().includes(term)
+    );
+  }, [data, q]);
+
   return (
     <div className="grid gap-2">
       <div className="flex items-center justify-between">
@@ -198,35 +211,44 @@ function VehiclePicker({ value, onChange, error, onNew }: {
           </button>
         )}
       </div>
-      <input
-        className="w-full border rounded px-3 py-2 text-sm"
-        placeholder="Buscar veículo por placa..."
-        value={q}
-        onChange={e => setQ(e.target.value)}
-      />
-      {data?.items.length ? (
-        <div className="border rounded-md max-h-40 overflow-y-auto">
-          {data.items.map(v => (
-            <button
-              key={v.id}
-              type="button"
-              onClick={() => {
-                onChange(v.id, v.valor_fipe ?? v.valor_referencia ?? null, v.tipo);
-                setQ(`${v.marca} ${v.modelo} ${v.ano_modelo}`);
-              }}
-              className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${value === v.id ? "bg-zinc-100 font-medium" : ""}`}
-            >
-              {v.marca} {v.modelo} {v.ano_modelo}
-              {v.placa && <span className="text-zinc-400 text-xs ml-1">· {v.placa}</span>}
-              {(v.valor_fipe ?? v.valor_referencia) && (
-                <span className="text-zinc-400 text-xs ml-1">
-                  · R$ {Number(v.valor_fipe ?? v.valor_referencia).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-      ) : null}
+      <div className="relative">
+        <input
+          className="w-full border rounded px-3 py-2 text-sm"
+          placeholder="Buscar veículo por marca, modelo ou placa..."
+          value={q}
+          onChange={e => {
+            setQ(e.target.value);
+            setOpen(true);
+            if (value) onChange("", null, null);
+          }}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
+        />
+        {open && filtered.length > 0 ? (
+          <div className="absolute z-10 w-full border rounded-md bg-white shadow-md max-h-40 overflow-y-auto mt-1">
+            {filtered.map(v => (
+              <button
+                key={v.id}
+                type="button"
+                onMouseDown={e => e.preventDefault()}
+                onClick={() => {
+                  onChange(v.id, v.valor_fipe ?? v.valor_referencia ?? null, v.tipo);
+                  setQ(`${v.marca} ${v.modelo} ${v.ano_modelo}`);
+                  setOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${value === v.id ? "bg-zinc-100 font-medium" : ""}`}
+              >
+                {v.marca} {v.modelo} {v.ano_modelo}
+                {v.placa && <span className="text-zinc-400 text-xs ml-1">· {v.placa}</span>}
+                {(v.valor_fipe ?? v.valor_referencia) && (
+                  <span className="text-zinc-400 text-xs ml-1">
+                    · R$ {Number(v.valor_fipe ?? v.valor_referencia).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
       {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
