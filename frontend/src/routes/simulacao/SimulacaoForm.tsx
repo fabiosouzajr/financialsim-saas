@@ -284,7 +284,7 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
     ? suggestRate(defaultPrazo, rules.taxa_por_prazo_curva)
     : "0.0199";
 
-  const { register, watch, setValue, control, handleSubmit, formState } =
+  const { register, watch, setValue, getValues, control, handleSubmit, formState } =
     useForm<SimulationFormValues>({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       resolver: zodResolver(schema) as any,
@@ -381,7 +381,37 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
         value={watch("vehicle_id") ?? ""}
         onChange={(id, fipeValue, tipo) => {
           setValue("vehicle_id", id);
-          if (fipeValue) setValue("valor_veiculo", fipeValue);
+          if (fipeValue) {
+            setValue("valor_veiculo", fipeValue);
+
+            // Auto-fill entrada minimum
+            if (rules) {
+              const minPct = parseFloat(rules.entrada_minima_pct);
+              const vv = parseFloat(fipeValue);
+              if (!isNaN(minPct) && !isNaN(vv) && vv > 0) {
+                setValue("valor_entrada_brl", (vv * minPct).toFixed(2));
+              }
+            }
+
+            // Update IPVA and Emplacamento valores
+            if (rules && isValidTipo(tipo)) {
+              const currentExtras = getValues("extras");
+
+              const ipvaIdx = currentExtras.findIndex(e => e.tipo === "ipva");
+              if (ipvaIdx >= 0) {
+                const ipvaPct = parseFloat(rules[`ipva_pct_${tipo}` as keyof typeof rules]);
+                const vv = parseFloat(fipeValue);
+                if (!isNaN(ipvaPct) && !isNaN(vv)) {
+                  setValue(`extras.${ipvaIdx}.valor_total`, (vv * ipvaPct).toFixed(2));
+                }
+              }
+
+              const emplacIdx = currentExtras.findIndex(e => e.tipo === "emplacamento");
+              if (emplacIdx >= 0) {
+                setValue(`extras.${emplacIdx}.valor_total`, rules[`emplacamento_valor_${tipo}` as keyof typeof rules] as string);
+              }
+            }
+          }
           setSelectedVehicle({ fipeValue: fipeValue ?? null, tipo: tipo ?? null });
         }}
         onNew={() => setVehicleModalOpen(true)}
