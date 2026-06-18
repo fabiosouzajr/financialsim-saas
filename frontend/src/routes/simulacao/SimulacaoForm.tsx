@@ -302,7 +302,10 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
         primeiro_vencimento: addDays(today, 30),
         incluir_iof: rules?.incluir_iof_default ?? true,
         fees: [],
-        extras: [],
+        extras: [
+          { tipo: "ipva", nome: "IPVA", valor_total: "0.00", modalidade: "rateio_ciclico" as const, duracao_meses: 12, ordem: 0 },
+          { tipo: "emplacamento", nome: "Emplacamento", valor_total: "0.00", modalidade: "rateio_ciclico" as const, duracao_meses: 12, ordem: 1 },
+        ],
         ...initialValues,
       },
     });
@@ -538,7 +541,7 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
       </Collapsible>
 
       {/* Extras */}
-      <Collapsible>
+      <Collapsible defaultOpen>
         <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium text-zinc-700 hover:text-zinc-900">
           <span>Extras</span>
           {extraFields.length > 0 && (
@@ -556,46 +559,6 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
                 duracao_meses: watch("prazo_meses"), ordem: extraFields.length,
               })}
             >+ Proteção</button>
-            <button
-              type="button"
-              className="text-xs border rounded-full px-3 py-1 hover:bg-zinc-50"
-              onClick={() => {
-                const tipo = selectedVehicle.tipo;
-                const fipe = selectedVehicle.fipeValue;
-                let valorTotal = "0.00";
-                if (isValidTipo(tipo) && fipe && rules) {
-                  const ipvaPct = rules[`ipva_pct_${tipo}`];
-                  const computed = parseFloat(fipe) * parseFloat(ipvaPct);
-                  if (!isNaN(computed)) valorTotal = computed.toFixed(2);
-                }
-                appendExtra({
-                  tipo: "ipva",
-                  nome: "IPVA",
-                  valor_total: valorTotal,
-                  modalidade: "rateio_ciclico",
-                  duracao_meses: rules?.rateio_ipva_meses_default ?? 12,
-                  ordem: extraFields.length,
-                });
-              }}
-            >+ IPVA</button>
-            <button
-              type="button"
-              className="text-xs border rounded-full px-3 py-1 hover:bg-zinc-50"
-              onClick={() => {
-                const tipo = selectedVehicle.tipo;
-                const valorTotal = isValidTipo(tipo) && rules
-                  ? rules[`emplacamento_valor_${tipo}`]
-                  : "0.00";
-                appendExtra({
-                  tipo: "emplacamento",
-                  nome: "Emplacamento",
-                  valor_total: valorTotal,
-                  modalidade: "rateio_ciclico",
-                  duracao_meses: rules?.rateio_emplacamento_meses_default ?? 3,
-                  ordem: extraFields.length,
-                });
-              }}
-            >+ Emplacamento</button>
           </div>
           {extraFields.map((field, i) => (
             <div key={field.id} className="border rounded p-3 space-y-2">
