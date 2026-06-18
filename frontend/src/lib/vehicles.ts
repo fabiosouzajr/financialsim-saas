@@ -45,7 +45,7 @@ export interface VehicleIn {
   snapshot_json?: Record<string, unknown> | null;
 }
 
-export async function listVehicles(params?: { status?: string; placa?: string; cursor?: string }): Promise<VehicleListPage> {
+export async function listVehicles(params?: { status?: string; placa?: string; cursor?: string; limit?: number }): Promise<VehicleListPage> {
   const { data } = await api.get<VehicleListPage>("/v1/vehicles", { params });
   return data;
 }
