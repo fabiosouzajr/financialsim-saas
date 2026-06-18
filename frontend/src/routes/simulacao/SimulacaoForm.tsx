@@ -129,10 +129,12 @@ function ClientPicker({ value, onChange, error, onNew }: {
   value: string; onChange: (id: string) => void; error?: string; onNew?: () => void;
 }) {
   const [q, setQ] = useState("");
+  const [open, setOpen] = useState(false);
   const { data } = useQuery({
     queryKey: ["clients", q],
     queryFn: () => listClients({ q: q || undefined }),
     staleTime: 30_000,
+    enabled: open && q.length > 0,
   });
   return (
     <div className="grid gap-2">
@@ -144,26 +146,34 @@ function ClientPicker({ value, onChange, error, onNew }: {
           </button>
         )}
       </div>
-      <input
-        className="w-full border rounded px-3 py-2 text-sm"
-        placeholder="Buscar cliente por nome ou CPF..."
-        value={q}
-        onChange={e => setQ(e.target.value)}
-      />
-      {data?.items.length ? (
-        <div className="border rounded-md max-h-40 overflow-y-auto">
-          {data.items.map(c => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => { onChange(c.id); setQ(c.nome); }}
-              className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${value === c.id ? "bg-zinc-100 font-medium" : ""}`}
-            >
-              {c.nome} <span className="text-zinc-400 text-xs">{c.cpf_cnpj}</span>
-            </button>
-          ))}
-        </div>
-      ) : null}
+      <div className="relative">
+        <input
+          className="w-full border rounded px-3 py-2 text-sm"
+          placeholder="Buscar cliente por nome ou CPF..."
+          value={q}
+          onChange={e => {
+            setQ(e.target.value);
+            setOpen(true);
+            if (value) onChange("");
+          }}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
+        />
+        {open && data?.items && data.items.length > 0 ? (
+          <div className="absolute z-10 w-full border rounded-md bg-white shadow-md max-h-40 overflow-y-auto mt-1">
+            {data.items.map(c => (
+              <button
+                key={c.id}
+                type="button"
+                onMouseDown={e => e.preventDefault()}
+                onClick={() => { onChange(c.id); setQ(c.nome); setOpen(false); }}
+                className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${value === c.id ? "bg-zinc-100 font-medium" : ""}`}
+              >
+                {c.nome} <span className="text-zinc-400 text-xs">{c.cpf_cnpj}</span>
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
       {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
