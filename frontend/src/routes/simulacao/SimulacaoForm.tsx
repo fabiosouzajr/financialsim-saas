@@ -223,30 +223,36 @@ function VehiclePicker({ value, onChange, error, onNew }: {
           }}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
         />
-        {open && filtered.length > 0 ? (
-          <div className="absolute z-10 w-full border rounded-md bg-white shadow-md max-h-40 overflow-y-auto mt-1">
-            {filtered.map(v => (
-              <button
-                key={v.id}
-                type="button"
-                onMouseDown={e => e.preventDefault()}
-                onClick={() => {
-                  onChange(v.id, v.valor_fipe ?? v.valor_referencia ?? null, v.tipo);
-                  setQ(`${v.marca} ${v.modelo} ${v.ano_modelo}`);
-                  setOpen(false);
-                }}
-                className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${value === v.id ? "bg-zinc-100 font-medium" : ""}`}
-              >
-                {v.marca} {v.modelo} {v.ano_modelo}
-                {v.placa && <span className="text-zinc-400 text-xs ml-1">· {v.placa}</span>}
-                {(v.valor_fipe ?? v.valor_referencia) && (
-                  <span className="text-zinc-400 text-xs ml-1">
-                    · R$ {Number(v.valor_fipe ?? v.valor_referencia).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
+        {open && q.trim() ? (
+          filtered.length > 0 ? (
+            <div className="absolute z-10 w-full border rounded-md bg-white shadow-md max-h-40 overflow-y-auto mt-1">
+              {filtered.map(v => (
+                <button
+                  key={v.id}
+                  type="button"
+                  onMouseDown={e => e.preventDefault()}
+                  onClick={() => {
+                    onChange(v.id, v.valor_fipe ?? v.valor_referencia ?? null, v.tipo);
+                    setQ(`${v.marca} ${v.modelo} ${v.ano_modelo}`);
+                    setOpen(false);
+                  }}
+                  className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${value === v.id ? "bg-zinc-100 font-medium" : ""}`}
+                >
+                  {v.marca} {v.modelo} {v.ano_modelo}
+                  {v.placa && <span className="text-zinc-400 text-xs ml-1">· {v.placa}</span>}
+                  {(v.valor_fipe ?? v.valor_referencia) && (
+                    <span className="text-zinc-400 text-xs ml-1">
+                      · R$ {Number(v.valor_fipe ?? v.valor_referencia).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="absolute z-10 w-full border rounded-md bg-white shadow-md mt-1 px-3 py-2 text-xs text-zinc-400">
+              Nenhum veículo encontrado
+            </div>
+          )
         ) : null}
       </div>
       {error && <p className="text-xs text-red-500">{error}</p>}
