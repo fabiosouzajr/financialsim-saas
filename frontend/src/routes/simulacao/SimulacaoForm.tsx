@@ -15,6 +15,9 @@ import { fmtBRL, parseBRL } from "@/lib/decimal";
 import { ClientModal } from "@/routes/clientes/ClientesPage";
 import { VehicleModal } from "@/routes/veiculos/VeiculosPage";
 import type { SimulationFormValues, PreviewPayload } from "./types";
+import { ResultCards } from "./ResultCards";
+import { SimulacaoCharts } from "./SimulacaoCharts";
+import { ScheduleTable } from "./ScheduleTable";
 
 const schema = z.object({
   client_id: z.string().optional().default(""),
@@ -274,9 +277,11 @@ interface Props {
 
 export function SimulacaoForm({ initialValues, onSave }: Props) {
   const { data: rules } = useBusinessRules();
-  const { preview, loading: previewLoading, request: requestPreview } = useSimulationPreview();
+  const { preview, request: requestPreview } = useSimulationPreview();
   const [clientModalOpen, setClientModalOpen] = useState(false);
   const [vehicleModalOpen, setVehicleModalOpen] = useState(false);
+  const [pendingVisualize, setPendingVisualize] = useState(false);
+  const [visualizarOpen, setVisualizarOpen] = useState(false);
 
   const today = todayIso();
   const defaultPrazo = rules?.prazo_minimo_meses ?? 24;
@@ -356,6 +361,13 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
     watchAll.prazo_meses, watchAll.data_liberacao, watchAll.primeiro_vencimento,
     watchAll.incluir_iof, watchAll.fees, watchAll.extras,
   ]);
+
+  useEffect(() => {
+    if (pendingVisualize && preview) {
+      setVisualizarOpen(true);
+      setPendingVisualize(false);
+    }
+  }, [preview, pendingVisualize]);
 
   const handlePctBlur = () => {
     const vv = parseFloat(valorVeiculo);
@@ -643,19 +655,36 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
         </CollapsibleContent>
       </Collapsible>
 
-      {onSave && (
+      <div className="flex gap-2">
         <button
-          type="submit"
-          className="w-full bg-zinc-900 text-white rounded py-2.5 text-sm font-medium hover:bg-zinc-700"
-          disabled={formState.isSubmitting}
+          type="button"
+          disabled={pendingVisualize}
+          onClick={() => {
+            const vv = parseFloat(watch("valor_veiculo"));
+            const taxa = parseFloat(watch("taxa_mensal"));
+            const prazo = watch("prazo_meses");
+            if (!(vv > 0 && taxa > 0 && prazo > 0)) return;
+            if (preview) {
+              setVisualizarOpen(true);
+            } else {
+              setPendingVisualize(true);
+              requestPreview(toPayload(watchAll));
+            }
+          }}
+          className={`border border-zinc-300 text-zinc-700 rounded py-2.5 text-sm font-medium hover:bg-zinc-50 disabled:opacity-50 ${onSave ? "flex-1" : "w-full"}`}
         >
-          Salvar simulação
+          {pendingVisualize ? "Calculando..." : "Visualizar"}
         </button>
-      )}
-
-      {/* Hidden preview state for parent usage */}
-      {previewLoading && <span style={{ display: "none" }}>preview-loading</span>}
-      {preview && <span style={{ display: "none" }}>preview-ready</span>}
+        {onSave && (
+          <button
+            type="submit"
+            className="flex-1 bg-zinc-900 text-white rounded py-2.5 text-sm font-medium hover:bg-zinc-700"
+            disabled={formState.isSubmitting}
+          >
+            Salvar simulação
+          </button>
+        )}
+      </div>
 
       <Dialog open={clientModalOpen} onOpenChange={setClientModalOpen}>
         <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-white text-gray-900">
@@ -672,6 +701,23 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
             <DialogTitle className="text-gray-900 text-lg font-semibold">Novo Veículo</DialogTitle>
           </DialogHeader>
           <VehicleModal onClose={() => setVehicleModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={visualizarOpen} onOpenChange={setVisualizarOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white text-gray-900">
+          <DialogHeader>
+            <DialogTitle className="text-gray-900 text-lg font-semibold">Simulação</DialogTitle>
+          </DialogHeader>
+          {preview ? (
+            <div className="space-y-6">
+              <ResultCards summary={preview.summary} loading={false} />
+              <SimulacaoCharts rows={preview.rows} />
+              <ScheduleTable rows={preview.rows} />
+            </div>
+          ) : (
+            <div className="text-sm text-zinc-400 text-center py-8">Calculando...</div>
+          )}
         </DialogContent>
       </Dialog>
     </form>
