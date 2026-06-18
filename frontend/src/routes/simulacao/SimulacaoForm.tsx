@@ -324,10 +324,6 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
     name: "extras",
   });
 
-  const [selectedVehicle, setSelectedVehicle] = useState<{
-    fipeValue: string | null;
-    tipo: string | null;
-  }>({ fipeValue: null, tipo: null });
 
   const watchAll = watch();
   const valorVeiculo = watch("valor_veiculo");
@@ -411,7 +407,7 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
 
               const ipvaIdx = currentExtras.findIndex(e => e.tipo === "ipva");
               if (ipvaIdx >= 0) {
-                const ipvaPct = parseFloat(rules[`ipva_pct_${tipo}` as keyof typeof rules]);
+                const ipvaPct = parseFloat(rules[`ipva_pct_${tipo}` as keyof typeof rules] as string);
                 const vv = parseFloat(fipeValue);
                 if (!isNaN(ipvaPct) && !isNaN(vv)) {
                   setValue(`extras.${ipvaIdx}.valor_total`, (vv * ipvaPct).toFixed(2));
@@ -424,7 +420,6 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
               }
             }
           }
-          setSelectedVehicle({ fipeValue: fipeValue ?? null, tipo: tipo ?? null });
         }}
         onNew={() => setVehicleModalOpen(true)}
       />
