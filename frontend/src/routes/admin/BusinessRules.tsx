@@ -32,6 +32,7 @@ interface BusinessRulesData {
   emplacamento_valor_carro: string;
   emplacamento_valor_moto: string;
   emplacamento_valor_caminhao: string;
+  protecao_veicular_valor: string;
 }
 
 async function fetchRules(): Promise<BusinessRulesData> {
@@ -299,6 +300,7 @@ export default function BusinessRules() {
           <EditableField label="Emplacamento — Carro (R$)" value={String(data.emplacamento_valor_carro)} type="number" onSave={makeSave("emplacamento_valor_carro")} motivo />
           <EditableField label="Emplacamento — Moto (R$)" value={String(data.emplacamento_valor_moto)} type="number" onSave={makeSave("emplacamento_valor_moto")} motivo />
           <EditableField label="Emplacamento — Caminhão (R$)" value={String(data.emplacamento_valor_caminhao)} type="number" onSave={makeSave("emplacamento_valor_caminhao")} motivo />
+          <EditableField label="Proteção Veicular (R$/mês)" value={String(data.protecao_veicular_valor)} type="number" onSave={makeSave("protecao_veicular_valor")} motivo />
         </div>
       </section>
 

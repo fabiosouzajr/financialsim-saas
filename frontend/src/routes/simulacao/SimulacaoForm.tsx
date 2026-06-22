@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,15 +9,13 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useBusinessRules, suggestRate } from "@/hooks/useBusinessRules";
 import { useSimulationPreview } from "@/hooks/useSimulationPreview";
+import { api } from "@/lib/api";
 import { listClients } from "@/lib/clients";
 import { listVehicles } from "@/lib/vehicles";
 import { fmtBRL, parseBRL } from "@/lib/decimal";
 import { ClientModal } from "@/routes/clientes/ClientesPage";
 import { VehicleModal } from "@/routes/veiculos/VeiculosPage";
-import type { SimulationFormValues, PreviewPayload } from "./types";
-import { ResultCards } from "./ResultCards";
-import { SimulacaoCharts } from "./SimulacaoCharts";
-import { ScheduleTable } from "./ScheduleTable";
+import type { SimulationFormValues, PreviewPayload, PreviewResponse } from "./types";
 
 const schema = z.object({
   client_id: z.string().optional().default(""),
@@ -129,7 +127,7 @@ function PercentInput({ id, value, onChange }: {
 }
 
 function ClientPicker({ value, onChange, error, onNew }: {
-  value: string; onChange: (id: string) => void; error?: string; onNew?: () => void;
+  value: string; onChange: (id: string, nome: string) => void; error?: string; onNew?: () => void;
 }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
@@ -157,7 +155,7 @@ function ClientPicker({ value, onChange, error, onNew }: {
           onChange={e => {
             setQ(e.target.value);
             setOpen(true);
-            if (value) onChange("");
+            if (value) onChange("", "");
           }}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
         />
@@ -168,7 +166,7 @@ function ClientPicker({ value, onChange, error, onNew }: {
                 key={c.id}
                 type="button"
                 onMouseDown={e => e.preventDefault()}
-                onClick={() => { onChange(c.id); setQ(c.nome); setOpen(false); }}
+                onClick={() => { onChange(c.id, c.nome); setQ(c.nome); setOpen(false); }}
                 className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${value === c.id ? "bg-zinc-100 font-medium" : ""}`}
               >
                 {c.nome} <span className="text-zinc-400 text-xs">{c.cpf_cnpj}</span>
@@ -184,7 +182,7 @@ function ClientPicker({ value, onChange, error, onNew }: {
 
 function VehiclePicker({ value, onChange, error, onNew }: {
   value: string;
-  onChange: (id: string, fipeValue: string | null, tipo: string | null) => void;
+  onChange: (id: string, fipeValue: string | null, tipo: string | null, descricao: string) => void;
   error?: string;
   onNew?: () => void;
 }) {
@@ -222,7 +220,7 @@ function VehiclePicker({ value, onChange, error, onNew }: {
           onChange={e => {
             setQ(e.target.value);
             setOpen(true);
-            if (value) onChange("", null, null);
+            if (value) onChange("", null, null, "");
           }}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
         />
@@ -235,8 +233,9 @@ function VehiclePicker({ value, onChange, error, onNew }: {
                   type="button"
                   onMouseDown={e => e.preventDefault()}
                   onClick={() => {
-                    onChange(v.id, v.valor_fipe ?? v.valor_referencia ?? null, v.tipo);
-                    setQ(`${v.marca} ${v.modelo} ${v.ano_modelo}`);
+                    const desc = `${v.marca} ${v.modelo} ${v.ano_modelo}`;
+                    onChange(v.id, v.valor_fipe ?? v.valor_referencia ?? null, v.tipo, desc);
+                    setQ(desc);
                     setOpen(false);
                   }}
                   className={`w-full text-left px-3 py-2 text-sm hover:bg-zinc-50 ${value === v.id ? "bg-zinc-100 font-medium" : ""}`}
@@ -263,6 +262,11 @@ function VehiclePicker({ value, onChange, error, onNew }: {
   );
 }
 
+interface IndicatorOut {
+  codigo: string;
+  valor_derivado: string | null;
+}
+
 const VALID_TIPOS = ["carro", "moto", "caminhao"] as const;
 type VehicleTipo = (typeof VALID_TIPOS)[number];
 
@@ -273,15 +277,33 @@ function isValidTipo(t: string | null): t is VehicleTipo {
 interface Props {
   initialValues?: Partial<SimulationFormValues>;
   onSave?: (values: SimulationFormValues) => void;
+  onVisualize?: () => void;
+  onPreviewChange?: (preview: PreviewResponse | null, loading: boolean) => void;
+  onInfoChange?: (clienteName: string, vehicleDesc: string) => void;
 }
 
-export function SimulacaoForm({ initialValues, onSave }: Props) {
+export function SimulacaoForm({ initialValues, onSave, onVisualize, onPreviewChange, onInfoChange }: Props) {
   const { data: rules } = useBusinessRules();
-  const { preview, request: requestPreview } = useSimulationPreview();
+  const { preview, loading: previewLoading, request: requestPreview, requestImmediate } = useSimulationPreview();
+
+  // Notify parent whenever preview or loading state changes
+  useEffect(() => {
+    onPreviewChange?.(preview, previewLoading);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preview, previewLoading]);
+  const { data: indicators, isFetched: indicatorsFetched } = useQuery({
+    queryKey: ["indicators"],
+    queryFn: async () => {
+      const res = await api.get<IndicatorOut[]>("/v1/indicators");
+      return res.data;
+    },
+    staleTime: 5 * 60_000,
+  });
+  const bacenVeic = indicators?.find(i => i.codigo === "TX_BACEN_VEIC") ?? null;
+  const bacenMensal = bacenVeic?.valor_derivado ?? null;
   const [clientModalOpen, setClientModalOpen] = useState(false);
   const [vehicleModalOpen, setVehicleModalOpen] = useState(false);
-  const [pendingVisualize, setPendingVisualize] = useState(false);
-  const [visualizarOpen, setVisualizarOpen] = useState(false);
+  const proteInitialized = useRef(false);
 
   const today = todayIso();
   const defaultPrazo = rules?.prazo_minimo_meses ?? 24;
@@ -310,6 +332,7 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
         extras: [
           { tipo: "ipva", nome: "IPVA", valor_total: "0.00", modalidade: "rateio_ciclico" as const, duracao_meses: 12, ordem: 0 },
           { tipo: "emplacamento", nome: "Emplacamento", valor_total: "0.00", modalidade: "rateio_ciclico" as const, duracao_meses: 12, ordem: 1 },
+          { tipo: "protecao", nome: "Proteção Veicular", valor_total: "0.00", modalidade: "mensal_continuo" as const, duracao_meses: defaultPrazo, ordem: 2 },
         ],
         ...initialValues,
       },
@@ -344,6 +367,27 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
     }
   }, [prazoMeses, rules, setValue]);
 
+  // Set proteção valor from rule once rules load (only for new simulations)
+  useEffect(() => {
+    if (!rules || proteInitialized.current || initialValues?.extras) return;
+    const currentExtras = getValues("extras");
+    const idx = currentExtras.findIndex(e => e.tipo === "protecao");
+    if (idx >= 0) {
+      setValue(`extras.${idx}.valor_total`, rules.protecao_veicular_valor);
+    }
+    proteInitialized.current = true;
+  }, [rules, getValues, setValue, initialValues]);
+
+  // Keep proteção duracao_meses in sync with prazo (only for new simulations)
+  useEffect(() => {
+    if (initialValues?.extras) return;
+    const currentExtras = getValues("extras");
+    const idx = currentExtras.findIndex(e => e.tipo === "protecao");
+    if (idx >= 0) {
+      setValue(`extras.${idx}.duracao_meses`, prazoMeses);
+    }
+  }, [prazoMeses, getValues, setValue, initialValues]);
+
   useEffect(() => {
     const vv = parseFloat(watchAll.valor_veiculo);
     const ve = parseFloat(watchAll.valor_entrada_brl);
@@ -357,13 +401,6 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
     watchAll.prazo_meses, watchAll.data_liberacao, watchAll.primeiro_vencimento,
     watchAll.incluir_iof, watchAll.fees, watchAll.extras,
   ]);
-
-  useEffect(() => {
-    if (pendingVisualize && preview) {
-      setVisualizarOpen(true);
-      setPendingVisualize(false);
-    }
-  }, [preview, pendingVisualize]);
 
   const handlePctBlur = () => {
     const vv = parseFloat(valorVeiculo);
@@ -382,13 +419,19 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
       {/* Client / Vehicle pickers */}
       <ClientPicker
         value={watch("client_id") ?? ""}
-        onChange={v => setValue("client_id", v)}
+        onChange={(id, nome) => {
+          setValue("client_id", id);
+          setValue("cliente_nome", nome);
+          onInfoChange?.(nome, watch("veiculo_descricao") || "");
+        }}
         onNew={() => setClientModalOpen(true)}
       />
       <VehiclePicker
         value={watch("vehicle_id") ?? ""}
-        onChange={(id, fipeValue, tipo) => {
+        onChange={(id, fipeValue, tipo, descricao) => {
           setValue("vehicle_id", id);
+          setValue("veiculo_descricao", descricao);
+          onInfoChange?.(watch("cliente_nome") || "", descricao);
           if (fipeValue) {
             setValue("valor_veiculo", fipeValue);
 
@@ -491,12 +534,22 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
               sugerida: {(parseFloat(suggestRate(prazoMeses, rules.taxa_por_prazo_curva)) * 100).toFixed(2)}%
             </span>
           )}
+          {bacenMensal && (
+            <span className="ml-1 text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
+              bacen veic: {parseFloat(bacenMensal).toFixed(4).replace(".", ",")}% a.m.
+            </span>
+          )}
         </label>
         <PercentInput
           id="taxa_mensal"
           value={watch("taxa_mensal")}
           onChange={v => setValue("taxa_mensal", v)}
         />
+        {indicatorsFetched && !bacenMensal && (
+          <p className="mt-1 text-xs text-amber-600">
+            Taxa BACEN Veículos indisponível — atualize os indicadores no painel admin.
+          </p>
+        )}
       </div>
 
       {/* Datas */}
@@ -653,22 +706,18 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
       <div className="flex gap-2">
         <button
           type="button"
-          disabled={pendingVisualize}
+          disabled={previewLoading}
           onClick={() => {
             const vv = parseFloat(watch("valor_veiculo"));
             const taxa = parseFloat(watch("taxa_mensal"));
             const prazo = watch("prazo_meses");
             if (!(vv > 0 && taxa > 0 && prazo > 0)) return;
-            if (preview) {
-              setVisualizarOpen(true);
-            } else {
-              setPendingVisualize(true);
-              requestPreview(toPayload(watchAll));
-            }
+            requestImmediate(toPayload(watchAll));
+            onVisualize?.();
           }}
           className={`border border-zinc-300 text-zinc-700 rounded py-2.5 text-sm font-medium hover:bg-zinc-50 disabled:opacity-50 ${onSave ? "flex-1" : "w-full"}`}
         >
-          {pendingVisualize ? "Calculando..." : "Visualizar"}
+          {previewLoading ? "Calculando..." : "Visualizar"}
         </button>
         {onSave && (
           <button
@@ -699,22 +748,6 @@ export function SimulacaoForm({ initialValues, onSave }: Props) {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={visualizarOpen} onOpenChange={setVisualizarOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white text-gray-900">
-          <DialogHeader>
-            <DialogTitle className="text-gray-900 text-lg font-semibold">Simulação</DialogTitle>
-          </DialogHeader>
-          {preview ? (
-            <div className="space-y-6">
-              <ResultCards summary={preview.summary} loading={false} />
-              <SimulacaoCharts rows={preview.rows} />
-              <ScheduleTable rows={preview.rows} />
-            </div>
-          ) : (
-            <div className="text-sm text-zinc-400 text-center py-8">Calculando...</div>
-          )}
-        </DialogContent>
-      </Dialog>
     </form>
   );
 }

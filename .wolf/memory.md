@@ -3,6 +3,9 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 11:40 | Visualizar: removed modal from SimulacaoForm, added onVisualize+onPreviewChange props, wired right panel in Simulacao.tsx via state bridge | SimulacaoForm.tsx, Simulacao.tsx | Build clean, no TS errors | ~1200 |
+| 11:55 | Fix blank cliente/veículo in results panel: added nome/descricao to picker onChange signatures, set form fields, added onInfoChange prop, display info above ResultCards | SimulacaoForm.tsx, Simulacao.tsx | Build clean | ~800 |
+
 | 2026-06-18 | Fixed Mailpit SMTP not delivering: native mailpit on host held ports 1025/8025; Docker mailpit had no network. Fix: removed port bindings from Docker mailpit, added extra_hosts mailpit:host-gateway to api+worker | ops/docker-compose.yml | sent confirmed | ~800 tok |
 | 2026-06-16 | Added --reset-password mode to setup-tenant.sh: interactive menu + --reset-password flag, runs `user reset-password` CLI | setup-tenant.sh | complete | ~300 tok |
 
@@ -1870,3 +1873,68 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 11:06 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | added 1 import(s) | ~91 |
+| 11:07 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: codigo, valor_derivado | ~40 |
+| 11:07 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | added optional chaining | ~147 |
+| 11:07 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: veic | ~298 |
+| 11:07 | SimulacaoForm: show TX_BACEN_VEIC monthly rate beside 'sugerida:' badge; warn if unavailable | frontend/src/routes/simulacao/SimulacaoForm.tsx | done | ~200 |
+| 11:07 | Session end: 4 writes across 1 files (SimulacaoForm.tsx) | 6 reads | ~11813 tok |
+| 11:13 | Edited frontend/src/hooks/useSimulationPreview.ts | added 1 condition(s) | ~541 |
+| 11:13 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~33 |
+| 11:13 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 4→3 lines | ~56 |
+| 11:13 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | removed 8 lines | ~6 |
+| 11:14 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 19→15 lines | ~195 |
+| 11:14 | Fix: Visualizar button always fetches fresh preview via requestImmediate; removes stale-preview bug with extras | useSimulationPreview.ts, SimulacaoForm.tsx | done | ~150 |
+| 11:14 | Session end: 9 writes across 2 files (SimulacaoForm.tsx, useSimulationPreview.ts) | 14 reads | ~25500 tok |
+| 11:19 | Edited backend/finacialsim_saas/services/rules_service.py | 4→5 lines | ~109 |
+| 11:19 | Edited frontend/src/routes/simulacao/types.ts | 4→5 lines | ~42 |
+| 11:19 | Edited frontend/src/routes/admin/BusinessRules.tsx | CSS: protecao_veicular_valor | ~42 |
+| 11:19 | Edited frontend/src/routes/admin/BusinessRules.tsx | 3→4 lines | ~112 |
+| 11:20 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 5→6 lines | ~76 |
+| 11:20 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 2→3 lines | ~91 |
+| 11:20 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | added optional chaining | ~318 |
+| 11:21 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~18 |
+| 11:21 | Add protecao_veicular_valor business rule; default in SimulacaoForm with prazo sync | rules_service.py, types.ts, BusinessRules.tsx, SimulacaoForm.tsx | done | ~200 |
+| 11:21 | Session end: 17 writes across 5 files (SimulacaoForm.tsx, useSimulationPreview.ts, rules_service.py, types.ts, BusinessRules.tsx) | 16 reads | ~31837 tok |
+| 11:25 | Edited backend/finacialsim_saas/schemas/business_rules.py | 3→4 lines | ~47 |
+| 11:25 | Edited backend/finacialsim_saas/api/business_rules.py | 4→5 lines | ~85 |
+| 11:25 | Session end: 19 writes across 6 files (SimulacaoForm.tsx, useSimulationPreview.ts, rules_service.py, types.ts, BusinessRules.tsx) | 19 reads | ~34582 tok |
+| 11:30 | Edited frontend/src/routes/simulacao/ResultCards.tsx | 3→1 lines | ~25 |
+| 11:30 | Edited frontend/src/routes/simulacao/ResultCards.tsx | — | ~0 |
+| 11:30 | Session end: 21 writes across 7 files (SimulacaoForm.tsx, useSimulationPreview.ts, rules_service.py, types.ts, BusinessRules.tsx) | 19 reads | ~34607 tok |
+
+## Session: 2026-06-22 11:34
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:36 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 21→18 lines | ~300 |
+| 11:36 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 4→5 lines | ~42 |
+| 11:36 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~23 |
+| 11:36 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 4→3 lines | ~50 |
+| 11:36 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | added optional chaining | ~193 |
+| 11:36 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | removed 17 lines | ~4 |
+| 11:37 | Edited frontend/src/routes/Simulacao.tsx | added optional chaining | ~1177 |
+| 11:37 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~30 |
+| 11:39 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~25 |
+| 11:39 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: preview, loading | ~66 |
+| 11:39 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~28 |
+| 11:39 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | added optional chaining | ~96 |
+| 11:39 | Edited frontend/src/routes/Simulacao.tsx | 9→9 lines | ~148 |
+| 11:39 | Edited frontend/src/routes/Simulacao.tsx | useSimulationPreview() → useState() | ~59 |
+| 11:39 | Edited frontend/src/routes/Simulacao.tsx | 1→5 lines | ~56 |
+| 11:40 | Session end: 15 writes across 2 files (SimulacaoForm.tsx, Simulacao.tsx) | 6 reads | ~17125 tok |
+| 11:43 | Session end: 15 writes across 2 files (SimulacaoForm.tsx, Simulacao.tsx) | 6 reads | ~17125 tok |
+| 11:49 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: nome | ~47 |
+| 11:49 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 15→15 lines | ~185 |
+| 11:50 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: descricao | ~64 |
+| 11:50 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | 20→21 lines | ~251 |
+| 11:50 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | CSS: clienteName, vehicleDesc | ~85 |
+| 11:50 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | inline fix | ~32 |
+| 11:50 | Edited frontend/src/routes/simulacao/SimulacaoForm.tsx | added optional chaining | ~166 |
+| 11:50 | Edited frontend/src/routes/Simulacao.tsx | CSS: clienteName, vehicleDesc | ~82 |
+| 11:50 | Edited frontend/src/routes/Simulacao.tsx | 5→6 lines | ~84 |
+| 11:50 | Edited frontend/src/routes/Simulacao.tsx | expanded (+10 lines) | ~336 |
+| 11:51 | Session end: 25 writes across 2 files (SimulacaoForm.tsx, Simulacao.tsx) | 6 reads | ~18508 tok |
+| 12:03 | Edited frontend/src/routes/simulacao/ResultCards.tsx | 2→1 lines | ~35 |
+| 12:03 | Edited frontend/src/routes/simulacao/ResultCards.tsx | 9 → 6 | ~15 |
+| 12:03 | Session end: 27 writes across 3 files (SimulacaoForm.tsx, Simulacao.tsx, ResultCards.tsx) | 6 reads | ~18558 tok |

@@ -45,6 +45,7 @@ async def get_business_rules(
         inadimplencia_multa_pct=rules["inadimplencia_multa_pct"],
         inadimplencia_juros_diario_pct=rules["inadimplencia_juros_diario_pct"],
         inadimplencia_carencia_dias=int(rules["inadimplencia_carencia_dias"]),
+        protecao_veicular_valor=rules["protecao_veicular_valor"],
     )
 
 

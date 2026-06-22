@@ -43,6 +43,7 @@ _RULE_DEFAULTS: dict[str, tuple[Any, str]] = {
     "inadimplencia_multa_pct":          ("0.00",  "Multa por inadimplência (%, máx 2%)"),
     "inadimplencia_juros_diario_pct":   ("0.00",  "Juros moratórios diários (%, máx 0.1%)"),
     "inadimplencia_carencia_dias":      (0,       "Carência antes dos encargos (dias, máx 30)"),
+    "protecao_veicular_valor":          ("0.00",  "Proteção Veicular — valor mensal padrão (R$)"),
 }
 
 _REQUIRED_RULES = frozenset(_RULE_DEFAULTS.keys())

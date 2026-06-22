@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-18T14:41:24.675Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-22T15:03:53.340Z
 > Files: 386 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
@@ -84,7 +84,7 @@
 - `admin_settings.py` — API: 2 endpoints (~457 tok)
 - `audit_log.py` — API: 1 endpoints (~659 tok)
 - `auth.py` — API: 5 endpoints (~820 tok)
-- `business_rules.py` — API: 2 endpoints (~838 tok)
+- `business_rules.py` — API: 2 endpoints (~856 tok)
 - `cep.py` — API: 1 endpoints (~70 tok)
 - `clients.py` — API: 6 endpoints (~964 tok)
 - `fipe.py` — API: 5 endpoints (~727 tok)
@@ -209,7 +209,7 @@
 - `__init__.py` (~0 tok)
 - `admin_settings.py` — Declares SettingItem (~54 tok)
 - `audit_log.py` — Declares AuditLogItem (~138 tok)
-- `business_rules.py` — Declares RateCurvePointOut (~334 tok)
+- `business_rules.py` — Declares RateCurvePointOut (~345 tok)
 - `clients.py` — Declares ClientIn (~381 tok)
 - `fipe.py` — Declares FipeBrandItem (~154 tok)
 - `indicators.py` — Declares IndicatorOut (~408 tok)
@@ -229,7 +229,7 @@
 - `indicators_service.py` — IndicatorsService: upsert, latest, latest_all, series (~1300 tok)
 - `parcela_service.py` — ParcelaService: list_for_customer, get_schedule, get_parcela, mark_overdue (~2917 tok)
 - `proposal_service.py` — ProposalService — manages the full proposal lifecycle. (~3092 tok)
-- `rules_service.py` — Single source of truth for all business rule defaults: key → (value, description) (~1669 tok)
+- `rules_service.py` — Single source of truth for all business rule defaults: key → (value, description) (~1697 tok)
 - `settings_service.py` — SettingsService: get_all, update (~684 tok)
 - `simulation_service.py` — from: preview, create (~8192 tok)
 - `vehicle_service.py` — VehicleService: create, get, list, update + 2 more (~2393 tok)
@@ -489,7 +489,7 @@
 ## frontend/src/hooks/
 
 - `useBusinessRules.ts` — Exports useBusinessRules, suggestRate (~222 tok)
-- `useSimulationPreview.ts` — Exports useSimulationPreview (~438 tok)
+- `useSimulationPreview.ts` — Exports useSimulationPreview (~541 tok)
 
 ## frontend/src/lib/
 
@@ -512,14 +512,14 @@
 - `Index.tsx` — decodeRole (~995 tok)
 - `Login.tsx` — schema — renders form (~874 tok)
 - `ResetPassword.tsx` — schema — renders form (~853 tok)
-- `Simulacao.tsx` — Simulacao (~789 tok)
+- `Simulacao.tsx` — Simulacao (~1436 tok)
 - `SimulacaoEdit.tsx` — isoToDateStr (~3650 tok)
 
 ## frontend/src/routes/admin/
 
 - `AdminLayout.tsx` — NAV_ITEMS (~634 tok)
 - `AuditLog.tsx` — ACAO_OPTIONS — renders table (~1546 tok)
-- `BusinessRules.tsx` — fetchRules — renders table (~3669 tok)
+- `BusinessRules.tsx` — fetchRules — renders table (~3728 tok)
 - `Indicators.tsx` — LABELS (~1155 tok)
 - `PixSettings.tsx` — Query getAdminSettings, display pix_provider + pix_webhook_secret (env-only, read-only) (~270 tok)
 - `SmtpSettings.tsx` — EMAIL_PROVIDERS (~670 tok)
@@ -536,11 +536,11 @@
 
 ## frontend/src/routes/simulacao/
 
-- `ResultCards.tsx` — Card (~516 tok)
+- `ResultCards.tsx` — Card (~414 tok)
 - `ScheduleTable.tsx` — CSV_HEADERS — renders table (~742 tok)
 - `SimulacaoCharts.tsx` — SimulacaoCharts (~970 tok)
-- `SimulacaoForm.tsx` — schema (~7710 tok)
-- `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~928 tok)
+- `SimulacaoForm.tsx` — schema (~8175 tok)
+- `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~938 tok)
 
 ## frontend/src/routes/veiculos/
 

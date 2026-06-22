@@ -36,6 +36,7 @@ class BusinessRulesOut(BaseModel):
     inadimplencia_multa_pct: DecimalStr
     inadimplencia_juros_diario_pct: DecimalStr
     inadimplencia_carencia_dias: int
+    protecao_veicular_valor: DecimalStr
 
 
 class BusinessRuleUpdateIn(BaseModel):

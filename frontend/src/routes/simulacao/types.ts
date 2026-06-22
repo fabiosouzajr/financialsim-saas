@@ -24,6 +24,7 @@ export interface BusinessRules {
   emplacamento_valor_carro: string;
   emplacamento_valor_moto: string;
   emplacamento_valor_caminhao: string;
+  protecao_veicular_valor: string;
 }
 
 export interface FeeInput {

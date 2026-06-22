@@ -19,7 +19,7 @@ export function ResultCards({ summary, loading }: Props) {
   if (loading) {
     return (
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {Array.from({ length: 9 }).map((_, i) => (
+        {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="bg-zinc-100 animate-pulse rounded-lg h-20" />
         ))}
       </div>
@@ -28,21 +28,15 @@ export function ResultCards({ summary, loading }: Props) {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-      <Card label="Parcela do financiamento" value={fmtBRL(summary.parcela_financiamento)} />
-      <Card label="Parcela total 1º ano" value={fmtBRL(summary.parcela_total_primeiro_ano)} />
-      <Card label="Parcela total após rateio" value={fmtBRL(summary.parcela_total_apos_rateio)} />
+      <Card label="Valor Parcela" value={fmtBRL(summary.parcela_total_primeiro_ano)} />
       <Card label="Valor financiado" value={fmtBRL(summary.valor_financiado)} />
       <Card label="Total pago" value={fmtBRL(summary.total_pago)} />
-      <Card label="Total juros" value={fmtBRL(summary.total_juros)} />
-      <Card label="% juros" value={`${parseFloat(summary.pct_juros).toFixed(2)}%`} />
+      <Card label="Total juros" value={`${fmtBRL(summary.total_juros)} · ${parseFloat(summary.pct_juros).toFixed(2)}%`} />
       <Card
         label="CET a.m. / a.a."
         value={`${fmtPct(summary.cet_mensal)} / ${fmtPct(summary.cet_anual)}`}
       />
       <Card label="Total pago pelo cliente" value={fmtBRL(summary.total_pago_pelo_cliente)} />
-      {parseFloat(summary.iof_total) > 0 && (
-        <Card label="IOF total" value={fmtBRL(summary.iof_total)} />
-      )}
     </div>
   );
 }
