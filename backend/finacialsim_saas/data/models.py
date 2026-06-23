@@ -26,6 +26,13 @@ class Tenant(Base):
     )
     name: Mapped[str] = mapped_column(sa.Text, nullable=False)
     slug: Mapped[str] = mapped_column(sa.Text, nullable=False, unique=True)
+    cnpj: Mapped[str | None] = mapped_column(sa.String(18), nullable=True)
+    telefone: Mapped[str | None] = mapped_column(sa.String(20), nullable=True)
+    endereco: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    logo_key: Mapped[str | None] = mapped_column(sa.Text, nullable=True)
+    proposta_validade_dias: Mapped[int] = mapped_column(
+        sa.Integer, nullable=False, server_default="15"
+    )
     created_at: Mapped[datetime] = mapped_column(
         sa.DateTime(timezone=True), nullable=False, server_default=sa.text("now()")
     )

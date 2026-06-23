@@ -65,6 +65,21 @@ def test_all_phase4_models_importable_and_tables_exist(engine):
 
 
 @pytest.mark.asyncio
+async def test_tenant_profile_columns_exist(session):
+    """Migration 014 adds 5 company profile columns to Tenant."""
+    from sqlalchemy import text
+
+    result = await session.execute(
+        text(
+            "SELECT cnpj, telefone, endereco, logo_key, proposta_validade_dias"
+            " FROM tenants LIMIT 0"
+        )
+    )
+    # If columns don't exist this raises ProgrammingError
+    assert result is not None
+
+
+@pytest.mark.asyncio
 async def test_all_phase7_models_importable_and_tables_exist(session):
     from finacialsim_saas.data.models import NotificationsOutbox, EmailLog
     from sqlalchemy import text
