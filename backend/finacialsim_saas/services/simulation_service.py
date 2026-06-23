@@ -649,6 +649,29 @@ class SimulationService:
         )
         return await self.get(sim.id, ctx)
 
+    async def confirm(self, sim_id: uuid.UUID, ctx: RequestContext) -> SimulationOut:
+        result = await self._s.execute(
+            select(Simulation).where(
+                Simulation.id == sim_id,
+                Simulation.tenant_id == ctx.tenant_id,
+            )
+        )
+        sim = result.scalar_one_or_none()
+        if sim is None:
+            raise NotFoundError(f"Simulation {sim_id} not found")
+        if sim.status != SimulationStatus.rascunho:
+            raise ValidationError("Only rascunho simulations can be confirmed")
+        before_status = sim.status.value
+        sim.status = SimulationStatus.confirmado
+        await self._s.flush()
+        from finacialsim_saas.services.audit_service import AuditService
+        await AuditService(self._s).log(
+            "simulacao_confirmada", "simulation", sim.id,
+            {"before": {"status": before_status}, "after": {"status": sim.status.value}},
+            ctx,
+        )
+        return await self.get(sim.id, ctx)
+
     async def clone(self, sim_id: uuid.UUID, ctx: RequestContext) -> SimulationOut:
         original = await self.get(sim_id, ctx)
         orm_r = await self._s.execute(

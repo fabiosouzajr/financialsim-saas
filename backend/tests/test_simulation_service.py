@@ -271,6 +271,61 @@ async def test_cross_tenant_get_raises_404(session, tenant, user, rules_seeded, 
 
 
 @pytest.mark.asyncio
+async def test_confirm_transitions_rascunho_to_confirmado(session, tenant, user, rules_seeded, client_and_vehicle):
+    """confirm() sets a rascunho simulation to confirmado."""
+    from finacialsim_saas.services.simulation_service import SimulationService
+    from finacialsim_saas.auth.deps import RequestContext
+    from finacialsim_saas.data.models import Role
+    from finacialsim_saas.schemas.simulations import SimulationCreate
+    cl, v = client_and_vehicle
+    ctx = RequestContext(user_id=user.id, tenant_id=tenant.id, role=Role.user, iat=0.0)
+    svc = SimulationService(session)
+    payload = SimulationCreate(
+        client_id=cl.id,
+        vehicle_id=v.id,
+        valor_veiculo="50000.00", valor_entrada="10000.00",
+        taxa_mensal="0.0199", prazo_meses=24,
+        data_liberacao=date(2026, 6, 1), primeiro_vencimento=date(2026, 7, 1),
+        incluir_iof=False,
+    )
+    base = await svc.create(payload, ctx)
+    await session.commit()
+    clone_out = await svc.clone(base.id, ctx)
+    await session.commit()
+
+    result = await svc.confirm(clone_out.id, ctx)
+    await session.commit()
+
+    assert result.status == "confirmado"
+
+
+@pytest.mark.asyncio
+async def test_confirm_rejects_already_confirmado(session, tenant, user, rules_seeded, client_and_vehicle):
+    """confirm() raises ValidationError when simulation is not rascunho."""
+    from finacialsim_saas.services.simulation_service import SimulationService
+    from finacialsim_saas.auth.deps import RequestContext
+    from finacialsim_saas.data.models import Role
+    from finacialsim_saas.errors import ValidationError
+    from finacialsim_saas.schemas.simulations import SimulationCreate
+    cl, v = client_and_vehicle
+    ctx = RequestContext(user_id=user.id, tenant_id=tenant.id, role=Role.user, iat=0.0)
+    svc = SimulationService(session)
+    payload = SimulationCreate(
+        client_id=cl.id,
+        vehicle_id=v.id,
+        valor_veiculo="50000.00", valor_entrada="10000.00",
+        taxa_mensal="0.0199", prazo_meses=24,
+        data_liberacao=date(2026, 6, 1), primeiro_vencimento=date(2026, 7, 1),
+        incluir_iof=False,
+    )
+    sim_out = await svc.create(payload, ctx)
+    await session.commit()
+
+    with pytest.raises(ValidationError):
+        await svc.confirm(sim_out.id, ctx)
+
+
+@pytest.mark.asyncio
 async def test_clone_creates_rascunho(session, tenant, user, rules_seeded, client_and_vehicle):
     from finacialsim_saas.services.simulation_service import SimulationService
     from finacialsim_saas.auth.deps import RequestContext

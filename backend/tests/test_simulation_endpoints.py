@@ -250,6 +250,60 @@ async def test_get_simulation_includes_proposal_id_when_exists(client, session):
 
 
 @pytest.mark.asyncio
+async def test_confirm_simulation_endpoint(client, session):
+    """POST /simulations/{id}/confirm transitions status to confirmado."""
+    token, _, _, cl, v = await _make_token(client, session)
+    # Create a confirmado sim, then clone it to get a rascunho
+    sim = (await client.post(
+        "/api/v1/simulations",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "client_id": str(cl.id),
+            "vehicle_id": str(v.id),
+            "valor_veiculo": "50000.00", "valor_entrada": "10000.00",
+            "taxa_mensal": "0.0199", "prazo_meses": 24,
+            "data_liberacao": "2026-06-01", "primeiro_vencimento": "2026-07-01",
+            "incluir_iof": False,
+        },
+    )).json()
+    rascunho = (await client.post(
+        f"/api/v1/simulations/{sim['id']}/clone",
+        headers={"Authorization": f"Bearer {token}"},
+    )).json()
+    assert rascunho["status"] == "rascunho"
+
+    r = await client.post(
+        f"/api/v1/simulations/{rascunho['id']}/confirm",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert r.status_code == 200
+    assert r.json()["status"] == "confirmado"
+
+
+@pytest.mark.asyncio
+async def test_confirm_simulation_already_confirmado_returns_422(client, session):
+    """POST /simulations/{id}/confirm on confirmado sim returns 422."""
+    token, _, _, cl, v = await _make_token(client, session)
+    sim = (await client.post(
+        "/api/v1/simulations",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "client_id": str(cl.id),
+            "vehicle_id": str(v.id),
+            "valor_veiculo": "50000.00", "valor_entrada": "10000.00",
+            "taxa_mensal": "0.0199", "prazo_meses": 24,
+            "data_liberacao": "2026-06-01", "primeiro_vencimento": "2026-07-01",
+            "incluir_iof": False,
+        },
+    )).json()
+    r = await client.post(
+        f"/api/v1/simulations/{sim['id']}/confirm",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert r.status_code == 422
+
+
+@pytest.mark.asyncio
 async def test_archive_simulation(client, session):
     token, _, _, cl, v = await _make_token(client, session)
     sim = (await client.post(

@@ -90,6 +90,18 @@ async def archive_simulation(
     return result
 
 
+@router.post("/simulations/{sim_id}/confirm", response_model=SimulationOut)
+async def confirm_simulation(
+    sim_id: uuid.UUID,
+    ctx: Annotated[RequestContext, Depends(get_current_ctx)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
+) -> SimulationOut:
+    svc = SimulationService(session)
+    result = await svc.confirm(sim_id, ctx)
+    await session.commit()
+    return result
+
+
 @router.post("/simulations/{sim_id}/clone", response_model=SimulationOut, status_code=201)
 async def clone_simulation(
     sim_id: uuid.UUID,
