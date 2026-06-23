@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-06-22T15:03:53.340Z
-> Files: 386 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-06-23T15:26:09.800Z
+> Files: 403 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../mnt/c/Users/Fabiojr/AppData/Roaming/Antigravity IDE/User/
 
@@ -16,7 +16,7 @@
 - `.dockerignore` (~23 tok)
 - `.gitignore` — Git ignore rules (~1099 tok)
 - `CLAUDE.md` — CLAUDE.md (~1980 tok)
-- `CONTEXT.md` — Domain Glossary (~1444 tok)
+- `CONTEXT.md` — Domain Glossary (~1578 tok)
 - `dev.sh` — dev.sh — FinacialSim SaaS local dev runner (~2996 tok)
 - `pyproject.toml` (~34 tok)
 - `README.md` — Project documentation (~1467 tok)
@@ -30,6 +30,17 @@
 ## .claude/rules/
 
 - `openwolf.md` (~313 tok)
+
+## .git/sdd/
+
+- `task-1-report.md` — Task 1 Report: DB Migration + Tenant Model (~621 tok)
+- `task-2-report.md` — Task 2 Report: LojaSnap + build_snapshot + SimulationOut.proposal_id (~829 tok)
+- `task-3-report.md` — Task 3 Report: SimulationService.confirm() + POST /simulations/{id}/confirm (~686 tok)
+- `task-4-report.md` — Task 4 Report: ProposalService.create() — validate client+vehicle, read validade from tenant (~503 tok)
+- `task-5-report.md` — Task 5 Report: Render Worker Logo + PDF Template (~621 tok)
+- `task-6-report.md` — Task 6 Report: Tenant Profile API (~933 tok)
+- `task-7-report.md` — Task 7 Report: Frontend — Tenant Profile Lib + Admin Page (~403 tok)
+- `task-8-report.md` — Task 8 Report: Frontend Two-Step Confirm + Propose Flow (~516 tok)
 
 ## .github/workflows/
 
@@ -48,7 +59,7 @@
 
 ## backend/
 
-- `pyproject.toml` (~327 tok)
+- `pyproject.toml` (~336 tok)
 - `smoke_weasyprint.py` — Run once locally to verify WeasyPrint renders on Linux. Delete after passing. (~924 tok)
 
 ## backend/alembic/
@@ -70,12 +81,14 @@
 - `010_seed_ipva_emplacamento_rules.py` — seed IPVA and emplacamento business rules for all tenants (~434 tok)
 - `011_seed_pix_validade_apos_vencimento_rule.py` — seed pix_validade_apos_vencimento_dias business rule (~319 tok)
 - `012_seed_inadimplencia_rules.py` — seed inadimplencia business rules for all tenants (~379 tok)
+- `013_rename_proposal_status_pronta.py` — rename proposal_status 'ready' to 'pronta' (~129 tok)
+- `014_tenant_profile.py` — add company profile columns to tenants (~300 tok)
 
 ## backend/finacialsim_saas/
 
 - `__init__.py` — FinacialSim SaaS backend. (~10 tok)
 - `errors.py` — Declares AppError (~368 tok)
-- `main.py` — API router (~1767 tok)
+- `main.py` — API router (~1808 tok)
 - `settings.py` — Resolve .env relative to this file so alembic (run from backend/) finds it (~556 tok)
 
 ## backend/finacialsim_saas/api/
@@ -93,8 +106,9 @@
 - `pix_admin.py` — Staff Pix admin endpoints — manager|admin only. (~1172 tok)
 - `portal.py` — Portal API endpoints — customer-facing (role=customer JWT required). (~1464 tok)
 - `proposals.py` — Proposal API endpoints. (~1294 tok)
-- `simulations.py` — API: 7 endpoints (~1042 tok)
+- `simulations.py` — API: 8 endpoints (~1156 tok)
 - `storage.py` — Storage serve endpoint — validates HMAC token and streams the file. (~368 tok)
+- `tenant_profile.py` — Tenant profile endpoints — company info and logo for the proposal PDF. (~1193 tok)
 - `users.py` — API: 4 endpoints (~1214 tok)
 - `vehicles.py` — API: 6 endpoints (~855 tok)
 - `vehicles.py` — API: 6 endpoints (~871 tok)
@@ -118,7 +132,7 @@
 ## backend/finacialsim_saas/data/
 
 - `database.py` — Base: build_engine, build_session_factory, check_db (~252 tok)
-- `models.py` — Declares as (~8775 tok)
+- `models.py` — Declares as (~8895 tok)
 
 ## backend/finacialsim_saas/integrations/
 
@@ -201,8 +215,8 @@
 
 - `carne.css` — CSS styles for payment booklet PDF (~200 tok)
 - `carne.html` — Jinja2 HTML template for payment booklet (carnê) PDF (~500 tok)
-- `proposta.css` — CSS styles for proposal PDF report (~200 tok)
-- `proposta.html` — Jinja2 HTML template for proposal PDF report (~500 tok)
+- `proposta.css` — Styles: 12 rules (~506 tok)
+- `proposta.html` — Proposta {{ proposal.codigo }} (~1607 tok)
 
 ## backend/finacialsim_saas/schemas/
 
@@ -213,8 +227,8 @@
 - `clients.py` — Declares ClientIn (~381 tok)
 - `fipe.py` — Declares FipeBrandItem (~154 tok)
 - `indicators.py` — Declares IndicatorOut (~408 tok)
-- `proposals.py` — Proposal schemas: PropostaSnapshot (sealed) + API request/response models. (~1772 tok)
-- `simulations.py` — Declares FeeIn (~1052 tok)
+- `proposals.py` — Proposal schemas: PropostaSnapshot (sealed) + API request/response models. (~1828 tok)
+- `simulations.py` — Declares FeeIn (~1063 tok)
 - `types.py` (~84 tok)
 - `vehicles.py` — Declares VehicleIn (~482 tok)
 
@@ -228,10 +242,10 @@
 - `fipe_service.py` — FipeService: build_fipe_chain, get_brands, get_models, get_years + 1 more (~745 tok)
 - `indicators_service.py` — IndicatorsService: upsert, latest, latest_all, series (~1300 tok)
 - `parcela_service.py` — ParcelaService: list_for_customer, get_schedule, get_parcela, mark_overdue (~2917 tok)
-- `proposal_service.py` — ProposalService — manages the full proposal lifecycle. (~3092 tok)
+- `proposal_service.py` — ProposalService — manages the full proposal lifecycle. (~3186 tok)
 - `rules_service.py` — Single source of truth for all business rule defaults: key → (value, description) (~1697 tok)
 - `settings_service.py` — SettingsService: get_all, update (~684 tok)
-- `simulation_service.py` — from: preview, create (~8192 tok)
+- `simulation_service.py` — from: preview, create (~8528 tok)
 - `vehicle_service.py` — VehicleService: create, get, list, update + 2 more (~2393 tok)
 
 ## backend/finacialsim_saas/storage/
@@ -249,7 +263,7 @@
 ## backend/finacialsim_saas/workers/
 
 - `notifications.py` — drain_notifications_outbox, schedule_parcela_due_reminders (~2073 tok)
-- `tasks.py` — ping, update_bacen_indicators, prune_fipe_cache, verify_provider_health (~3788 tok)
+- `tasks.py` — ping, update_bacen_indicators, prune_fipe_cache, verify_provider_health (~4051 tok)
 - `worker.py` — WorkerSettings: get_redis_settings, startup, shutdown (~754 tok)
 
 ## backend/tests/
@@ -287,7 +301,7 @@
 - `test_indicators_service.py` — test_upsert_and_latest, test_upsert_idempotent, test_series_returns_ordered_points, test_series_inva (~1499 tok)
 - `test_maildir.py` — test_deliver_writes_eml_file (~122 tok)
 - `test_main_pix_startup.py` — test_pix_sandbox_warning_fires_for_efi_sandbox_in_production, test_pix_sandbox_warning_silent_outsid (~277 tok)
-- `test_models.py` — test_all_phase1_models_importable_and_tables_exist, test_all_phase2_models_importable_and_tables_exi (~834 tok)
+- `test_models.py` — test_all_phase1_models_importable_and_tables_exist, test_all_phase2_models_importable_and_tables_exi (~961 tok)
 - `test_notification_service.py` — Integration tests for NotificationService.enqueue() — DB only, no SMTP. (~846 tok)
 - `test_notification_templates.py` — Tests that every template key renders without error and contains expected strings. (~1024 tok)
 - `test_parcela_service.py` — setup, test_list_for_customer_returns_proposals, test_get_schedule_returns_parcelas, test_cannot_acc (~1698 tok)
@@ -300,18 +314,19 @@
 - `test_proposal_endpoints.py` — Integration tests for proposal API endpoints. (~1505 tok)
 - `test_proposal_phase6.py` — Tests for Phase 6 ProposalService changes: invite on approve, cancel with cleanup. (~1302 tok)
 - `test_proposal_service_unit.py` — Unit tests for ProposalService using mocked session + arq. (~785 tok)
-- `test_proposal_service.py` — Integration tests for ProposalService against a real Postgres. (~2401 tok)
-- `test_proposal_snapshot.py` — test_build_snapshot_basic, test_build_snapshot_tarifas_computed, test_snapshot_rejects_extra_fields, (~1010 tok)
-- `test_render_tasks.py` — Worker render task tests — WeasyPrint is mocked. (~1147 tok)
+- `test_proposal_service.py` — Integration tests for ProposalService against a real Postgres. (~3168 tok)
+- `test_proposal_snapshot.py` — make_snapshot_deps, test_build_snapshot_basic, test_build_snapshot_tarifas_computed, test_snapshot_r (~1410 tok)
+- `test_render_tasks.py` — Worker render task tests — WeasyPrint is mocked. (~2105 tok)
 - `test_rules_update.py` — test_update_changes_value_and_writes_audit, test_update_with_motivo_stored_in_diff, test_update_publ (~949 tok)
 - `test_schemas.py` — M: test_decimal_str_serializes_as_string, test_decimal_str_parses_from_string, test_simulation_creat (~552 tok)
 - `test_settings_service.py` — clean_settings, test_get_all_returns_env_defaults_when_table_empty, test_update_and_get_round_trip, (~596 tok)
 - `test_settings.py` — test_settings_loads_with_valid_env, test_settings_missing_database_url_raises, test_settings_has_jwt (~425 tok)
-- `test_simulation_endpoints.py` — test_get_business_rules, test_preview_returns_schedule, test_create_simulation_returns_201, test_lis (~2167 tok)
-- `test_simulation_service.py` — tenant, user, rules_seeded, client_and_vehicle (~3377 tok)
+- `test_simulation_endpoints.py` — test_get_business_rules, test_preview_returns_schedule, test_create_simulation_returns_201, test_lis (~3314 tok)
+- `test_simulation_service.py` — tenant, user, rules_seeded, client_and_vehicle (~4036 tok)
 - `test_storage_contract.py` — Storage backend contract test — same assertions pass both Local and S3 (MinIO). (~590 tok)
 - `test_storage_local.py` — storage, test_put_and_get, test_signed_url_structure, test_signed_url_valid_hmac (~588 tok)
 - `test_tenant_isolation.py` — two_tenants, test_get_users_returns_only_own_tenant, test_get_me_returns_own_tenant, test_patch_user (~1047 tok)
+- `test_tenant_profile.py` — client_admin, client_user, test_get_tenant_profile_returns_defaults, test_put_tenant_profile_updates (~1736 tok)
 - `test_users_endpoints.py` — setup, test_get_me, test_get_users_as_admin_returns_staff_only, test_get_users_as_user_role_returns_ (~963 tok)
 - `test_vehicle_endpoints.py` — test_create_and_list_vehicles, test_set_vehicle_status, test_invalid_status_transition_returns_422 (~734 tok)
 - `test_vehicle_service.py` — ctx_and_session, test_create_vehicle_defaults_to_ativo, test_set_status_ativo_to_reservado, test_set (~977 tok)
@@ -343,6 +358,7 @@
 
 - `0001-pix-cobranca-automatica-always-send-reminder.md` — Always send the due-soon reminder regardless of cobrança-automática charge-generation outcome (~668 tok)
 - `0002-overdue-charge-daily-regeneration.md` — ADR-0002 — Overdue CobV charges regenerated daily (not stored-rate comparison) (~593 tok)
+- `0003-proposta-snapshot-logo-imutavel.md` — Proposta snapshot preserva o logo no momento da criação (~131 tok)
 
 ## docs/agents/
 
@@ -404,6 +420,7 @@
 - `2026-06-08-efi-pix-provider-plan-part4.md` — Efí Pix Provider — Part 4: Wiring + Runbook (Tasks 10–13) (~5859 tok)
 - `2026-06-09-pix-fase3-inadimplencia.md` — Fase 3 — Inadimplência Implementation Plan (~14387 tok)
 - `2026-06-18-simulacao-ux-improvements.md` — Simulação UX Improvements Implementation Plan (~5558 tok)
+- `2026-06-23-proposal-generation.md` — Proposal Generation Implementation Plan (~12976 tok)
 
 ## docs/superpowers/plans/done/
 
@@ -439,6 +456,7 @@
 - `2026-06-07-pix-cobranca-automatica-design.md` — Pix — Phase 2 (Cobrança automática) (~6638 tok)
 - `2026-06-09-pix-fase3-inadimplencia-design.md` — Pix — Fase 3 (Inadimplência) (~4929 tok)
 - `2026-06-18-simulacao-ux-improvements.md` — Simulação UX Improvements — Design Spec (~1635 tok)
+- `2026-06-23-proposal-generation-design.md` — Proposal Generation from Simulation — Design Spec (~2557 tok)
 
 ## docs/superpowers/specs/done/
 
@@ -461,7 +479,7 @@
 
 ## frontend/src/
 
-- `App.tsx` — queryClient (~923 tok)
+- `App.tsx` — queryClient (~958 tok)
 - `index.css` — Styles: 1 rules (~7 tok)
 
 ## frontend/src/components/
@@ -501,7 +519,8 @@
 - `csv.ts` — Exports buildCsv, downloadCsv (~212 tok)
 - `decimal.ts` — Exports fmtBRL, fmtPct, fmtRate, parseBRL (~225 tok)
 - `fipe.ts` — Exports FipeBrand, FipeModel, FipeYear, FipePrice + 4 more (~380 tok)
-- `proposals.ts` — Exports ProposalOut, ProposalListItem, ProposalListPage, createProposal + 6 more (~596 tok)
+- `proposals.ts` — Exports ProposalOut, ProposalListItem, ProposalListPage, createProposal + 6 more (~597 tok)
+- `tenant-profile.ts` — Exports TenantProfileOut, TenantProfileIn, getTenantProfile, updateTenantProfile, uploadLogo (~304 tok)
 - `utils.ts` — Exports cn (~49 tok)
 - `vehicles.ts` — Exports VehicleOut, VehicleListPage, VehicleIn, listVehicles + 4 more (~582 tok)
 
@@ -513,17 +532,18 @@
 - `Login.tsx` — schema — renders form (~874 tok)
 - `ResetPassword.tsx` — schema — renders form (~853 tok)
 - `Simulacao.tsx` — Simulacao (~1436 tok)
-- `SimulacaoEdit.tsx` — isoToDateStr (~3650 tok)
+- `SimulacaoEdit.tsx` — isoToDateStr (~4213 tok)
 
 ## frontend/src/routes/admin/
 
-- `AdminLayout.tsx` — NAV_ITEMS (~634 tok)
+- `AdminLayout.tsx` — NAV_ITEMS (~659 tok)
 - `AuditLog.tsx` — ACAO_OPTIONS — renders table (~1546 tok)
 - `BusinessRules.tsx` — fetchRules — renders table (~3728 tok)
 - `Indicators.tsx` — LABELS (~1155 tok)
 - `PixSettings.tsx` — Query getAdminSettings, display pix_provider + pix_webhook_secret (env-only, read-only) (~270 tok)
 - `SmtpSettings.tsx` — EMAIL_PROVIDERS (~670 tok)
 - `SystemHealth.tsx` — Query /v1/admin/health (refetch 30s), StatusPill component, display postgres/redis + providers with latency/error (~420 tok)
+- `TenantProfile.tsx` — MAX_LOGO_BYTES (~1587 tok)
 - `Users.tsx` — ── Types ──────────────────────────────────────────────────────────────────── (~4016 tok)
 
 ## frontend/src/routes/clientes/
@@ -540,7 +560,7 @@
 - `ScheduleTable.tsx` — CSV_HEADERS — renders table (~742 tok)
 - `SimulacaoCharts.tsx` — SimulacaoCharts (~970 tok)
 - `SimulacaoForm.tsx` — schema (~8175 tok)
-- `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~938 tok)
+- `types.ts` — Exports RateCurvePoint, BusinessRules, FeeInput, ExtraInput + 6 more (~946 tok)
 
 ## frontend/src/routes/veiculos/
 

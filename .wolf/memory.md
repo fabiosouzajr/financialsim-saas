@@ -3,6 +3,8 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 2026-06-23 | Task 8: two-step confirm+propose flow in SimulacaoEdit | frontend/src/routes/SimulacaoEdit.tsx, frontend/src/routes/simulacao/types.ts | commit 9d9c906, build clean | ~3000 |
+
 | 11:40 | Visualizar: removed modal from SimulacaoForm, added onVisualize+onPreviewChange props, wired right panel in Simulacao.tsx via state bridge | SimulacaoForm.tsx, Simulacao.tsx | Build clean, no TS errors | ~1200 |
 | 11:55 | Fix blank cliente/veículo in results panel: added nome/descricao to picker onChange signatures, set form fields, added onInfoChange prop, display info above ResultCards | SimulacaoForm.tsx, Simulacao.tsx | Build clean | ~800 |
 
@@ -1938,3 +1940,102 @@
 | 12:03 | Edited frontend/src/routes/simulacao/ResultCards.tsx | 2→1 lines | ~35 |
 | 12:03 | Edited frontend/src/routes/simulacao/ResultCards.tsx | 9 → 6 | ~15 |
 | 12:03 | Session end: 27 writes across 3 files (SimulacaoForm.tsx, Simulacao.tsx, ResultCards.tsx) | 6 reads | ~18558 tok |
+| 09:38 | Created docs/superpowers/specs/2026-06-23-proposal-generation-design.md | — | ~2278 |
+| 09:39 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | 3→4 lines | ~77 |
+| 09:39 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | inline fix | ~112 |
+| 09:39 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | 1→2 lines | ~52 |
+| 09:50 | Edited CONTEXT.md | 3→5 lines | ~199 |
+| 10:02 | Created backend/alembic/versions/013_rename_proposal_status_pronta.py | — | ~129 |
+| 10:02 | Edited backend/finacialsim_saas/data/models.py | modified ProposalStatus() | ~39 |
+| 10:02 | Edited backend/finacialsim_saas/services/proposal_service.py | inline fix | ~15 |
+| 10:02 | Edited backend/finacialsim_saas/workers/tasks.py | inline fix | ~12 |
+| 10:03 | Edited backend/tests/test_render_tasks.py | inline fix | ~15 |
+| 10:03 | Edited backend/tests/test_proposal_phase6.py | inline fix | ~23 |
+| 10:04 | Edited backend/tests/test_proposal_service.py | inline fix | ~13 |
+| 10:04 | Edited frontend/src/lib/proposals.ts | inline fix | ~17 |
+| 10:04 | Edited frontend/src/routes/SimulacaoEdit.tsx | "ready" → "pronta" | ~15 |
+| 10:04 | Edited frontend/src/routes/propostas/PropostasPage.tsx | 2→2 lines | ~12 |
+| 10:04 | Edited frontend/src/routes/propostas/PropostasPage.tsx | inline fix | ~12 |
+| 10:05 | Edited CONTEXT.md | 2→2 lines | ~127 |
+| 10:09 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | expanded (+9 lines) | ~201 |
+| 10:09 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | modified machine() | ~390 |
+| 10:09 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | inline fix | ~12 |
+| 10:09 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | inline fix | ~13 |
+| 10:10 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | inline fix | ~9 |
+| 10:10 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | inline fix | ~8 |
+| 10:10 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | 1→3 lines | ~76 |
+| 10:11 | Created docs/adr/0003-proposta-snapshot-logo-imutavel.md | — | ~139 |
+| 10:13 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | 14→19 lines | ~229 |
+| 10:15 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | 8→12 lines | ~139 |
+| 10:18 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | 7 → 15 | ~13 |
+| 10:18 | Edited docs/superpowers/specs/2026-06-23-proposal-generation-design.md | inline fix | ~14 |
+| 10:35 | Created docs/superpowers/plans/2026-06-23-proposal-generation.md | — | ~13841 |
+
+## Session: 2026-06-23 10:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:39 | Wrote proposal generation implementation plan — 8 tasks, migration 014, confirm flow, logo render, tenant profile API, frontend | docs/superpowers/plans/2026-06-23-proposal-generation.md | done | ~4000 tokens |
+| 11:36 | Created backend/alembic/versions/014_tenant_profile.py | — | ~300 |
+| 11:36 | Edited backend/finacialsim_saas/data/models.py | expanded (+7 lines) | ~174 |
+| 11:36 | Edited backend/tests/test_models.py | modified test_tenant_profile_columns_exist() | ~154 |
+| 11:42 | Created .git/sdd/task-1-report.md | — | ~663 |
+| 11:42 | Task 1: added 5 company profile cols to Tenant model + migration 014 + test | backend/alembic/versions/014_tenant_profile.py, backend/finacialsim_saas/data/models.py, backend/tests/test_models.py | 6/6 tests pass, commit ca25d30 | ~2500 |
+| 11:44 | Edited backend/finacialsim_saas/schemas/proposals.py | modified LojaSnap() | ~60 |
+| 11:44 | Edited backend/finacialsim_saas/schemas/proposals.py | expanded (+6 lines) | ~60 |
+| 11:45 | Edited backend/finacialsim_saas/schemas/simulations.py | 4→5 lines | ~53 |
+| 11:45 | Edited backend/finacialsim_saas/services/simulation_service.py | 4→4 lines | ~41 |
+| 11:45 | Edited backend/finacialsim_saas/services/simulation_service.py | expanded (+7 lines) | ~95 |
+| 11:45 | Edited backend/finacialsim_saas/services/simulation_service.py | 3→4 lines | ~30 |
+| 11:45 | Edited backend/tests/test_proposal_snapshot.py | modified make_snapshot_deps() | ~92 |
+| 11:45 | Edited backend/tests/test_proposal_snapshot.py | modified test_snapshot_roundtrip_json() | ~398 |
+| 11:45 | Edited backend/tests/test_simulation_endpoints.py | modified test_get_simulation_includes_proposal_id_none() | ~612 |
+| 11:46 | Edited backend/tests/test_proposal_snapshot.py | modified _make_tenant() | ~62 |
+| 11:49 | Created .git/sdd/task-2-report.md | — | ~884 |
+| 11:51 | Edited backend/finacialsim_saas/services/simulation_service.py | modified confirm() | ~310 |
+| 11:51 | Edited backend/finacialsim_saas/api/simulations.py | modified confirm_simulation() | ~141 |
+| 11:51 | Edited backend/tests/test_simulation_service.py | modified test_confirm_transitions_rascunho_to_confirmado() | ~693 |
+| 11:52 | Edited backend/tests/test_simulation_endpoints.py | modified test_confirm_simulation_endpoint() | ~607 |
+| 11:54 | Created .git/sdd/task-3-report.md | — | ~731 |
+| 11:57 | Edited backend/tests/test_proposal_service.py | 23→26 lines | ~305 |
+| 11:57 | Edited backend/tests/test_proposal_service.py | modified _seed_simulation() | ~805 |
+| 11:57 | Edited backend/tests/test_proposal_service.py | modified test_create_carne_rejects_non_aprovada() | ~534 |
+| 11:57 | Edited backend/finacialsim_saas/services/proposal_service.py | expanded (+6 lines) | ~139 |
+| 11:58 | Edited backend/finacialsim_saas/services/proposal_service.py | 10→10 lines | ~110 |
+| 12:02 | Created .git/sdd/task-4-report.md | — | ~537 |
+| 12:02 | Task 4: validate client+vehicle in ProposalService.create(), replace validade_dias=7 with tenant field | backend/finacialsim_saas/services/proposal_service.py, backend/tests/test_proposal_service.py | 10/10 tests pass, commit 795ce47 | ~3k |
+| 12:04 | Edited backend/finacialsim_saas/workers/tasks.py | added 1 import(s) | ~35 |
+| 12:04 | Edited backend/finacialsim_saas/workers/tasks.py | inline fix | ~27 |
+| 12:05 | Edited backend/finacialsim_saas/workers/tasks.py | 3→6 lines | ~49 |
+| 12:05 | Edited backend/finacialsim_saas/workers/tasks.py | expanded (+18 lines) | ~279 |
+| 12:05 | Edited backend/finacialsim_saas/reports/proposta.html | expanded (+10 lines) | ~192 |
+| 12:05 | Edited backend/finacialsim_saas/reports/proposta.css | expanded (+21 lines) | ~113 |
+| 12:06 | Edited backend/tests/test_render_tasks.py | modified test_render_proposta_not_found_is_silent() | ~1092 |
+| 12:06 | Created .git/sdd/task-5-report.md | — | ~663 |
+| 12:06 | Task 5: logo pre-fetch in render_proposta_pdf + proposta.html/css header | tasks.py, proposta.html, proposta.css, test_render_tasks.py | 5/5 tests pass, committed 8868241 | ~2800 |
+| 12:10 | Created backend/finacialsim_saas/api/tenant_profile.py | — | ~1188 |
+| 12:10 | Edited backend/finacialsim_saas/main.py | added 1 import(s) | ~286 |
+| 12:10 | Created backend/tests/test_tenant_profile.py | — | ~1736 |
+| 12:11 | Edited backend/pyproject.toml | 3→4 lines | ~22 |
+| 12:14 | Created .git/sdd/task-6-report.md | — | ~996 |
+| 12:16 | Edited backend/finacialsim_saas/api/tenant_profile.py | inline fix | ~19 |
+| 12:16 | Edited backend/finacialsim_saas/api/tenant_profile.py | 4→4 lines | ~56 |
+| 12:16 | Edited backend/finacialsim_saas/api/tenant_profile.py | 7→8 lines | ~85 |
+| 12:16 | Edited backend/finacialsim_saas/api/tenant_profile.py | 7→8 lines | ~81 |
+| 12:18 | Created frontend/src/lib/tenant-profile.ts | — | ~304 |
+| 12:18 | Created frontend/src/routes/admin/TenantProfile.tsx | — | ~1543 |
+| 12:19 | Edited frontend/src/routes/admin/AdminLayout.tsx | 13→15 lines | ~89 |
+| 12:19 | Edited frontend/src/App.tsx | added 1 import(s) | ~32 |
+| 12:19 | Edited frontend/src/App.tsx | 3→4 lines | ~72 |
+| 2026-06-23 | Task 7: created tenant-profile lib + TenantProfile admin page, added nav item + route | frontend/src/lib/tenant-profile.ts, frontend/src/routes/admin/TenantProfile.tsx, AdminLayout.tsx, App.tsx | build success, committed bcc5046 | ~2500 |
+| 12:20 | Created .git/sdd/task-7-report.md | — | ~430 |
+| 12:21 | Edited frontend/src/routes/admin/TenantProfile.tsx | CSS: e, message | ~130 |
+| 12:23 | Edited frontend/src/routes/simulacao/types.ts | 28→29 lines | ~231 |
+| 12:23 | Edited frontend/src/routes/SimulacaoEdit.tsx | added 2 condition(s) | ~586 |
+| 12:23 | Edited frontend/src/routes/SimulacaoEdit.tsx | modified catch() | ~218 |
+| 12:23 | Edited frontend/src/routes/SimulacaoEdit.tsx | expanded (+15 lines) | ~263 |
+| 12:23 | Edited frontend/src/routes/SimulacaoEdit.tsx | added nullish coalescing | ~75 |
+| 12:24 | Created .git/sdd/task-8-report.md | — | ~550 |
+| 12:26 | Edited frontend/src/routes/SimulacaoEdit.tsx | CSS: e, message | ~142 |
+
+| 15:27 | Fix: ProposalSection useEffect missing .catch handler on getProposal pre-load | frontend/src/routes/SimulacaoEdit.tsx | commit f6b1ab0, build clean (0 TS errors), 4174→4184 tok | ~400 |
