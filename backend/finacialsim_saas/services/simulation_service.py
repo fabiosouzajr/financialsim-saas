@@ -17,7 +17,7 @@ from finacialsim_core.validators import SimulationInput, ValidationRules, valida
 
 from finacialsim_saas.auth.deps import RequestContext
 from finacialsim_saas.data.models import (
-    AmortizationRow, Simulation, SimulationExtra, SimulationFee,
+    AmortizationRow, Proposal, Simulation, SimulationExtra, SimulationFee,
     SimulationStatus,
 )
 from finacialsim_saas.errors import AppError, NotFoundError, TenantAccessError, ValidationError
@@ -400,6 +400,13 @@ class SimulationService:
             iof_total=sim.iof_total,
         )
 
+        proposal_id = await self._s.scalar(
+            select(Proposal.id).where(
+                Proposal.simulation_id == sim_id,
+                Proposal.tenant_id == ctx.tenant_id,
+            )
+        )
+
         return SimulationOut(
             id=sim.id,
             tenant_id=sim.tenant_id,
@@ -433,6 +440,7 @@ class SimulationService:
                              valor_por_parcela=e.valor_por_parcela, ordem=e.ordem) for e in extras],
             rows=row_outs,
             summary=summary,
+            proposal_id=proposal_id,
         )
 
     async def list(

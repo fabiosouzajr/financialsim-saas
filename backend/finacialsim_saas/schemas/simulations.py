@@ -131,6 +131,7 @@ class SimulationOut(BaseModel):
     extras: list[ExtraOut] = []
     rows: list[AmortizationRowOut] = []
     summary: SimulationSummary | None = None
+    proposal_id: uuid.UUID | None = None
 
 
 class SimulationListItem(BaseModel):

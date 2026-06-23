@@ -40,6 +40,10 @@ def _make_tenant() -> Tenant:
     t = MagicMock(spec=Tenant)
     t.id = uuid.uuid4()
     t.name = "Financiadora Teste"
+    t.cnpj = None
+    t.telefone = None
+    t.endereco = None
+    t.logo_key = None
     return t
 
 
@@ -62,6 +66,19 @@ def _make_row(num: int) -> AmortizationRow:
     r.parcela_total = Decimal("1987.34")
     r.saldo_devedor = Decimal("68000.00") - num * Decimal("1110.14")
     return r
+
+
+@pytest.fixture
+def make_snapshot_deps():
+    sim = _make_sim()
+    fees: list = []
+    extras: list = []
+    rows = [_make_row(1)]
+    client = None
+    vehicle = None
+    tenant = _make_tenant()
+    user = _make_user()
+    return sim, fees, extras, rows, client, vehicle, tenant, user
 
 
 def test_build_snapshot_basic():
@@ -114,3 +131,27 @@ def test_snapshot_roundtrip_json():
     dumped = snap.model_dump()
     restored = PropostaSnapshot.model_validate(dumped)
     assert restored.sim.prazo_meses == snap.sim.prazo_meses
+
+
+def test_build_snapshot_includes_logo_key(make_snapshot_deps):
+    """build_snapshot copies logo_key from Tenant into LojaSnap."""
+    sim, fees, extras, rows, client, vehicle, tenant, user = make_snapshot_deps
+    tenant.logo_key = "abc-tenant-id/logo/logo.png"
+    tenant.cnpj = "12.345.678/0001-90"
+    tenant.telefone = "11 99999-0000"
+    tenant.endereco = "Rua Teste, 123"
+
+    snap = build_snapshot(sim, fees, extras, rows, client, vehicle, tenant, user)
+
+    assert snap.loja.logo_key == "abc-tenant-id/logo/logo.png"
+    assert snap.loja.cnpj == "12.345.678/0001-90"
+    assert snap.loja.telefone == "11 99999-0000"
+    assert snap.loja.endereco == "Rua Teste, 123"
+
+
+def test_build_snapshot_logo_key_none_when_unset(make_snapshot_deps):
+    """logo_key is None when tenant has no logo."""
+    sim, fees, extras, rows, client, vehicle, tenant, user = make_snapshot_deps
+    tenant.logo_key = None
+    snap = build_snapshot(sim, fees, extras, rows, client, vehicle, tenant, user)
+    assert snap.loja.logo_key is None

@@ -21,6 +21,7 @@ class LojaSnap(BaseModel):
     cnpj: str | None = None
     telefone: str | None = None
     endereco: str | None = None
+    logo_key: str | None = None
 
 
 class VendedorSnap(BaseModel):
@@ -139,7 +140,13 @@ def build_snapshot(
         )
 
     return PropostaSnapshot(
-        loja=LojaSnap(nome=tenant.name),
+        loja=LojaSnap(
+            nome=tenant.name,
+            cnpj=tenant.cnpj,
+            telefone=tenant.telefone,
+            endereco=tenant.endereco,
+            logo_key=tenant.logo_key,
+        ),
         vendedor=VendedorSnap(nome=user.name),
         cliente=cliente_snap,
         veiculo=veiculo_snap,

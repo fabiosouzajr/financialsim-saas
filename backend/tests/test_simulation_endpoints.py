@@ -196,6 +196,60 @@ async def test_clone_creates_rascunho(client, session):
 
 
 @pytest.mark.asyncio
+async def test_get_simulation_includes_proposal_id_none(client, session):
+    """GET /simulations/{id} returns proposal_id=null when no proposal exists."""
+    token, _, _, cl, v = await _make_token(client, session)
+    created = (await client.post(
+        "/api/v1/simulations",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "client_id": str(cl.id),
+            "vehicle_id": str(v.id),
+            "valor_veiculo": "50000.00", "valor_entrada": "10000.00",
+            "taxa_mensal": "0.0199", "prazo_meses": 24,
+            "data_liberacao": "2026-06-01", "primeiro_vencimento": "2026-07-01",
+            "incluir_iof": False,
+        },
+    )).json()
+    r = await client.get(
+        f"/api/v1/simulations/{created['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert r.status_code == 200
+    assert r.json()["proposal_id"] is None
+
+
+@pytest.mark.asyncio
+async def test_get_simulation_includes_proposal_id_when_exists(client, session):
+    """GET /simulations/{id} returns the proposal UUID when a proposal exists."""
+    token, _, _, cl, v = await _make_token(client, session)
+    sim = (await client.post(
+        "/api/v1/simulations",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "client_id": str(cl.id),
+            "vehicle_id": str(v.id),
+            "valor_veiculo": "50000.00", "valor_entrada": "10000.00",
+            "taxa_mensal": "0.0199", "prazo_meses": 24,
+            "data_liberacao": "2026-06-01", "primeiro_vencimento": "2026-07-01",
+            "incluir_iof": False,
+        },
+    )).json()
+    proposal = (await client.post(
+        "/api/v1/proposals",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"simulation_id": sim["id"]},
+    )).json()
+    assert proposal.get("id") is not None
+    r = await client.get(
+        f"/api/v1/simulations/{sim['id']}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert r.status_code == 200
+    assert r.json()["proposal_id"] == proposal["id"]
+
+
+@pytest.mark.asyncio
 async def test_archive_simulation(client, session):
     token, _, _, cl, v = await _make_token(client, session)
     sim = (await client.post(
