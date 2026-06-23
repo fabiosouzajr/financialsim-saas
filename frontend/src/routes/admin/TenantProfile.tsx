@@ -26,15 +26,19 @@ export default function TenantProfile() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    void getTenantProfile().then((p) => {
-      setProfile(p);
-      setNome(p.nome);
-      setCnpj(p.cnpj ?? "");
-      setTelefone(p.telefone ?? "");
-      setEndereco(p.endereco ?? "");
-      setValidadeDias(p.proposta_validade_dias);
-      setLoading(false);
-    });
+    void getTenantProfile()
+      .then((p) => {
+        setProfile(p);
+        setNome(p.nome);
+        setCnpj(p.cnpj ?? "");
+        setTelefone(p.telefone ?? "");
+        setEndereco(p.endereco ?? "");
+        setValidadeDias(p.proposta_validade_dias);
+      })
+      .catch((e: unknown) => {
+        setError(e instanceof Error ? e.message : "Erro ao carregar perfil");
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const handleSave = async () => {
