@@ -14,6 +14,7 @@ import AuditLog from "./routes/admin/AuditLog";
 import SystemHealth from "./routes/admin/SystemHealth";
 import SmtpSettings from "./routes/admin/SmtpSettings";
 import PixSettings from "./routes/admin/PixSettings";
+import TenantProfile from "./routes/admin/TenantProfile";
 import RequireRole from "./components/RequireRole";
 import Simulacao from "./routes/Simulacao";
 import SimulacaoEdit from "./routes/SimulacaoEdit";
@@ -56,6 +57,7 @@ export default function App() {
               <Route path="smtp" element={<SmtpSettings />} />
               <Route path="pix" element={<PixSettings />} />
               <Route path="users" element={<AdminUsers />} />
+              <Route path="perfil" element={<TenantProfile />} />
             </Route>
             <Route path="/simulacao" element={<Simulacao />} />
             <Route path="/simulacao/:id" element={<SimulacaoEdit />} />

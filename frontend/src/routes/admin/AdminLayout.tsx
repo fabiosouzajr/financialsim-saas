@@ -2,6 +2,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import {
   Activity,
   ArrowLeft,
+  Building2,
   ClipboardList,
   CreditCard,
   Mail,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 
 const NAV_ITEMS = [
+  { label: "Perfil da Empresa", href: "/admin/perfil", icon: Building2 },
   { label: "Regras de Negócio", href: "/admin/regras", icon: Settings },
   { label: "Indicadores", href: "/admin/indicadores", icon: TrendingUp },
   { label: "Auditoria", href: "/admin/auditoria", icon: ClipboardList },
