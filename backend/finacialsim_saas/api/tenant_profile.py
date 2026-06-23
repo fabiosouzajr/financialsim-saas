@@ -44,7 +44,7 @@ class TenantProfileIn(BaseModel):
         return self
 
 
-async def _tenant_profile_out(tenant: Tenant, session: AsyncSession) -> TenantProfileOut:
+async def _tenant_profile_out(tenant: Tenant) -> TenantProfileOut:
     logo_url = None
     if tenant.logo_key:
         settings = get_settings()
@@ -68,7 +68,7 @@ async def get_tenant_profile(
     tenant = await session.get(Tenant, ctx.tenant_id)
     if tenant is None:
         raise HTTPException(status_code=404, detail="Tenant not found")
-    return await _tenant_profile_out(tenant, session)
+    return await _tenant_profile_out(tenant)
 
 
 @router.put("", response_model=TenantProfileOut)
@@ -86,7 +86,8 @@ async def update_tenant_profile(
     tenant.endereco = body.endereco
     tenant.proposta_validade_dias = body.proposta_validade_dias
     await session.commit()
-    return await _tenant_profile_out(tenant, session)
+    await session.refresh(tenant)
+    return await _tenant_profile_out(tenant)
 
 
 @router.post("/logo", response_model=TenantProfileOut)
@@ -113,5 +114,6 @@ async def upload_logo(
         raise HTTPException(status_code=404, detail="Tenant not found")
     tenant.logo_key = key
     await session.commit()
+    await session.refresh(tenant)
 
-    return await _tenant_profile_out(tenant, session)
+    return await _tenant_profile_out(tenant)
