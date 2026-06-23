@@ -163,7 +163,7 @@ class ProposalService:
 
     async def approve(self, proposal_id: uuid.UUID, ctx: RequestContext) -> Proposal:
         proposal = await self._get_proposal_owned(proposal_id, ctx)
-        if proposal.status != ProposalStatus.ready:
+        if proposal.status != ProposalStatus.pronta:
             raise ValidationError("proposal must be ready to approve")
         if proposal.render_status != ProposalRenderStatus.ready:
             raise ValidationError("proposal PDF must be rendered before approval")

@@ -9,14 +9,14 @@ import {
 const STATUS_OPTIONS = [
   { value: "", label: "Todos" },
   { value: "rascunho", label: "Rascunho" },
-  { value: "ready", label: "Pronto" },
+  { value: "pronta", label: "Pronta" },
   { value: "aprovada", label: "Aprovada" },
   { value: "cancelada", label: "Cancelada" },
 ];
 
 const STATUS_BADGE: Record<string, string> = {
   rascunho: "bg-gray-100 text-gray-700",
-  ready: "bg-green-100 text-green-700",
+  pronta: "bg-green-100 text-green-700",
   aprovada: "bg-blue-100 text-blue-700",
   cancelada: "bg-red-100 text-red-700",
 };

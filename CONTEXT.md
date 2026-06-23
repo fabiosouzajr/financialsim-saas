@@ -6,9 +6,11 @@ Single-context repo. See `docs/adr/` for architectural decisions.
 
 ## Core Financing Concepts
 
-**Simulação** (`Simulation`) — a financing scenario: vehicle, buyer, amount, term, rates. The starting point for every proposal. May exist without a linked `Client` (clientless).
+**Simulação** (`Simulation`) — a financing scenario: vehicle, buyer, amount, term, rates. The starting point for every proposal. May exist without a linked `Client` (clientless). Lifecycle: `rascunho` (draft copy under edit) → `confirmado` (presented to an interested customer; no further edits) → `arquivado` (no longer active). Normal creation goes straight to `confirmado`; only clones start as `rascunho`.
+_Avoid_: draft, scenario, quote
 
-**Proposta** (`Proposal`) — a finalized, approved financing offer derived from a `Simulação`. Has a lifecycle (`rascunho → aprovada → cancelada`). One `Proposal` per `Simulation` (unique constraint).
+**Proposta** (`Proposal`) — a print-ready financing offer derived from a `confirmado` `Simulação`. Seals a point-in-time snapshot of all financing terms. Has a lifecycle (`rascunho → pronta → aprovada → cancelada`). One `Proposal` per `Simulation` (unique constraint). `pronta` means the PDF has been generated and the operator can present it to the customer. `aprovada` means the customer accepted the terms and installments are active.
+_Avoid_: offer, contract, quotation
 
 **Parcela** (`ParcelaPayment`) — a single installment payment within an approved `Proposal`. Has a `vencimento` (due date), `valor_parcela`, and a status (`open`, `overdue`, `paid`, `canceled`). The atomic unit of Pix charge creation — one CobV charge is created per `Parcela`, ever.
 

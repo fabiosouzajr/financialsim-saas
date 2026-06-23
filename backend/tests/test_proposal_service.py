@@ -147,7 +147,7 @@ async def test_approve_generates_parcela_payments(ctx_and_session, tmp_path):
     proposal = await svc.create(sim.id, ctx)
     # Simulate worker completing the render
     proposal.render_status = ProposalRenderStatus.ready
-    proposal.status = ProposalStatus.ready
+    proposal.status = ProposalStatus.pronta
     await session.commit()
     await svc.approve(proposal.id, ctx)
     payments = list(await session.scalars(
@@ -180,7 +180,7 @@ async def test_approve_writes_customer_invite_outbox(ctx_and_session, tmp_path):
     svc = ProposalService(session, arq, storage, auth_service=auth_svc)
     proposal = await svc.create(sim.id, ctx)
     proposal.render_status = ProposalRenderStatus.ready
-    proposal.status = ProposalStatus.ready
+    proposal.status = ProposalStatus.pronta
     await session.commit()
     await svc.approve(proposal.id, ctx)
     outbox = list(await session.scalars(
@@ -199,7 +199,7 @@ async def test_cancel_cascades_parcela_payments(ctx_and_session, tmp_path):
     svc = _make_svc(session, tmp_path)
     proposal = await svc.create(sim.id, ctx)
     proposal.render_status = ProposalRenderStatus.ready
-    proposal.status = ProposalStatus.ready
+    proposal.status = ProposalStatus.pronta
     await session.commit()
     await svc.approve(proposal.id, ctx)
     await svc.cancel(proposal.id, ctx)

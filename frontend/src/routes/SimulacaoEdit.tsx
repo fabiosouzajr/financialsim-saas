@@ -180,7 +180,7 @@ function ProposalSection({ simulationId }: { simulationId: string }) {
                 >
                   Baixar proposta (PDF)
                 </a>
-                {proposal.status === "ready" && (
+                {proposal.status === "pronta" && (
                   <button
                     onClick={() => void handleApprove()}
                     disabled={loading}

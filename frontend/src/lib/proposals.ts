@@ -10,7 +10,7 @@ export interface ProposalOut {
   validade_dias: number;
   render_status: "pending" | "rendering" | "ready" | "failed";
   render_error: string | null;
-  status: "rascunho" | "ready" | "aprovada" | "cancelada";
+  status: "rascunho" | "pronta" | "aprovada" | "cancelada";
   pdf_key: string | null;
   carne_key: string | null;
   aprovado_por: string | null;

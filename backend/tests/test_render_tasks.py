@@ -75,7 +75,7 @@ async def test_render_proposta_sets_ready():
         await render_proposta_pdf(ctx, str(proposal.id))
 
     assert proposal.render_status == ProposalRenderStatus.ready
-    assert proposal.status == ProposalStatus.ready
+    assert proposal.status == ProposalStatus.pronta
     assert proposal.pdf_key is not None
     storage.put.assert_called_once()
 

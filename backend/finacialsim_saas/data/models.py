@@ -547,7 +547,7 @@ class ProposalRenderStatus(enum.Enum):
 
 class ProposalStatus(enum.Enum):
     rascunho = "rascunho"
-    ready = "ready"
+    pronta = "pronta"
     aprovada = "aprovada"
     cancelada = "cancelada"
 

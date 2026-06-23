@@ -85,7 +85,7 @@ async def test_approve_calls_invite_customer(session, engine):
         tenant_id=tenant.id, simulation_id=sim.id,
         codigo=f"PROP-PH6-{uuid.uuid4().hex[:6]}", gerado_por=admin.id,
         validade_dias=7, snapshot_json=snap_json,
-        render_status=ProposalRenderStatus.ready, status=ProposalStatus.ready,
+        render_status=ProposalRenderStatus.ready, status=ProposalStatus.pronta,
     )
     session.add(proposal)
     await session.commit()

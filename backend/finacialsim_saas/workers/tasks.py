@@ -296,7 +296,7 @@ async def render_proposta_pdf(ctx: dict, proposal_id: str) -> None:
 
             proposal.pdf_key = key
             proposal.render_status = _PRS.ready
-            proposal.status = _PS.ready
+            proposal.status = _PS.pronta
             await session.commit()
             logger.info(f"render_proposta_pdf: {proposal_id} → {len(pdf):,} bytes")
 
