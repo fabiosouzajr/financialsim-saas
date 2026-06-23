@@ -100,3 +100,24 @@ tr.subtotal td {
 .extra-row {
     background: #FFF7E6;
 }
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 1rem;
+}
+
+.loja-logo {
+    max-height: 60px;
+    max-width: 200px;
+    object-fit: contain;
+}
+
+.loja-info {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0.1rem 0;
+}

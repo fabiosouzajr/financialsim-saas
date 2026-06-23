@@ -7,7 +7,17 @@
 </head>
 
 <body>
-    <h1>{{ loja.nome }} — Proposta de financiamento</h1>
+    <div class="header">
+        {% if loja.logo_data_uri %}
+        <img src="{{ loja.logo_data_uri }}" class="loja-logo" alt="{{ loja.nome }}">
+        {% endif %}
+        <div>
+            <h1>{{ loja.nome }} — Proposta de financiamento</h1>
+            {% if loja.cnpj %}<p class="loja-info">CNPJ: {{ loja.cnpj }}</p>{% endif %}
+            {% if loja.telefone %}<p class="loja-info">Tel.: {{ loja.telefone }}</p>{% endif %}
+            {% if loja.endereco %}<p class="loja-info">{{ loja.endereco }}</p>{% endif %}
+        </div>
+    </div>
     <p>
         Proposta <strong>{{ proposal.codigo }}</strong> emitida em {{ proposal.gerado_em_br }} —
         validade {{ proposal.validade_dias }} dias.

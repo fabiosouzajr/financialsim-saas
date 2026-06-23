@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import time
 from datetime import date, datetime, timezone
 
@@ -155,7 +156,7 @@ _MODALIDADE_LABEL = {
 }
 
 
-def _proposta_ctx(snap: _Snap, proposal: _Proposal) -> dict:
+def _proposta_ctx(snap: _Snap, proposal: _Proposal, logo_data_uri: str | None = None) -> dict:
     from datetime import date as _date
     from decimal import Decimal
 
@@ -172,7 +173,10 @@ def _proposta_ctx(snap: _Snap, proposal: _Proposal) -> dict:
     total_cliente = _d(s.total_pago) + _d(s.extras_acumulado)
 
     return {
-        "loja": snap.loja.model_dump(),
+        "loja": {
+            **snap.loja.model_dump(),
+            "logo_data_uri": logo_data_uri,
+        },
         "vendedor": snap.vendedor.model_dump(),
         "proposal": {
             "codigo": proposal.codigo,
@@ -286,7 +290,25 @@ async def render_proposta_pdf(ctx: dict, proposal_id: str) -> None:
 
         try:
             snap = _Snap.model_validate(proposal.snapshot_json)
-            html_str = _jinja.get_template("proposta.html").render(**_proposta_ctx(snap, proposal))
+
+            # Pre-fetch logo (non-fatal if missing)
+            logo_data_uri: str | None = None
+            if snap.loja.logo_key:
+                try:
+                    logo_bytes = await storage.get(snap.loja.logo_key)
+                    b64 = base64.b64encode(logo_bytes).decode()
+                    ext = snap.loja.logo_key.rsplit(".", 1)[-1].lower()
+                    mime = "image/png" if ext == "png" else "image/jpeg"
+                    logo_data_uri = f"data:{mime};base64,{b64}"
+                except Exception:
+                    logger.warning(
+                        f"render_proposta_pdf: logo fetch failed for key "
+                        f"{snap.loja.logo_key!r}, rendering without logo"
+                    )
+
+            html_str = _jinja.get_template("proposta.html").render(
+                **_proposta_ctx(snap, proposal, logo_data_uri=logo_data_uri)
+            )
             css_path = _REPORTS / "proposta.css"
             stylesheets = [CSS(filename=str(css_path))] if css_path.exists() else []
             pdf = await asyncio.to_thread(HTML(string=html_str).write_pdf, stylesheets=stylesheets)
