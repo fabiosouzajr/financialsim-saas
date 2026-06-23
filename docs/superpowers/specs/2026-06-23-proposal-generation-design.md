@@ -41,7 +41,7 @@ Add columns to the `tenants` table:
 | `telefone` | VARCHAR(20) | yes | — |
 | `endereco` | TEXT | yes | — |
 | `logo_key` | TEXT | yes | — |
-| `proposta_validade_dias` | INTEGER | no | 7 |
+| `proposta_validade_dias` | INTEGER | no | 15 |
 
 `logo_key` is a storage path (`{tenant_id}/logo/{filename}`), not a URL. The render worker resolves it to bytes and embeds as a base64 data URI so the PDF is fully self-contained.
 
@@ -89,18 +89,27 @@ New endpoint: `POST /api/v1/simulations/{id}/confirm` (auth: any authenticated u
 
 ### 2d. Render Worker (`workers/tasks.py`)
 
-In `_proposta_ctx()`, resolve `logo_key` → base64 data URI:
+`_proposta_ctx()` stays synchronous. In `render_proposta_pdf`, pre-fetch the logo inside the existing async block **before** calling `_proposta_ctx()`, then pass it as a parameter:
+
 ```python
 logo_data_uri = None
 if snap.loja.logo_key:
-    logo_bytes = await storage.get(snap.loja.logo_key)
-    b64 = base64.b64encode(logo_bytes).decode()
-    ext = snap.loja.logo_key.rsplit(".", 1)[-1].lower()
-    mime = "image/png" if ext == "png" else "image/jpeg"
-    logo_data_uri = f"data:{mime};base64,{b64}"
+    try:
+        logo_bytes = await storage.get(snap.loja.logo_key)
+        b64 = base64.b64encode(logo_bytes).decode()
+        ext = snap.loja.logo_key.rsplit(".", 1)[-1].lower()
+        mime = "image/png" if ext == "png" else "image/jpeg"
+        logo_data_uri = f"data:{mime};base64,{b64}"
+    except Exception:
+        logger.warning(f"render_proposta_pdf: logo fetch failed for key {snap.loja.logo_key!r}, rendering without logo")
+        logo_data_uri = None
+
+html_str = _jinja.get_template("proposta.html").render(
+    **_proposta_ctx(snap, proposal, logo_data_uri=logo_data_uri)
+)
 ```
 
-Pass `logo_data_uri` into the `loja` dict sent to the Jinja2 template.
+`_proposta_ctx()` gains an optional `logo_data_uri: str | None = None` parameter and injects it into the `loja` dict. The async boundary stays in `render_proposta_pdf` where it belongs.
 
 ### 2e. PDF Template (`reports/proposta.html`)
 
@@ -143,7 +152,7 @@ class TenantProfileIn(BaseModel):
     cnpj: str | None = None
     telefone: str | None = None
     endereco: str | None = None
-    proposta_validade_dias: int = Field(ge=1, le=365)
+    proposta_validade_dias: int = Field(ge=1, le=30)
 ```
 
 Note: `nome` updates `tenant.name`. `logo_key` is NOT updated here — logo has its own upload endpoint.
