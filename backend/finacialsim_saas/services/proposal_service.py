@@ -64,6 +64,12 @@ class ProposalService:
         if sim.status != SimulationStatus.confirmado:
             raise ValidationError("simulation must be confirmado to generate a proposal")
 
+        # Validate client and vehicle are linked
+        if sim.client_id is None:
+            raise ValidationError("simulation must have a client to generate a proposal")
+        if sim.vehicle_id is None:
+            raise ValidationError("simulation must have a vehicle to generate a proposal")
+
         existing = await self._s.scalar(
             select(Proposal).where(
                 Proposal.tenant_id == ctx.tenant_id,
@@ -103,7 +109,7 @@ class ProposalService:
             simulation_id=simulation_id,
             codigo=codigo,
             gerado_por=ctx.user_id,
-            validade_dias=7,
+            validade_dias=tenant.proposta_validade_dias,
             snapshot_json=snapshot.model_dump(),
             render_status=ProposalRenderStatus.pending,
             status=ProposalStatus.rascunho,

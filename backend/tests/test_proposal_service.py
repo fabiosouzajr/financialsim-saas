@@ -13,14 +13,17 @@ from finacialsim_saas.auth.deps import RequestContext
 from finacialsim_saas.auth.service import AuthService
 from finacialsim_saas.data.database import build_session_factory
 from finacialsim_saas.data.models import (
-    AmortizationRow, NotificationsOutbox, ParcelaPayment, ParcelaPaymentStatus,
-    Proposal, ProposalRenderStatus, ProposalStatus, Role, Simulation,
-    SimulationStatus, Tenant,
+    AmortizationRow, Client, ClientType, NotificationsOutbox, ParcelaPayment,
+    ParcelaPaymentStatus, Proposal, ProposalRenderStatus, ProposalStatus, Role,
+    Simulation, SimulationStatus, Tenant, Vehicle,
 )
 from finacialsim_saas.errors import ConflictError, ValidationError
 from finacialsim_saas.services.proposal_service import ProposalService
 from finacialsim_saas.settings import get_settings
 from finacialsim_saas.storage.local import LocalVolumeBackend
+
+# Sentinel used to distinguish "caller did not pass" from "caller passed None"
+_UNSET = object()
 
 
 @pytest.fixture
@@ -53,8 +56,42 @@ async def _seed_simulation(
     session: AsyncSession,
     tenant_id: uuid.UUID,
     user_id: uuid.UUID,
-    client_id: uuid.UUID | None = None,
+    client_id: object = _UNSET,
+    vehicle_id: object = _UNSET,
 ) -> Simulation:
+    """Seed a confirmado simulation.
+
+    By default (sentinel), creates real Client and Vehicle records so that
+    ProposalService.create() passes the client+vehicle validation.
+    Pass ``client_id=None`` or ``vehicle_id=None`` explicitly to leave the FK null
+    (used by the rejects-without tests).
+    """
+    if client_id is _UNSET:
+        client = Client(
+            tenant_id=tenant_id,
+            nome="Cliente Seed",
+            cpf_cnpj=f"000.{uuid.uuid4().int % 999:03d}.000-00",
+            tipo=ClientType.pf,
+            criado_por=user_id,
+        )
+        session.add(client)
+        await session.flush()
+        client_id = client.id
+
+    if vehicle_id is _UNSET:
+        vehicle = Vehicle(
+            tenant_id=tenant_id,
+            fonte="manual",
+            tipo="carro",
+            marca="Toyota",
+            modelo="Corolla",
+            ano_modelo=2024,
+            criado_por=user_id,
+        )
+        session.add(vehicle)
+        await session.flush()
+        vehicle_id = vehicle.id
+
     sim = Simulation(
         tenant_id=tenant_id,
         codigo=f"SIM-{uuid.uuid4().hex[:6]}",
@@ -76,6 +113,7 @@ async def _seed_simulation(
         rules_snapshot_json={},
         criado_por=user_id,
         client_id=client_id,
+        vehicle_id=vehicle_id,
     )
     session.add(sim)
     await session.flush()
@@ -218,3 +256,39 @@ async def test_create_carne_rejects_non_aprovada(ctx_and_session, tmp_path):
     proposal = await svc.create(sim.id, ctx)
     with pytest.raises(ValidationError, match="approved"):
         await svc.create_carne(proposal.id, ctx)
+
+
+@pytest.mark.asyncio
+async def test_create_rejects_sim_without_client(ctx_and_session, tmp_path):
+    """create() raises ValidationError when simulation has no client_id."""
+    ctx, session = ctx_and_session
+    sim = await _seed_simulation(session, ctx.tenant_id, ctx.user_id, client_id=None)
+    await session.commit()
+    svc = _make_svc(session, tmp_path)
+    with pytest.raises(ValidationError, match="client"):
+        await svc.create(sim.id, ctx)
+
+
+@pytest.mark.asyncio
+async def test_create_rejects_sim_without_vehicle(ctx_and_session, tmp_path):
+    """create() raises ValidationError when simulation has no vehicle_id."""
+    ctx, session = ctx_and_session
+    sim = await _seed_simulation(session, ctx.tenant_id, ctx.user_id, vehicle_id=None)
+    await session.commit()
+    svc = _make_svc(session, tmp_path)
+    with pytest.raises(ValidationError, match="vehicle"):
+        await svc.create(sim.id, ctx)
+
+
+@pytest.mark.asyncio
+async def test_create_reads_validade_from_tenant(ctx_and_session, tmp_path):
+    """create() uses tenant.proposta_validade_dias instead of hardcoded 7."""
+    ctx, session = ctx_and_session
+    tenant = await session.get(Tenant, ctx.tenant_id)
+    tenant.proposta_validade_dias = 20
+    await session.flush()
+    sim = await _seed_simulation(session, ctx.tenant_id, ctx.user_id)
+    await session.commit()
+    svc = _make_svc(session, tmp_path)
+    proposal = await svc.create(sim.id, ctx)
+    assert proposal.validade_dias == 20
