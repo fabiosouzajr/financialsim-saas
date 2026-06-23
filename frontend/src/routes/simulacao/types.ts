@@ -110,6 +110,7 @@ export interface SimulationOut extends PreviewResponse {
   incluir_iof: boolean;
   status: string;
   criado_em: string;
+  proposal_id: string | null;
   fees: Array<{ nome: string; valor: string; incluir_no_principal: boolean }>;
   extras: Array<{
     tipo: string;

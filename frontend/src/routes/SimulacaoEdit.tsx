@@ -21,9 +21,24 @@ function isoToDateStr(isoOrDate: string): string {
   return isoOrDate.slice(0, 10);
 }
 
-function ProposalSection({ simulationId }: { simulationId: string }) {
+async function confirmSimulation(id: string): Promise<void> {
+  await api.post(`/v1/simulations/${id}/confirm`);
+}
+
+function ProposalSection({
+  simulationId,
+  simStatus,
+  initialProposalId,
+  onSimulationConfirmed,
+}: {
+  simulationId: string;
+  simStatus: string;
+  initialProposalId: string | null;
+  onSimulationConfirmed: () => void;
+}) {
   const [proposal, setProposal] = useState<ProposalOut | null>(null);
   const [loading, setLoading] = useState(false);
+  const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -60,6 +75,30 @@ function ProposalSection({ simulationId }: { simulationId: string }) {
   );
 
   useEffect(() => () => stopPolling(), [stopPolling]);
+
+  // On mount: if a proposal already exists, fetch and display it
+  useEffect(() => {
+    if (!initialProposalId) return;
+    void getProposal(initialProposalId).then((p) => {
+      setProposal(p);
+      if (p.render_status === "pending" || p.render_status === "rendering") {
+        startPolling(p.id);
+      }
+    });
+  }, [initialProposalId, startPolling]);
+
+  const handleConfirm = async () => {
+    setConfirming(true);
+    setError(null);
+    try {
+      await confirmSimulation(simulationId);
+      onSimulationConfirmed();
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Erro ao confirmar simulação");
+    } finally {
+      setConfirming(false);
+    }
+  };
 
   const handleGerar = async () => {
     setLoading(true);
@@ -145,7 +184,22 @@ function ProposalSection({ simulationId }: { simulationId: string }) {
     <div className="mt-6 rounded-lg border p-4">
       <h3 className="mb-3 text-base font-semibold">Proposta</h3>
 
-      {!proposal && (
+      {!proposal && simStatus === "rascunho" && (
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">
+            Confirme a simulação antes de gerar a proposta.
+          </p>
+          <button
+            onClick={() => void handleConfirm()}
+            disabled={confirming}
+            className="rounded bg-yellow-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+          >
+            {confirming ? "Confirmando…" : "Confirmar simulação"}
+          </button>
+        </div>
+      )}
+
+      {!proposal && simStatus !== "rascunho" && simStatus !== "arquivado" && (
         <button
           onClick={() => void handleGerar()}
           disabled={loading}
@@ -361,7 +415,12 @@ export default function SimulacaoEdit() {
               <ScheduleTable rows={sim.rows} codigo={sim.codigo} />
             </>
           )}
-          <ProposalSection simulationId={sim.id} />
+          <ProposalSection
+            simulationId={sim.id}
+            simStatus={sim.status}
+            initialProposalId={sim.proposal_id ?? null}
+            onSimulationConfirmed={() => qc.invalidateQueries({ queryKey: ["simulation", id] })}
+          />
         </div>
       </div>
     </div>
