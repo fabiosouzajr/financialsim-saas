@@ -71,14 +71,23 @@ loja=LojaSnap(
 )
 ```
 
-### 2b. ProposalService
+### 2b. SimulationService — new `confirm()` method
+
+Add `SimulationService.confirm(simulation_id, ctx)`:
+- Loads the simulation (tenant-scoped)
+- Raises `ValidationError` if `status != rascunho` (already `confirmado` or `arquivado`)
+- Sets `status = confirmado`, commits, writes audit log entry `simulacao_confirmada`
+
+New endpoint: `POST /api/v1/simulations/{id}/confirm` (auth: any authenticated user, same as create).
+
+### 2c. ProposalService
 
 `ProposalService.create()` changes:
-1. Remove the `status == confirmado` guard — the combined action confirms internally.
-2. Set `sim.status = SimulationStatus.confirmado` before building the snapshot.
-3. Read `validade_dias` from `tenant.proposta_validade_dias` instead of hardcoded `7`.
+1. Keep the `status == confirmado` guard — proposal creation requires an explicitly confirmed simulation.
+2. Read `validade_dias` from `tenant.proposta_validade_dias` instead of hardcoded `7`.
+3. Validate that sim has `client_id` and `vehicle_id` set before accepting.
 
-### 2c. Render Worker (`workers/tasks.py`)
+### 2d. Render Worker (`workers/tasks.py`)
 
 In `_proposta_ctx()`, resolve `logo_key` → base64 data URI:
 ```python
@@ -93,7 +102,7 @@ if snap.loja.logo_key:
 
 Pass `logo_data_uri` into the `loja` dict sent to the Jinja2 template.
 
-### 2d. PDF Template (`reports/proposta.html`)
+### 2e. PDF Template (`reports/proposta.html`)
 
 Add to header section:
 ```html
@@ -104,7 +113,7 @@ Add to header section:
 
 Add `.loja-logo` styling to `proposta.css` (max-height ~60px, float right or centered).
 
-### 2e. New API: Tenant Profile
+### 2f. New API: Tenant Profile
 
 **File:** `backend/finacialsim_saas/api/tenant_profile.py`  
 **Router prefix:** `/api/v1/admin/tenant-profile`  
@@ -151,7 +160,7 @@ Previous logo key is overwritten on the tenant (old file is orphaned in storage 
 
 **Response:** `TenantProfileOut` (with fresh signed URL for the new logo).
 
-### 2f. Wire into `main.py`
+### 2g. Wire into `main.py`
 
 Register `tenant_profile.router` in the FastAPI app.
 
@@ -174,26 +183,28 @@ Add to `frontend/src/lib/` — `tenant-profile.ts` with typed API helpers.
 
 ### 3b. `SimulacaoEdit.tsx` changes
 
-**"Gerar Proposta" button** — visible when simulation has `client_id` and `vehicle_id` set and no proposal yet exists. To avoid a separate API call, extend `SimulationOut` (backend `schemas/simulations.py`) to include `proposal_id: uuid.UUID | None` — populated by a subquery when loading the simulation. `SimulacaoEdit.tsx` reads this on mount to skip straight to `ready`/`failed` state if a proposal already exists.
+**Two-step flow** — `SimulacaoEdit.tsx` renders different controls depending on simulation status:
 
-**State machine (local to the component):**
+1. **`status == rascunho`** — shows "Confirmar simulação" button. On click: `POST /api/v1/simulations/{id}/confirm`. On success, simulation status updates to `confirmado` in local state. "Gerar Proposta" then becomes available.
+2. **`status == confirmado`, no proposal yet** — shows "Gerar Proposta" button.
+3. **`status == confirmado`, proposal exists** — shows proposal section (polling / ready / failed).
+
+To avoid a separate API call on mount, extend `SimulationOut` (backend `schemas/simulations.py`) to include `proposal_id: uuid.UUID | None` — populated by a subquery when loading the simulation. `SimulacaoEdit.tsx` reads this to determine initial state.
+
+**Proposal state machine (local to the component):**
 
 ```
-idle → creating → polling → ready
+idle → creating → polling → pronta
                           → failed
 ```
 
-- `idle`: button shown
+- `idle`: "Gerar Proposta" button shown
 - `creating`: `POST /api/v1/proposals` in flight; button disabled, "Aguarde…"
-- `polling`: proposal created; poll `GET /api/v1/proposals/{proposal_id}` every 2s
-  - Shows spinner + "Gerando proposta…"
-  - Stops when `render_status === "ready"` or `render_status === "failed"`
-- `ready`: "✓ Proposta pronta" + "Baixar PDF" link (navigates to `GET /api/v1/proposals/{id}/download`)
-- `failed`: "Erro ao gerar PDF" + "Tentar novamente" button (calls `POST /api/v1/proposals/{id}/re-render`)
+- `polling`: proposal created; poll `GET /api/v1/proposals/{proposal_id}` every 2s. Stops when `render_status === "ready"` or `render_status === "failed"`.
+- `pronta`: "✓ Proposta pronta" + "Baixar PDF" + "Aprovar" buttons
+- `failed`: "Erro ao gerar PDF" + "Tentar novamente" (calls `POST /api/v1/proposals/{id}/re-render`)
 
-Poll cleanup: `clearInterval` on unmount.
-
-**Pitfall:** If the user navigates away during `polling`, the interval is cleaned up but the PDF is still generated in the background. On return to the page, the component should check if a proposal already exists for this simulation on mount and skip straight to `ready`/`failed` state.
+Poll cleanup: `clearInterval` on unmount. On return to page, `proposal_id` in `SimulationOut` resumes from correct state.
 
 ---
 
@@ -216,7 +227,9 @@ Poll cleanup: `clearInterval` on unmount.
 - `backend/finacialsim_saas/data/models.py` ← 5 new Tenant columns
 - `backend/finacialsim_saas/schemas/proposals.py` ← extend LojaSnap (add logo_key), update build_snapshot
 - `backend/finacialsim_saas/schemas/simulations.py` ← add proposal_id to SimulationOut
-- `backend/finacialsim_saas/services/proposal_service.py` ← confirm inline, read validade from tenant
+- `backend/finacialsim_saas/services/simulation_service.py` ← add `confirm()` method
+- `backend/finacialsim_saas/api/simulations.py` ← add `POST /{id}/confirm` endpoint
+- `backend/finacialsim_saas/services/proposal_service.py` ← read validade from tenant, validate client_id+vehicle_id
 - `backend/finacialsim_saas/workers/tasks.py` ← logo → base64 in _proposta_ctx
 - `backend/finacialsim_saas/reports/proposta.html` ← logo img tag
 - `backend/finacialsim_saas/reports/proposta.css` ← .loja-logo styles
