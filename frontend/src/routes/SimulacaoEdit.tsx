@@ -79,12 +79,16 @@ function ProposalSection({
   // On mount: if a proposal already exists, fetch and display it
   useEffect(() => {
     if (!initialProposalId) return;
-    void getProposal(initialProposalId).then((p) => {
-      setProposal(p);
-      if (p.render_status === "pending" || p.render_status === "rendering") {
-        startPolling(p.id);
-      }
-    });
+    void getProposal(initialProposalId)
+      .then((p) => {
+        setProposal(p);
+        if (p.render_status === "pending" || p.render_status === "rendering") {
+          startPolling(p.id);
+        }
+      })
+      .catch((e: unknown) => {
+        setError(e instanceof Error ? e.message : "Erro ao carregar proposta");
+      });
   }, [initialProposalId, startPolling]);
 
   const handleConfirm = async () => {
