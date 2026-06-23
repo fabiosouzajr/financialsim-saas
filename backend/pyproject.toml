@@ -24,6 +24,7 @@ dependencies = [
     "aiosmtplib>=3.0.0",
     "qrcode[pil]>=7.4.2",
     "efipay>=1.0.7",
+    "python-multipart>=0.0.12",
 ]
 
 [project.optional-dependencies]

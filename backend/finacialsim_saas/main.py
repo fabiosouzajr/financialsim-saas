@@ -114,6 +114,7 @@ from finacialsim_saas.api.webhooks import router as webhooks_router             
 from finacialsim_saas.api.pix_admin import router as pix_admin_router                    # noqa: E402
 from finacialsim_saas.api.admin_settings import router as admin_settings_router          # noqa: E402
 from finacialsim_saas.api.admin_health import router as admin_health_router              # noqa: E402
+from finacialsim_saas.api.tenant_profile import router as tenant_profile_router          # noqa: E402
 
 app.include_router(health_router)
 app.include_router(auth_router)
@@ -133,3 +134,4 @@ app.include_router(webhooks_router)
 app.include_router(pix_admin_router)
 app.include_router(admin_settings_router)
 app.include_router(admin_health_router)
+app.include_router(tenant_profile_router)
